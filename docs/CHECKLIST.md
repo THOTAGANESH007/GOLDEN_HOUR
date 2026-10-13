@@ -43,37 +43,37 @@
 |--------|------|--------------|
 | [x] | FastAPI project scaffold (`main.py`, `config.py`) | 2026-10-11 |
 | [x] | `requirements.txt` created | 2026-10-11 |
-| [ ] | Python virtual environment set up | |
-| [ ] | `config.py` — reads all env vars via `pydantic-settings` | |
-| [ ] | `database.py` — SQLAlchemy async engine + session factory | |
-| [ ] | Alembic initialized (`alembic init migrations`) | |
+| [x] | Python virtual environment set up | 2026-10-13 |
+| [x] | `config.py` — reads all env vars via `pydantic-settings` | 2026-10-13 |
+| [x] | `database.py` — SQLAlchemy async engine + session factory | 2026-10-13 |
+| [x] | Alembic initialized (`alembic init migrations`) | 2026-10-13 |
 
 ### SQLAlchemy Models
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | `models/user.py` — User model | |
-| [ ] | `models/profile.py` — Patient Profile model | |
-| [ ] | `models/emergency_contact.py` — Emergency Contact model | |
-| [ ] | `models/scan_event.py` — Scan Event model | |
-| [ ] | `models/document.py` — Document model | |
-| [ ] | Alembic initial migration created & tested | |
+| [x] | `models/user.py` — User model | 2026-10-13 |
+| [x] | `models/profile.py` — Patient Profile model | 2026-10-13 |
+| [x] | `models/emergency_contact.py` — Emergency Contact model | 2026-10-13 |
+| [x] | `models/scan_event.py` — Scan Event model | 2026-10-13 |
+| [x] | `models/document.py` — Document model | 2026-10-13 |
+| [x] | Alembic initial migration created & tested | 2026-10-13 |
 | [ ] | All tables created in Supabase DB | |
 
 ### Pydantic Schemas
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | `schemas/auth.py` — OTP request/response schemas | |
-| [ ] | `schemas/profile.py` — Profile create/update/response schemas | |
-| [ ] | `schemas/scan_event.py` — Scan event schemas | |
+| [x] | `schemas/auth.py` — OTP request/response schemas | 2026-10-13 |
+| [x] | `schemas/profile.py` — Profile create/update/response schemas | 2026-10-13 |
+| [x] | `schemas/scan_event.py` — Scan event schemas | 2026-10-13 |
 
 ### Middleware & Infrastructure
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | `middleware/auth_middleware.py` — JWT validation middleware | |
-| [ ] | `middleware/rate_limiter.py` — `slowapi` rate limiting | |
-| [ ] | CORS configured for Cloudflare + localhost origins | |
-| [ ] | Sentry SDK integrated in backend | |
-| [ ] | `GET /health` endpoint returns `{"status": "healthy"}` | |
+| [x] | `middleware/auth_middleware.py` — JWT validation middleware | 2026-10-13 |
+| [x] | `middleware/rate_limiter.py` — `slowapi` rate limiting | 2026-10-13 |
+| [x] | CORS configured for Cloudflare + localhost origins | 2026-10-13 |
+| [x] | Sentry SDK integrated in backend | 2026-10-13 |
+| [x] | `GET /health` endpoint returns `{"status": "healthy"}` | 2026-10-13 |
 
 ---
 
@@ -82,14 +82,14 @@
 ### Backend
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | `api/v1/auth.py` — router file created | |
-| [ ] | `POST /auth/send-otp` — sends OTP via Supabase Auth | |
-| [ ] | `POST /auth/verify-otp` — verifies OTP, returns JWT + refresh token | |
-| [ ] | `POST /auth/refresh` — rotates refresh token → new access token | |
-| [ ] | `POST /auth/logout` — revokes refresh token server-side | |
-| [ ] | `DELETE /auth/delete-account` — hard deletes all user PII | |
-| [ ] | JWT access token (15 min) + refresh token (30 days) working | |
-| [ ] | `services/auth_service.py` — auth business logic isolated | |
+| [x] | `api/v1/auth.py` — router file created | 2026-10-13 |
+| [x] | `POST /auth/send-otp` — sends OTP via Supabase Auth | 2026-10-13 |
+| [x] | `POST /auth/verify-otp` — verifies OTP, returns JWT + refresh token | 2026-10-13 |
+| [x] | `POST /auth/refresh` — rotates refresh token → new access token | 2026-10-13 |
+| [x] | `POST /auth/logout` — revokes refresh token server-side | 2026-10-13 |
+| [x] | `DELETE /auth/delete-account` — hard deletes all user PII | 2026-10-13 |
+| [x] | JWT access token (15 min) + refresh token (30 days) working | 2026-10-13 |
+| [x] | `services/auth_service.py` — auth business logic isolated | 2026-10-13 |
 
 ### Flutter
 | Status | Task | Completed On |
@@ -116,15 +116,15 @@
 ### Backend
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | `api/v1/profile.py` — router file created | |
-| [ ] | `GET /profile/me` — fetch full profile | |
-| [ ] | `PUT /profile/me` — update all profile fields | |
-| [ ] | `PATCH /profile/me/privacy` — update field visibility toggles | |
-| [ ] | `PATCH /profile/me/status` — activate / deactivate QR | |
-| [ ] | `GET /profile/contacts` — list emergency contacts | |
-| [ ] | `POST /profile/contacts` — add emergency contact | |
-| [ ] | `PUT /profile/contacts/{id}` — update contact | |
-| [ ] | `DELETE /profile/contacts/{id}` — remove contact | |
+| [x] | `api/v1/profile.py` — router file created | 2026-10-13 |
+| [x] | `GET /profile/me` — fetch full profile | 2026-10-13 |
+| [x] | `PUT /profile/me` — update all profile fields | 2026-10-13 |
+| [x] | `PATCH /profile/me/privacy` — update field visibility toggles | 2026-10-13 |
+| [x] | `PATCH /profile/me/status` — activate / deactivate QR | 2026-10-13 |
+| [x] | `GET /profile/contacts` — list emergency contacts | 2026-10-13 |
+| [x] | `POST /profile/contacts` — add emergency contact | 2026-10-13 |
+| [x] | `PUT /profile/contacts/{id}` — update contact | 2026-10-13 |
+| [x] | `DELETE /profile/contacts/{id}` — remove contact | 2026-10-13 |
 
 ### Flutter — Profile Wizard
 | Status | Task | Completed On |
@@ -153,13 +153,13 @@
 ### Backend
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | `api/v1/qr.py` — router file created | |
-| [ ] | `POST /qr/generate` — create 8-char random UID, store mapping | |
-| [ ] | `POST /qr/regenerate` — invalidate old UID, create new | |
-| [ ] | `GET /qr/public/{uid}` — public endpoint (no auth) — returns safe fields | |
-| [ ] | Scan event logged on every call to public endpoint | |
-| [ ] | Rate limiting: 20 scans/hour per QR UID | |
-| [ ] | `services/qr_service.py` — QR business logic isolated | |
+| [x] | `api/v1/qr.py` — router file created | 2026-10-13 |
+| [x] | `POST /qr/generate` — create 8-char random UID, store mapping | 2026-10-13 |
+| [x] | `POST /qr/regenerate` — invalidate old UID, create new | 2026-10-13 |
+| [x] | `GET /qr/public/{uid}` — public endpoint (no auth) — returns safe fields | 2026-10-13 |
+| [x] | Scan event logged on every call to public endpoint | 2026-10-13 |
+| [x] | Rate limiting: 20 scans/hour per QR UID | 2026-10-13 |
+| [x] | `services/qr_service.py` — QR business logic isolated | 2026-10-13 |
 
 ### Flutter
 | Status | Task | Completed On |
@@ -177,25 +177,25 @@
 ### Responder Web (React)
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | React Router configured for `/p/:uid`, `/p/notfound`, `/p/deactivated` | |
-| [ ] | `pages/EmergencyProfile.jsx` — fetches API and renders all sections | |
-| [ ] | Display: name, blood group, allergies, conditions, medications, contacts | |
-| [ ] | `pages/NotFound.jsx` — UID not found graceful error state | |
-| [ ] | `pages/Deactivated.jsx` — QR deactivated by patient | |
-| [ ] | `components/CriticalInfoCard.jsx` — blood group + allergies prominent | |
-| [ ] | `components/EmergencyContacts.jsx` — call + WhatsApp buttons | |
-| [ ] | `components/MedicationList.jsx` | |
-| [ ] | `components/AllergiesBadges.jsx` | |
-| [ ] | `components/LocationShareBtn.jsx` — responder GPS to family | |
-| [ ] | `services/api.js` — axios/fetch wrapper | |
-| [ ] | `styles/emergency.css` — full stylesheet | |
-| [ ] | Responder name/hospital optional input field | |
-| [ ] | Medical disclaimer footer | |
-| [ ] | Print stylesheet (`@media print`) | |
-| [ ] | Page load < 2 seconds on 3G (no heavy libs, system fonts) | |
-| [ ] | `<noscript>` fallback text for critical info | |
+| [x] | React Router configured for `/p/:uid`, `/p/notfound`, `/p/deactivated` | 2026-10-13 |
+| [x] | `pages/EmergencyProfile.jsx` — fetches API and renders all sections | 2026-10-13 |
+| [x] | Display: name, blood group, allergies, conditions, medications, contacts | 2026-10-13 |
+| [x] | `pages/NotFound.jsx` — UID not found graceful error state | 2026-10-13 |
+| [x] | `pages/Deactivated.jsx` — QR deactivated by patient | 2026-10-13 |
+| [x] | `components/CriticalInfoCard.jsx` — blood group + allergies prominent | 2026-10-13 |
+| [x] | `components/EmergencyContacts.jsx` — call + WhatsApp buttons | 2026-10-13 |
+| [x] | `components/MedicationList.jsx` | 2026-10-13 |
+| [x] | `components/AllergiesBadges.jsx` | 2026-10-13 |
+| [x] | `components/LocationShareBtn.jsx` — responder GPS to family | 2026-10-13 |
+| [x] | `services/api.js` — axios/fetch wrapper | 2026-10-13 |
+| [x] | `styles/emergency.css` — full stylesheet | 2026-10-13 |
+| [x] | Responder name/hospital optional input field | 2026-10-13 |
+| [x] | Medical disclaimer footer | 2026-10-13 |
+| [x] | Print stylesheet (`@media print`) | 2026-10-13 |
+| [x] | Page load < 2 seconds on 3G (no heavy libs, system fonts) | 2026-10-13 |
+| [x] | `<noscript>` fallback text for critical info | 2026-10-13 |
 | [ ] | Deployed to Cloudflare Pages | |
-| [ ] | `public/_redirects` file: `/* /index.html 200` | |
+| [x] | `public/_redirects` file: `/* /index.html 200` | 2026-10-13 |
 
 ---
 
@@ -204,31 +204,31 @@
 ### Backend — Celery & Task Queue
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | `tasks/celery_app.py` — Celery app with Upstash Redis broker | |
-| [ ] | `tasks/notification_tasks.py` — `notify_emergency_contacts` task | |
-| [ ] | Celery worker starts correctly alongside FastAPI | |
-| [ ] | Task enqueued on every QR scan (with dedup check) | |
-| [ ] | Deduplication: same QR scanned < 5 min ago → skip notification | |
-| [ ] | Retry with exponential backoff (3 retries: 5s, 15s, 30s) | |
+| [x] | `tasks/celery_app.py` — Celery app with Upstash Redis broker | 2026-10-13 |
+| [x] | `tasks/notification_tasks.py` — `notify_emergency_contacts` task | 2026-10-13 |
+| [x] | Celery worker starts correctly alongside FastAPI | 2026-10-13 |
+| [x] | Task enqueued on every QR scan (with dedup check) | 2026-10-13 |
+| [x] | Deduplication: same QR scanned < 5 min ago → skip notification | 2026-10-13 |
+| [x] | Retry with exponential backoff (3 retries: 5s, 15s, 30s) | 2026-10-13 |
 
 ### Backend — Notification Channels
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | `services/notification_service.py` — all channel logic isolated | |
-| [ ] | SMS via Fast2SMS — integrated and tested | |
-| [ ] | WhatsApp via WhatsApp Cloud API — integrated | |
+| [x] | `services/notification_service.py` — all channel logic isolated | 2026-10-13 |
+| [x] | SMS via Fast2SMS — integrated and tested | 2026-10-13 |
+| [x] | WhatsApp via WhatsApp Cloud API — integrated | 2026-10-13 |
 | [ ] | WhatsApp `emergency_alert` template approved & tested | |
-| [ ] | FCM push to patient device — integrated | |
-| [ ] | Email fallback via Resend.com — integrated | |
-| [ ] | Email fallback only triggers after SMS fails 3 retries | |
+| [x] | FCM push to patient device — integrated | 2026-10-13 |
+| [x] | Email fallback via Resend.com — integrated | 2026-10-13 |
+| [x] | Email fallback only triggers after SMS fails 3 retries | 2026-10-13 |
 
 ### Backend — Notification Endpoints
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | `api/v1/notifications.py` — router created | |
-| [ ] | `GET /notifications/history` — patient's scan + notification log | |
-| [ ] | `POST /notifications/false-alarm/{scan_id}` — mark as false alarm | |
-| [ ] | `POST /notifications/test` — send test SMS/WhatsApp to self | |
+| [x] | `api/v1/notifications.py` — router created | 2026-10-13 |
+| [x] | `GET /notifications/history` — patient's scan + notification log | 2026-10-13 |
+| [x] | `POST /notifications/false-alarm/{scan_id}` — mark as false alarm | 2026-10-13 |
+| [x] | `POST /notifications/test` — send test SMS/WhatsApp to self | 2026-10-13 |
 
 ### Flutter
 | Status | Task | Completed On |
@@ -246,11 +246,11 @@
 ### Backend
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | `api/v1/documents.py` — router created | |
-| [ ] | `POST /documents/upload` — upload to Supabase Storage + save metadata | |
-| [ ] | `GET /documents` — list all documents for patient | |
-| [ ] | `DELETE /documents/{id}` — remove from storage + DB | |
-| [ ] | Documents never exposed on public responder endpoint | |
+| [x] | `api/v1/documents.py` — router created | 2026-10-13 |
+| [x] | `POST /documents/upload` — upload to Supabase Storage + save metadata | 2026-10-13 |
+| [x] | `GET /documents` — list all documents for patient | 2026-10-13 |
+| [x] | `DELETE /documents/{id}` — remove from storage + DB | 2026-10-13 |
+| [x] | Documents never exposed on public responder endpoint | 2026-10-13 |
 
 ### Flutter
 | Status | Task | Completed On |
@@ -268,10 +268,10 @@
 ### Backend
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | `api/v1/scan_events.py` — router created | |
-| [ ] | `GET /scan-events` — paginated scan events for patient | |
-| [ ] | `GET /scan-events/{id}` — single scan event detail | |
-| [ ] | `PATCH /scan-events/{id}/false-alarm` — flag as false alarm | |
+| [x] | `api/v1/scan_events.py` — router created | 2026-10-13 |
+| [x] | `GET /scan-events` — paginated scan events for patient | 2026-10-13 |
+| [x] | `GET /scan-events/{id}` — single scan event detail | 2026-10-13 |
+| [x] | `PATCH /scan-events/{id}/false-alarm` — flag as false alarm | 2026-10-13 |
 
 ### Flutter
 | Status | Task | Completed On |
@@ -318,16 +318,16 @@
 
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | No PII in QR URL (only opaque UID) | |
+| [x] | No PII in QR URL (only opaque UID) | 2026-10-13 |
 | [ ] | Supabase RLS enabled and tested on all tables | |
-| [ ] | All `.env` files + `google-services.json` excluded from git | |
+| [x] | All `.env` files + `google-services.json` excluded from git | 2026-10-13 |
 | [ ] | Release keystore (`.jks`) generated and backed up securely | |
-| [ ] | DPDPA 2023 consent checkbox at registration with timestamp logged | |
-| [ ] | In-app account deletion implemented | |
-| [ ] | Medical disclaimer on responder page | |
+| [x] | DPDPA 2023 consent checkbox at registration with timestamp logged | 2026-10-13 |
+| [x] | In-app account deletion implemented | 2026-10-13 |
+| [x] | Medical disclaimer on responder page | 2026-10-13 |
 | [ ] | Sentry error monitoring — Flutter | |
 | [ ] | Sentry error monitoring — React Web | |
-| [ ] | Sentry error monitoring — Backend | |
+| [x] | Sentry error monitoring — Backend | 2026-10-13 |
 | [ ] | Better Uptime `/health` ping configured (10-min interval) | |
 
 ---
@@ -390,20 +390,20 @@
 | Phase | Total | Done | Remaining |
 |-------|-------|------|-----------|
 | Phase 0 — Setup & Accounts | 21 | 3 | 18 |
-| Module 0 — Backend Foundation | 16 | 2 | 14 |
-| Module 1 — Authentication | 20 | 0 | 20 |
-| Module 2 — Patient Profile | 19 | 0 | 19 |
-| Module 3 — QR Code | 24 | 0 | 24 |
-| Module 4 — Notifications | 21 | 0 | 21 |
-| Module 5 — Documents | 9 | 0 | 9 |
-| Module 6 — Scan History | 8 | 0 | 8 |
+| Module 0 — Backend Foundation | 21 | 20 | 1 |
+| Module 1 — Authentication | 22 | 8 | 14 |
+| Module 2 — Patient Profile | 21 | 9 | 12 |
+| Module 3 — QR Code | 35 | 25 | 10 |
+| Module 4 — Notifications | 22 | 16 | 6 |
+| Module 5 — Documents | 10 | 5 | 5 |
+| Module 6 — Scan History | 8 | 4 | 4 |
 | Module 7 — Settings | 6 | 0 | 6 |
 | UI Polish | 10 | 0 | 10 |
-| Security & Compliance | 11 | 0 | 11 |
+| Security & Compliance | 11 | 6 | 5 |
 | Deployment | 7 | 0 | 7 |
 | Play Store | 15 | 0 | 15 |
 | Post-Launch | 10 | 0 | 10 |
-| **TOTAL** | **197** | **5** | **192** |
+| **TOTAL** | **199** | **96** | **103** |
 
 ---
 
