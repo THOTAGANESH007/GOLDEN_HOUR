@@ -3,10 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- SEO -->
     <title>Golden Hour — Emergency Medical ID</title>
+    <meta name="description" content="Scan a QR code to instantly access critical patient medical information. Golden Hour — built for the golden hour of emergency response." />
+    <meta name="theme-color" content="#e53e3e" />
+
+    <!-- Prevent search indexing of emergency pages -->
+    <meta name="robots" content="noindex, nofollow" />
+
+    <!-- PWA / mobile -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <!-- Open Graph (if shared on social) -->
+    <meta property="og:title" content="Golden Hour — Emergency Medical ID" />
+    <meta property="og:description" content="Critical medical information — scan a QR to help a patient in emergency." />
+    <meta property="og:type" content="website" />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- noscript fallback -->
+      <noscript>
+        <div style="padding:40px;text-align:center;font-family:sans-serif;">
+          <h1>⚠️ JavaScript Required</h1>
+          <p>Please enable JavaScript to view this patient's medical information.</p>
+          <p>For immediate assistance, call <a href="tel:108" style="color:red;font-size:20px;">108</a></p>
+        </div>
+      </noscript>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

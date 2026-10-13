@@ -1,0 +1,326 @@
+/* =====================================================================
+   Golden Hour — Emergency Responder Web App
+   Design: High-contrast, fast-loading, no heavy fonts, accessible
+   ===================================================================== */
+
+/* ── Reset & base ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --red:       #e53e3e;
+  --red-dark:  #c53030;
+  --red-light: #fff5f5;
+  --orange:    #dd6b20;
+  --green:     #276749;
+  --green-bg:  #f0fff4;
+  --blue:      #2b6cb0;
+  --blue-bg:   #ebf8ff;
+  --gray-50:   #f9fafb;
+  --gray-100:  #f3f4f6;
+  --gray-200:  #e5e7eb;
+  --gray-400:  #9ca3af;
+  --gray-600:  #4b5563;
+  --gray-800:  #1f2937;
+  --gray-900:  #111827;
+  --white:     #ffffff;
+
+  --font:      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+               Helvetica, Arial, sans-serif;
+  --radius:    10px;
+  --shadow:    0 1px 4px rgba(0,0,0,.12);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,.14);
+}
+
+html { font-size: 16px; }
+
+body {
+  font-family: var(--font);
+  background: var(--gray-50);
+  color: var(--gray-900);
+  line-height: 1.5;
+  min-height: 100dvh;
+}
+
+/* ── Layout ────────────────────────────────────────────────────────── */
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 16px 80px;
+}
+
+/* ── Header banner ─────────────────────────────────────────────────── */
+.emergency-header {
+  background: var(--red);
+  color: var(--white);
+  padding: 18px 20px 14px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-lg);
+}
+.emergency-header .logo {
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  opacity: .85;
+  margin-bottom: 4px;
+}
+.emergency-header h1 {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -.3px;
+}
+.emergency-header .subtitle {
+  font-size: 13px;
+  opacity: .9;
+  margin-top: 3px;
+}
+
+/* ── Cards ─────────────────────────────────────────────────────────── */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-top: 14px;
+  overflow: hidden;
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  background: var(--gray-100);
+  border-bottom: 1px solid var(--gray-200);
+  color: var(--gray-600);
+}
+.card-header .icon { font-size: 18px; }
+.card-body { padding: 16px; }
+
+/* ── Critical info card ────────────────────────────────────────────── */
+.critical-card { border: 2px solid var(--red); }
+.critical-card .card-header { background: var(--red); color: var(--white); }
+
+.blood-group {
+  font-size: 48px;
+  font-weight: 900;
+  color: var(--red);
+  text-align: center;
+  line-height: 1;
+  padding: 8px 0 4px;
+}
+.blood-group-label {
+  text-align: center;
+  font-size: 12px;
+  color: var(--gray-400);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.info-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+.info-row:last-child { border-bottom: none; }
+.info-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+}
+.info-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--gray-900);
+}
+
+/* ── Allergy badges ─────────────────────────────────────────────────── */
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.badge-allergy  { background: #fff3cd; color: #856404; border: 1px solid #ffc107; }
+.badge-condition { background: #cfe2ff; color: #084298; border: 1px solid #9ec5fe; }
+.badge-none     { background: var(--green-bg); color: var(--green); border: 1px solid #9ae6b4; }
+
+/* ── Medication list ─────────────────────────────────────────────────── */
+.med-item {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--gray-100);
+  gap: 2px;
+}
+.med-item:last-child { border-bottom: none; }
+.med-name   { font-weight: 700; font-size: 15px; }
+.med-detail { font-size: 13px; color: var(--gray-600); }
+
+/* ── Emergency contacts ──────────────────────────────────────────────── */
+.contact-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+.contact-item:last-child { border-bottom: none; }
+.contact-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+.contact-relation {
+  font-size: 12px;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  letter-spacing: .7px;
+}
+.contact-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ── Buttons ────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: filter .15s, transform .1s;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 120px;
+}
+.btn:hover  { filter: brightness(.92); }
+.btn:active { transform: scale(.97); }
+
+.btn-call      { background: var(--red);   color: var(--white); }
+.btn-whatsapp  { background: #25d366;      color: var(--white); }
+.btn-location  { background: var(--blue);  color: var(--white); }
+.btn-secondary { background: var(--gray-100); color: var(--gray-800); }
+
+/* ── Location section ────────────────────────────────────────────────── */
+.location-btn-wrap { margin-top: 4px; }
+
+/* ── Responder input ─────────────────────────────────────────────────── */
+.responder-form { display: flex; flex-direction: column; gap: 10px; }
+.form-group label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gray-600);
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+.form-group input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: var(--font);
+  background: var(--white);
+  color: var(--gray-900);
+  transition: border-color .15s;
+}
+.form-group input:focus {
+  outline: none;
+  border-color: var(--red);
+}
+
+/* ── Donor badge ──────────────────────────────────────────────────────── */
+.donor-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--green-bg);
+  border: 1px solid #9ae6b4;
+  color: var(--green);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+/* ── States ─────────────────────────────────────────────────────────── */
+.loading-wrap, .error-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60dvh;
+  text-align: center;
+  padding: 32px 16px;
+}
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 5px solid var(--gray-200);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  margin-bottom: 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.error-icon { font-size: 64px; margin-bottom: 16px; }
+.error-title { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+.error-desc  { font-size: 15px; color: var(--gray-600); max-width: 320px; }
+
+/* ── Disclaimer ──────────────────────────────────────────────────────── */
+.disclaimer {
+  margin-top: 24px;
+  padding: 14px 16px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: var(--radius);
+  font-size: 13px;
+  color: #92400e;
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* ── No data text ────────────────────────────────────────────────────── */
+.no-data {
+  font-size: 14px;
+  color: var(--gray-400);
+  text-align: center;
+  padding: 12px 0;
+}
+
+/* ── Print styles ────────────────────────────────────────────────────── */
+@media print {
+  .emergency-header { position: static; }
+  .btn, .responder-form, .location-btn-wrap { display: none !important; }
+  .card { box-shadow: none; border: 1px solid #ddd; }
+  body { background: white; }
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────── */
+@media (min-width: 480px) {
+  .blood-group { font-size: 64px; }
+}
