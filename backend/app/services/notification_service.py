@@ -69,8 +69,8 @@ async def send_sms(
         return False
 
 
-# ── WhatsApp Cloud API ─────────────────────────────────────────────────────────
-
+# ── WhatsApp via Green-API ────────────────────────────────────────────────────
+ 
 async def send_whatsapp(
     phone: str,
     patient_name: str,
@@ -78,53 +78,52 @@ async def send_whatsapp(
     maps_url: str | None,
     responder_name: str | None,
 ) -> bool:
-    """Send pre-approved emergency_alert template via WhatsApp Cloud API."""
+    """Send emergency alert via Green-API WhatsApp."""
+    if not settings.green_api_instance_id or not settings.green_api_token:
+        logger.warning("Green-API credentials not configured; skipping WhatsApp notification")
+        return False
+
     time_str = _ist_time(scan_time)
     location = maps_url or "Location unavailable"
-    responder = responder_name or "Unknown"
+    responder = responder_name or "Unknown responder"
 
-    # Strip + for WhatsApp Cloud API
-    wa_phone = phone.lstrip("+")
+    # Green-API chatId format: <country_code><number>@c.us (e.g. 919876543210@c.us)
+    clean_phone = phone.lstrip("+").strip()
+    chat_id = f"{clean_phone}@c.us"
+
+    message_text = (
+        f"🚨 *EMERGENCY ALERT — Golden Hour*\n\n"
+        f"*{patient_name}*'s medical emergency QR was just scanned.\n"
+        f"⏰ *Time:* {time_str}\n"
+        f"📍 *Location:* {location}\n"
+        f"👤 *First Responder:* {responder}\n\n"
+        f"Please call 108 or reach out immediately."
+    )
+
+    host = settings.green_api_host.rstrip("/")
+    url = f"{host}/waInstance{settings.green_api_instance_id}/sendMessage/{settings.green_api_token}"
 
     payload = {
-        "messaging_product": "whatsapp",
-        "to": wa_phone,
-        "type": "template",
-        "template": {
-            "name": settings.whatsapp_template_name,
-            "language": {"code": "en"},
-            "components": [
-                {
-                    "type": "body",
-                    "parameters": [
-                        {"type": "text", "text": patient_name},
-                        {"type": "text", "text": time_str},
-                        {"type": "text", "text": location},
-                        {"type": "text", "text": responder},
-                    ],
-                }
-            ],
-        },
+        "chatId": chat_id,
+        "message": message_text,
     }
 
     try:
         async with httpx.AsyncClient() as client:
             resp = await client.post(
-                f"https://graph.facebook.com/v18.0/{settings.whatsapp_phone_number_id}/messages",
-                headers={
-                    "Authorization": f"Bearer {settings.whatsapp_token}",
-                    "Content-Type": "application/json",
-                },
+                url,
                 json=payload,
-                timeout=10,
+                timeout=15,
             )
         if resp.status_code == 200:
-            logger.info("WhatsApp sent to %s", phone)
-            return True
-        logger.warning("WhatsApp failed for %s: %s", phone, resp.text)
+            data = resp.json()
+            if "idMessage" in data:
+                logger.info("WhatsApp sent via Green-API to %s (id: %s)", phone, data["idMessage"])
+                return True
+        logger.warning("Green-API WhatsApp failed for %s: %s", phone, resp.text)
         return False
     except Exception as exc:
-        logger.error("WhatsApp exception for %s: %s", phone, exc)
+        logger.error("Green-API WhatsApp exception for %s: %s", phone, exc)
         return False
 
 

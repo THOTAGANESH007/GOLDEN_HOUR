@@ -27,9 +27,10 @@ class Settings(BaseSettings):
     # ── Notifications ──────────────────────────────────────────────────────
     fast2sms_api_key: str = ""
 
-    whatsapp_token: str = ""
-    whatsapp_phone_number_id: str = ""
-    whatsapp_template_name: str = "emergency_alert"
+    # ── WhatsApp (Green-API) ───────────────────────────────────────────────
+    green_api_instance_id: str = ""
+    green_api_token: str = ""
+    green_api_host: str = "https://api.green-api.com"
 
     firebase_credentials_json: str = "./firebase-service-account.json"
 
