@@ -15,24 +15,24 @@
 | [x] | GitHub monorepo created & pushed | 2026-10-11 |
 | [x] | Folder structure scaffolded (backend, mobile, responder-web, docs) | 2026-10-11 |
 | [x] | `.gitignore` configured | 2026-10-11 |
-| [ ] | Supabase project created | |
+| [x] | Supabase project created | 2026-10-13 |
 | [ ] | Supabase Phone Auth enabled | |
-| [ ] | Supabase DB tables created (users, profiles, contacts, scan_events, documents) | |
+| [x] | Supabase DB tables created (users, profiles, contacts, scan_events, documents) | 2026-10-13 |
 | [ ] | Supabase Row Level Security (RLS) enabled on all tables | |
-| [ ] | Firebase project created | |
-| [ ] | Firebase Cloud Messaging (FCM) enabled | |
-| [ ] | `google-services.json` downloaded | |
+| [x] | Firebase project created | 2026-10-14 |
+| [x] | Firebase Cloud Messaging (FCM) enabled | 2026-10-14 |
+| [x] | `google-services.json` downloaded | 2026-10-14 |
 | [ ] | Cloudflare Pages project created & connected to GitHub | |
 | [ ] | Render.com Web Service created & connected to GitHub | |
-| [ ] | Upstash Redis DB created | |
-| [ ] | Fast2SMS API key obtained | |
-| [ ] | WhatsApp Cloud API access granted | |
-| [ ] | WhatsApp `emergency_alert` template submitted for approval ⚠️ | |
-| [ ] | Resend.com API key obtained | |
-| [ ] | Sentry projects created (backend + web) | |
+| [x] | Upstash Redis DB created | 2026-10-14 |
+| [x] | Fast2SMS API key obtained | 2026-10-14 |
+| [x] | Green-API WhatsApp account & instance created | 2026-10-14 |
+| [x] | Green-API linked via WhatsApp QR code | 2026-10-14 |
+| [x] | Resend.com API key obtained | 2026-10-14 |
+| [x] | Sentry projects created (backend + web) | 2026-10-14 |
 | [ ] | Better Uptime monitor set up (pings `/health` every 10 min) | |
 | [ ] | Google Play Console account created ($25 fee) | |
-| [ ] | All `.env` files filled with real credentials | |
+| [x] | All `.env` files filled with real credentials | 2026-10-14 |
 
 ---
 
@@ -57,7 +57,7 @@
 | [x] | `models/scan_event.py` — Scan Event model | 2026-10-13 |
 | [x] | `models/document.py` — Document model | 2026-10-13 |
 | [x] | Alembic initial migration created & tested | 2026-10-13 |
-| [ ] | All tables created in Supabase DB | |
+| [x] | All tables created in Supabase DB | 2026-10-13 |
 
 ### Pydantic Schemas
 | Status | Task | Completed On |
@@ -216,8 +216,8 @@
 |--------|------|--------------|
 | [x] | `services/notification_service.py` — all channel logic isolated | 2026-10-13 |
 | [x] | SMS via Fast2SMS — integrated and tested | 2026-10-13 |
-| [x] | WhatsApp via WhatsApp Cloud API — integrated | 2026-10-13 |
-| [ ] | WhatsApp `emergency_alert` template approved & tested | |
+| [x] | WhatsApp via Green-API — integrated | 2026-10-14 |
+| [x] | Green-API instance linked & tested | 2026-10-14 |
 | [x] | FCM push to patient device — integrated | 2026-10-13 |
 | [x] | Email fallback via Resend.com — integrated | 2026-10-13 |
 | [x] | Email fallback only triggers after SMS fails 3 retries | 2026-10-13 |
@@ -389,12 +389,12 @@
 
 | Phase | Total | Done | Remaining |
 |-------|-------|------|-----------|
-| Phase 0 — Setup & Accounts | 21 | 3 | 18 |
-| Module 0 — Backend Foundation | 21 | 20 | 1 |
+| Phase 0 — Setup & Accounts | 21 | 15 | 6 |
+| Module 0 — Backend Foundation | 21 | 21 | 0 |
 | Module 1 — Authentication | 22 | 8 | 14 |
 | Module 2 — Patient Profile | 21 | 9 | 12 |
 | Module 3 — QR Code | 35 | 25 | 10 |
-| Module 4 — Notifications | 22 | 16 | 6 |
+| Module 4 — Notifications | 22 | 17 | 5 |
 | Module 5 — Documents | 10 | 5 | 5 |
 | Module 6 — Scan History | 8 | 4 | 4 |
 | Module 7 — Settings | 6 | 0 | 6 |
@@ -403,7 +403,7 @@
 | Deployment | 7 | 0 | 7 |
 | Play Store | 15 | 0 | 15 |
 | Post-Launch | 10 | 0 | 10 |
-| **TOTAL** | **199** | **96** | **103** |
+| **TOTAL** | **199** | **110** | **89** |
 
 ---
 
