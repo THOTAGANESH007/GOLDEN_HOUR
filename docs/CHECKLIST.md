@@ -18,7 +18,7 @@
 | [x] | Supabase project created | 2026-10-13 |
 | [ ] | Supabase Phone Auth enabled | |
 | [x] | Supabase DB tables created (users, profiles, contacts, scan_events, documents) | 2026-10-13 |
-| [ ] | Supabase Row Level Security (RLS) enabled on all tables | |
+| [x] | Supabase Row Level Security (RLS) enabled on all tables | 2026-10-17 |
 | [x] | Firebase project created | 2026-10-14 |
 | [x] | Firebase Cloud Messaging (FCM) enabled | 2026-10-14 |
 | [x] | `google-services.json` downloaded | 2026-10-14 |
@@ -319,14 +319,14 @@
 | Status | Task | Completed On |
 |--------|------|--------------|
 | [x] | No PII in QR URL (only opaque UID) | 2026-10-13 |
-| [ ] | Supabase RLS enabled and tested on all tables | |
+| [x] | Supabase RLS enabled and tested on all tables | 2026-10-17 |
 | [x] | All `.env` files + `google-services.json` excluded from git | 2026-10-13 |
 | [ ] | Release keystore (`.jks`) generated and backed up securely | |
 | [x] | DPDPA 2023 consent checkbox at registration with timestamp logged | 2026-10-13 |
 | [x] | In-app account deletion implemented | 2026-10-13 |
 | [x] | Medical disclaimer on responder page | 2026-10-13 |
 | [ ] | Sentry error monitoring — Flutter | |
-| [ ] | Sentry error monitoring — React Web | |
+| [x] | Sentry error monitoring — React Web | 2026-10-17 |
 | [x] | Sentry error monitoring — Backend | 2026-10-13 |
 | [ ] | Better Uptime `/health` ping configured (10-min interval) | |
 

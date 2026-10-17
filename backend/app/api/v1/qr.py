@@ -1,7 +1,7 @@
 """
 QR endpoints: generate, regenerate, and the critical public scan endpoint.
 """
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
@@ -51,6 +51,7 @@ async def regenerate_qr(
 async def public_scan(
     uid: str,
     request: Request,
+    background_tasks: BackgroundTasks,
     responder_name: str | None = None,
     responder_hospital: str | None = None,
     latitude: float | None = None,
@@ -63,7 +64,7 @@ async def public_scan(
 
     1. Returns the patient's safe medical data
     2. Logs the scan event
-    3. Enqueues Celery notification task (with dedup check)
+    3. Enqueues Celery notification task (with fallback to BackgroundTasks)
     """
     # 1. Look up profile
     profile = await qr_service.get_profile_by_uid(db, uid)
@@ -120,27 +121,50 @@ async def public_scan(
             for c in contacts
         ]
 
-        from app.tasks.notification_tasks import notify_emergency_contacts
+        from app.tasks.notification_tasks import notify_emergency_contacts, _async_notify
         from app.models.user import User as UserModel
+        import logging
+
+        logger = logging.getLogger(__name__)
 
         user_result = await db.execute(
             sa_select(UserModel).where(UserModel.id == profile.user_id)
         )
         user = user_result.scalar_one_or_none()
-
+        patient_display_name = profile.full_name if profile.show_name else "A Patient"
         maps_url = scan_event.google_maps_url
-        notify_emergency_contacts.delay(
-            scan_event_id=str(scan_event.id),
-            user_id=str(profile.user_id),
-            qr_uid=uid,
-            patient_name=profile.full_name if profile.show_name else "A Patient",
-            fcm_token=user.fcm_token if user else None,
-            contacts=contact_data,
-            scan_time_iso=scan_event.scanned_at.isoformat(),
-            maps_url=maps_url,
-            location_area=scan_event.location_area,
-            responder_name=responder_name,
-        )
+
+        try:
+            notify_emergency_contacts.delay(
+                scan_event_id=str(scan_event.id),
+                user_id=str(profile.user_id),
+                qr_uid=uid,
+                patient_name=patient_display_name,
+                fcm_token=user.fcm_token if user else None,
+                contacts=contact_data,
+                scan_time_iso=scan_event.scanned_at.isoformat(),
+                maps_url=maps_url,
+                location_area=scan_event.location_area,
+                responder_name=responder_name,
+            )
+            logger.info("Notification task enqueued to Celery for scan %s", scan_event.id)
+        except Exception as queue_exc:
+            logger.warning(
+                "Celery broker dispatch failed: %s — falling back to FastAPI BackgroundTasks",
+                queue_exc,
+            )
+            background_tasks.add_task(
+                _async_notify,
+                scan_event_id=str(scan_event.id),
+                user_id=str(profile.user_id),
+                patient_name=patient_display_name,
+                fcm_token=user.fcm_token if user else None,
+                contacts=contact_data,
+                scan_time=scan_event.scanned_at,
+                maps_url=maps_url,
+                location_area=scan_event.location_area,
+                responder_name=responder_name,
+            )
 
     # 5. Build and return safe public data
     data = await qr_service.get_safe_public_data(db, profile, scan_event.id)

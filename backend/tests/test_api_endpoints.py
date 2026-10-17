@@ -51,3 +51,9 @@ class TestAPIEndpoints(unittest.IsolatedAsyncioTestCase):
         async with AsyncClient(transport=self.transport, base_url="http://test") as client:
             response = await client.get("/api/v1/documents")
             self.assertIn(response.status_code, [401, 403])
+
+    async def test_public_scan_not_found(self):
+        async with AsyncClient(transport=self.transport, base_url="http://test") as client:
+            response = await client.get("/api/v1/qr/public/NONEXISTENT")
+            self.assertEqual(response.status_code, 404)
+            self.assertEqual(response.json()["detail"], "QR_NOT_FOUND")

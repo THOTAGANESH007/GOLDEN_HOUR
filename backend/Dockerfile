@@ -16,5 +16,8 @@ COPY . .
 # Expose port
 EXPOSE 8000
 
-# Start: run Alembic migrations then launch uvicorn
-CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+# Make entrypoint executable
+RUN chmod +x entrypoint.sh
+
+# Start: run entrypoint script (Alembic -> Celery background worker -> Uvicorn)
+ENTRYPOINT ["/app/entrypoint.sh"]
