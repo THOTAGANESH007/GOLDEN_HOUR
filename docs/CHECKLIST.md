@@ -311,7 +311,7 @@
 | Status | Task | Completed On |
 |--------|------|--------------|
 | [ ] | `shared/widgets/` — reusable UI components library | |
-| [ ] | App icon (512x512 PNG, no transparency) | |
+| [x] | App icon (512x512 PNG, no transparency) | 2026-10-17 |
 | [ ] | Splash screen animation (Lottie) | |
 | [ ] | Empty state illustrations (no scans, no documents) | |
 | [ ] | Loading states for all API calls | |
@@ -407,12 +407,12 @@
 | Module 5 — Documents | 10 | 10 | 0 |
 | Module 6 — Scan History | 8 | 8 | 0 |
 | Module 7 — Settings | 6 | 6 | 0 |
-| UI Polish | 10 | 0 | 10 |
+| UI Polish | 10 | 1 | 9 |
 | Security & Compliance | 11 | 6 | 5 |
 | Deployment | 7 | 0 | 7 |
 | Play Store | 15 | 0 | 15 |
 | Post-Launch | 10 | 0 | 10 |
-| **TOTAL** | **199** | **165** | **34** |
+| **TOTAL** | **199** | **166** | **33** |
 
 ---
 
