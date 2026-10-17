@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/otp_verify_screen.dart';
@@ -16,74 +17,144 @@ import '../../features/scan_history/presentation/scan_detail_screen.dart';
 import '../../features/scan_history/presentation/scan_history_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 
+CustomTransitionPage<void> _buildSmoothTransition({
+  required GoRouterState state,
+  required Widget child,
+}) {
+  return CustomTransitionPage<void>(
+    key: state.pageKey,
+    child: child,
+    transitionDuration: const Duration(milliseconds: 250),
+    reverseTransitionDuration: const Duration(milliseconds: 200),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      final fade = CurvedAnimation(parent: animation, curve: Curves.easeInOut);
+      final slide = Tween<Offset>(
+        begin: const Offset(0.04, 0),
+        end: Offset.zero,
+      ).animate(
+        CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+      );
+      return FadeTransition(
+        opacity: fade,
+        child: SlideTransition(position: slide, child: child),
+      );
+    },
+  );
+}
+
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/splash',
     routes: [
       GoRoute(
         path: '/splash',
-        builder: (context, state) => const SplashScreen(),
+        pageBuilder: (context, state) => _buildSmoothTransition(
+          state: state,
+          child: const SplashScreen(),
+        ),
       ),
       GoRoute(
         path: '/login',
-        builder: (context, state) => const PhoneInputScreen(),
+        pageBuilder: (context, state) => _buildSmoothTransition(
+          state: state,
+          child: const PhoneInputScreen(),
+        ),
       ),
       GoRoute(
         path: '/verify-otp',
-        builder: (context, state) => const OtpVerifyScreen(),
+        pageBuilder: (context, state) => _buildSmoothTransition(
+          state: state,
+          child: const OtpVerifyScreen(),
+        ),
       ),
       GoRoute(
         path: '/home',
-        builder: (context, state) => const ProfileHomeScreen(),
+        pageBuilder: (context, state) => _buildSmoothTransition(
+          state: state,
+          child: const ProfileHomeScreen(),
+        ),
       ),
       GoRoute(
         path: '/profile/wizard',
-        builder: (context, state) => const ProfileWizardScreen(),
+        pageBuilder: (context, state) => _buildSmoothTransition(
+          state: state,
+          child: const ProfileWizardScreen(),
+        ),
       ),
       GoRoute(
         path: '/profile/edit',
-        builder: (context, state) => const EditProfileScreen(),
+        pageBuilder: (context, state) => _buildSmoothTransition(
+          state: state,
+          child: const EditProfileScreen(),
+        ),
       ),
       GoRoute(
         path: '/profile/privacy',
-        builder: (context, state) => const PrivacySettingsScreen(),
+        pageBuilder: (context, state) => _buildSmoothTransition(
+          state: state,
+          child: const PrivacySettingsScreen(),
+        ),
       ),
       GoRoute(
         path: '/qr',
-        builder: (context, state) => const QRDisplayScreen(),
+        pageBuilder: (context, state) => _buildSmoothTransition(
+          state: state,
+          child: const QRDisplayScreen(),
+        ),
       ),
       GoRoute(
         path: '/qr/share',
-        builder: (context, state) => const QRShareScreen(),
+        pageBuilder: (context, state) => _buildSmoothTransition(
+          state: state,
+          child: const QRShareScreen(),
+        ),
       ),
       GoRoute(
         path: '/qr/preview',
-        builder: (context, state) => QRPreviewWebview(
-          initialUid: state.uri.queryParameters['uid'],
+        pageBuilder: (context, state) => _buildSmoothTransition(
+          state: state,
+          child: QRPreviewWebview(
+            initialUid: state.uri.queryParameters['uid'],
+          ),
         ),
       ),
       GoRoute(
         path: '/notifications',
-        builder: (context, state) => const NotificationsScreen(),
+        pageBuilder: (context, state) => _buildSmoothTransition(
+          state: state,
+          child: const NotificationsScreen(),
+        ),
       ),
       GoRoute(
         path: '/documents',
-        builder: (context, state) => const DocumentsScreen(),
+        pageBuilder: (context, state) => _buildSmoothTransition(
+          state: state,
+          child: const DocumentsScreen(),
+        ),
       ),
       GoRoute(
         path: '/scan-history',
-        builder: (context, state) => const ScanHistoryScreen(),
+        pageBuilder: (context, state) => _buildSmoothTransition(
+          state: state,
+          child: const ScanHistoryScreen(),
+        ),
       ),
       GoRoute(
         path: '/scan-history/detail',
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final scanId = state.uri.queryParameters['id'] ?? '';
-          return ScanDetailScreen(scanId: scanId);
+          return _buildSmoothTransition(
+            state: state,
+            child: ScanDetailScreen(scanId: scanId),
+          );
         },
       ),
       GoRoute(
         path: '/settings',
-        builder: (context, state) => const SettingsScreen(),
+        pageBuilder: (context, state) => _buildSmoothTransition(
+          state: state,
+          child: const SettingsScreen(),
+        ),
       ),
     ],
   );

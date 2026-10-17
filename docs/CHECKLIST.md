@@ -310,14 +310,14 @@
 
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | `shared/widgets/` — reusable UI components library | |
+| [x] | `shared/widgets/` — reusable UI components library | 2026-10-17 |
 | [x] | App icon (512x512 PNG, no transparency) | 2026-10-17 |
-| [ ] | Splash screen animation (Lottie) | |
-| [ ] | Empty state illustrations (no scans, no documents) | |
-| [ ] | Loading states for all API calls | |
-| [ ] | Error handling — user-friendly error messages everywhere | |
-| [ ] | Smooth screen transitions (GoRouter) | |
-| [ ] | Micro-animations (profile completion, QR scan) | |
+| [x] | Splash screen animation (Lottie) | 2026-10-17 |
+| [x] | Empty state illustrations (no scans, no documents) | 2026-10-17 |
+| [x] | Loading states for all API calls | 2026-10-17 |
+| [x] | Error handling — user-friendly error messages everywhere | 2026-10-17 |
+| [x] | Smooth screen transitions (GoRouter) | 2026-10-17 |
+| [x] | Micro-animations (profile completion, QR scan) | 2026-10-17 |
 | [ ] | All screens tested on Android emulator | |
 | [ ] | All screens tested on physical Android device | |
 
@@ -407,12 +407,12 @@
 | Module 5 — Documents | 10 | 10 | 0 |
 | Module 6 — Scan History | 8 | 8 | 0 |
 | Module 7 — Settings | 6 | 6 | 0 |
-| UI Polish | 10 | 1 | 9 |
+| UI Polish | 10 | 8 | 2 |
 | Security & Compliance | 11 | 6 | 5 |
 | Deployment | 7 | 0 | 7 |
 | Play Store | 15 | 0 | 15 |
 | Post-Launch | 10 | 0 | 10 |
-| **TOTAL** | **199** | **166** | **33** |
+| **TOTAL** | **199** | **173** | **26** |
 
 ---
 

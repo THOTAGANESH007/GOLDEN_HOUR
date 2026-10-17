@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../shared/widgets/empty_state_widget.dart';
 import '../data/document_models.dart';
 import '../domain/document_provider.dart';
 import 'document_viewer_screen.dart';
@@ -137,48 +138,15 @@ class DocumentsScreen extends ConsumerWidget {
                 const SizedBox(height: 10),
 
                 if (filteredDocs.isEmpty && !docState.isLoading)
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 36),
-                      child: Center(
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.folder_open_rounded,
-                              size: 48,
-                              color: theme.colorScheme.onSurface
-                                  .withValues(alpha: 0.35),
-                            ),
-                            const SizedBox(height: 12),
-                            const Text(
-                              'No Documents Found',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              'Keep your prescriptions, blood tests, and health insurance cards readily accessible in one secure vault.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: theme.colorScheme.onSurface
-                                    .withValues(alpha: 0.65),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            OutlinedButton.icon(
-                              onPressed: () =>
-                                  UploadDocumentBottomSheet.show(context),
-                              icon: const Icon(Icons.add),
-                              label: const Text('Upload Your First Document'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  EmptyStateWidget(
+                    icon: Icons.folder_open_rounded,
+                    title: 'No Documents Found',
+                    description:
+                        'Keep your prescriptions, blood tests, and health insurance cards readily accessible in one secure vault.',
+                    buttonLabel: 'Upload Your First Document',
+                    buttonIcon: Icons.add_rounded,
+                    onButtonPressed: () =>
+                        UploadDocumentBottomSheet.show(context),
                   )
                 else
                   ListView.separated(

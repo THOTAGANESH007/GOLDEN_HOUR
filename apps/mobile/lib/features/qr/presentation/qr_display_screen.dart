@@ -155,34 +155,36 @@ class QRDisplayScreen extends ConsumerWidget {
                             ),
                             const SizedBox(height: 20),
 
-                            // QR Image rendered via qr_flutter
+                            // QR Image rendered via qr_flutter with pulsing glow
                             if (qrState.qrUrl != null &&
                                 qrState.qrUrl!.isNotEmpty)
-                              Container(
-                                padding: const EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(18),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.06),
-                                      blurRadius: 16,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: QrImageView(
-                                  data: qrState.qrUrl!,
-                                  version: QrVersions.auto,
-                                  size: 230.0,
-                                  backgroundColor: Colors.white,
-                                  eyeStyle: const QrEyeStyle(
-                                    eyeShape: QrEyeShape.square,
-                                    color: Color(0xFF1A202C),
+                              _PulsingQrWrapper(
+                                child: Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(18),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(alpha: 0.06),
+                                        blurRadius: 16,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
                                   ),
-                                  dataModuleStyle: const QrDataModuleStyle(
-                                    dataModuleShape: QrDataModuleShape.square,
-                                    color: Color(0xFF1A202C),
+                                  child: QrImageView(
+                                    data: qrState.qrUrl!,
+                                    version: QrVersions.auto,
+                                    size: 230.0,
+                                    backgroundColor: Colors.white,
+                                    eyeStyle: const QrEyeStyle(
+                                      eyeShape: QrEyeShape.square,
+                                      color: Color(0xFF1A202C),
+                                    ),
+                                    dataModuleStyle: const QrDataModuleStyle(
+                                      dataModuleShape: QrDataModuleShape.square,
+                                      color: Color(0xFF1A202C),
+                                    ),
                                   ),
                                 ),
                               )
@@ -359,5 +361,61 @@ class QRDisplayScreen extends ConsumerWidget {
         }
       }
     }
+  }
+}
+
+class _PulsingQrWrapper extends StatefulWidget {
+  final Widget child;
+  const _PulsingQrWrapper({required this.child});
+
+  @override
+  State<_PulsingQrWrapper> createState() => _PulsingQrWrapperState();
+}
+
+class _PulsingQrWrapperState extends State<_PulsingQrWrapper>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _glowAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    )..repeat(reverse: true);
+
+    _glowAnimation = Tween<double>(begin: 2.0, end: 14.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _glowAnimation,
+      builder: (context, child) {
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(22),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withValues(alpha: 0.22),
+                blurRadius: _glowAnimation.value,
+                spreadRadius: _glowAnimation.value * 0.3,
+              ),
+            ],
+          ),
+          child: child,
+        );
+      },
+      child: widget.child,
+    );
   }
 }

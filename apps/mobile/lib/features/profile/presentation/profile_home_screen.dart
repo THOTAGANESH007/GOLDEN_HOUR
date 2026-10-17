@@ -484,14 +484,19 @@ class ProfileHomeScreen extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 8),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: LinearProgressIndicator(
-                value: score / 100,
-                minHeight: 8,
-                backgroundColor:
-                    theme.colorScheme.outline.withValues(alpha: 0.15),
-                valueColor: AlwaysStoppedAnimation<Color>(scoreColor),
+            TweenAnimationBuilder<double>(
+              tween: Tween<double>(begin: 0.0, end: score / 100),
+              duration: const Duration(milliseconds: 900),
+              curve: Curves.easeOutCubic,
+              builder: (context, animValue, _) => ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: LinearProgressIndicator(
+                  value: animValue,
+                  minHeight: 8,
+                  backgroundColor:
+                      theme.colorScheme.outline.withValues(alpha: 0.15),
+                  valueColor: AlwaysStoppedAnimation<Color>(scoreColor),
+                ),
               ),
             ),
             if (completion.missing.isNotEmpty) ...[

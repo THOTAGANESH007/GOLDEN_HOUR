@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../shared/widgets/empty_state_widget.dart';
 import '../data/scan_models.dart';
 import '../domain/scan_history_provider.dart';
 import 'scan_detail_screen.dart';
@@ -462,53 +463,14 @@ class _ScanHistoryScreenState extends ConsumerState<ScanHistoryScreen> {
   }
 
   Widget _buildEmptyState(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.08),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.qr_code_2_rounded,
-                size: 64,
-                color: AppColors.primary,
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'No Emergency Scans Yet',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Your emergency QR code has not been scanned yet. '
-              'When paramedics or first responders scan your code, '
-              'their GPS location and emergency notification logs will appear here.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 13,
-                color: Colors.grey.shade600,
-                height: 1.4,
-              ),
-            ),
-            const SizedBox(height: 24),
-            FilledButton.icon(
-              onPressed: () => context.push('/qr'),
-              icon: const Icon(Icons.qr_code_rounded),
-              label: const Text('View My Emergency QR'),
-            ),
-          ],
-        ),
-      ),
+    return EmptyStateWidget(
+      icon: Icons.qr_code_2_rounded,
+      title: 'No Emergency Scans Yet',
+      description:
+          'Your emergency QR code has not been scanned yet. When paramedics or first responders scan your code, their GPS location and emergency notification logs will appear here.',
+      buttonLabel: 'View My Emergency QR',
+      buttonIcon: Icons.qr_code_rounded,
+      onButtonPressed: () => context.push('/qr'),
     );
   }
 }
