@@ -187,11 +187,17 @@
 | [x] | `components/MedicationList.jsx` | 2026-10-13 |
 | [x] | `components/AllergiesBadges.jsx` | 2026-10-13 |
 | [x] | `components/LocationShareBtn.jsx` — responder GPS to family | 2026-10-13 |
-| [x] | `services/api.js` — axios/fetch wrapper | 2026-10-13 |
-| [x] | `styles/emergency.css` — full stylesheet | 2026-10-13 |
+| [x] | `components/EmergencyHelplineBar.jsx` — Indian emergency speed dials (108, 112, 100, 101) | 2026-10-17 |
+| [x] | `components/ClinicalActionsBar.jsx` — hands-free voice readout (speech synthesis), triage summary copy, print chart, false alarm report | 2026-10-17 |
+| [x] | Real-time scene GPS logging to backend scan event (`updateScanEvent`) | 2026-10-17 |
+| [x] | Attending responder name/hospital live attachment to scan record | 2026-10-17 |
+| [x] | Emergency dark mode / high-contrast theme toggle with persistence | 2026-10-17 |
+| [x] | Sentry error monitoring integration (`@sentry/react`) | 2026-10-17 |
+| [x] | `services/api.js` — axios/fetch wrapper with public scan update | 2026-10-17 |
+| [x] | `styles/emergency.css` — full stylesheet with rich aesthetics & animations | 2026-10-17 |
 | [x] | Responder name/hospital optional input field | 2026-10-13 |
 | [x] | Medical disclaimer footer | 2026-10-13 |
-| [x] | Print stylesheet (`@media print`) | 2026-10-13 |
+| [x] | Print stylesheet (`@media print`) for clinical charts | 2026-10-17 |
 | [x] | Page load < 2 seconds on 3G (no heavy libs, system fonts) | 2026-10-13 |
 | [x] | `<noscript>` fallback text for critical info | 2026-10-13 |
 | [ ] | Deployed to Cloudflare Pages | |
@@ -210,6 +216,9 @@
 | [x] | Task enqueued on every QR scan (with dedup check) | 2026-10-13 |
 | [x] | Deduplication: same QR scanned < 5 min ago → skip notification | 2026-10-13 |
 | [x] | Retry with exponential backoff (3 retries: 5s, 15s, 30s) | 2026-10-13 |
+| [x] | In-process `BackgroundTasks` fallback if Celery/Redis is unavailable | 2026-10-17 |
+| [x] | `entrypoint.sh` dual-process runner (Alembic + Celery + Uvicorn) | 2026-10-17 |
+| [x] | `PATCH /qr/public/scan/{scan_event_id}` for live responder info & GPS | 2026-10-17 |
 
 ### Backend — Notification Channels
 | Status | Task | Completed On |
