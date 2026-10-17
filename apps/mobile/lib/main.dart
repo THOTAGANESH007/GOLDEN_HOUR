@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app/routes/app_router.dart';
 import 'core/theme/app_theme.dart';
+import 'features/notifications/services/fcm_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,6 +14,12 @@ Future<void> main() async {
   } catch (_) {
     // Falls back gracefully to default API endpoints if .env is missing in dev
   }
+
+  // Initialize FCM background & push handlers
+  try {
+    final fcmService = FCMService();
+    await fcmService.initialize();
+  } catch (_) {}
 
   runApp(
     const ProviderScope(

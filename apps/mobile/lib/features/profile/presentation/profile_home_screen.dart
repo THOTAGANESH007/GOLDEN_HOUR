@@ -41,6 +41,11 @@ class ProfileHomeScreen extends ConsumerWidget {
         ),
         actions: [
           IconButton(
+            icon: const Icon(Icons.notifications_outlined),
+            tooltip: 'Emergency Alerts',
+            onPressed: () => context.push('/notifications'),
+          ),
+          IconButton(
             icon: const Icon(Icons.shield_outlined),
             tooltip: 'Privacy Settings',
             onPressed: () => context.push('/profile/privacy'),

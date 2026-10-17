@@ -242,11 +242,11 @@
 ### Flutter
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | `firebase_messaging` package added to `pubspec.yaml` | |
-| [ ] | FCM `onBackgroundMessage` handler configured | |
-| [ ] | FCM token registered to backend on login | |
-| [ ] | Push notification received on QR scan — tested | |
-| [ ] | "Test Notification" button in settings screen | |
+| [x] | `firebase_messaging` package added to `pubspec.yaml` | 2026-10-17 |
+| [x] | FCM `onBackgroundMessage` handler configured | 2026-10-17 |
+| [x] | FCM token registered to backend on login | 2026-10-17 |
+| [x] | Push notification received on QR scan — tested | 2026-10-17 |
+| [x] | "Test Notification" button in settings screen | 2026-10-17 |
 
 ---
 
@@ -403,7 +403,7 @@
 | Module 1 — Authentication | 22 | 22 | 0 |
 | Module 2 — Patient Profile | 21 | 21 | 0 |
 | Module 3 — QR Code | 35 | 34 | 1 |
-| Module 4 — Notifications | 22 | 17 | 5 |
+| Module 4 — Notifications | 22 | 22 | 0 |
 | Module 5 — Documents | 10 | 5 | 5 |
 | Module 6 — Scan History | 8 | 4 | 4 |
 | Module 7 — Settings | 6 | 0 | 6 |
@@ -412,7 +412,7 @@
 | Deployment | 7 | 0 | 7 |
 | Play Store | 15 | 0 | 15 |
 | Post-Launch | 10 | 0 | 10 |
-| **TOTAL** | **199** | **145** | **54** |
+| **TOTAL** | **199** | **150** | **49** |
 
 ---
 

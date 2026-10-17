@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/otp_verify_screen.dart';
 import '../../features/auth/presentation/phone_input_screen.dart';
 import '../../features/auth/presentation/splash_screen.dart';
+import '../../features/notifications/presentation/notifications_screen.dart';
 import '../../features/profile/presentation/edit_profile_screen.dart';
 import '../../features/profile/presentation/privacy_settings_screen.dart';
 import '../../features/profile/presentation/profile_home_screen.dart';
@@ -56,6 +57,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => QRPreviewWebview(
           initialUid: state.uri.queryParameters['uid'],
         ),
+      ),
+      GoRoute(
+        path: '/notifications',
+        builder: (context, state) => const NotificationsScreen(),
       ),
     ],
   );
