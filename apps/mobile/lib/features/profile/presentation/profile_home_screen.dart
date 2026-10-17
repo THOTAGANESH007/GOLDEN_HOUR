@@ -51,6 +51,11 @@ class ProfileHomeScreen extends ConsumerWidget {
             onPressed: () => context.push('/profile/privacy'),
           ),
           IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            tooltip: 'Settings',
+            onPressed: () => context.push('/settings'),
+          ),
+          IconButton(
             icon: const Icon(Icons.logout_rounded),
             tooltip: 'Logout',
             onPressed: () async {

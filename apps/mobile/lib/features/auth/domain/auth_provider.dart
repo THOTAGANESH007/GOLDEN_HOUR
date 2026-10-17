@@ -155,6 +155,23 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  /// Hard delete user account and wipe session (DPDPA right to erasure)
+  Future<bool> deleteAccount() async {
+    _countdownTimer?.cancel();
+    state = state.copyWith(status: AuthStatus.loading);
+    try {
+      await _repository.deleteAccount();
+      state = const AuthState(status: AuthStatus.unauthenticated);
+      return true;
+    } catch (e) {
+      state = state.copyWith(
+        status: AuthStatus.error,
+        errorMessage: e.toString(),
+      );
+      return false;
+    }
+  }
+
   void clearError() {
     if (state.errorMessage != null) {
       state = state.copyWith(errorMessage: null);

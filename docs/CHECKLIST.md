@@ -297,12 +297,12 @@
 ### Flutter
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | `settings_screen.dart` — main settings screen | |
-| [ ] | `privacy_settings_screen.dart` — per-field privacy toggles | |
-| [ ] | QR activate / deactivate toggle in settings | |
-| [ ] | Logout button (clears tokens + calls backend) | |
-| [ ] | Delete Account (DPDPA right to erasure — hard delete all data) | |
-| [ ] | App version number displayed | |
+| [x] | `settings_screen.dart` — main settings screen | 2026-10-17 |
+| [x] | `privacy_settings_screen.dart` — per-field privacy toggles | 2026-10-17 |
+| [x] | QR activate / deactivate toggle in settings | 2026-10-17 |
+| [x] | Logout button (clears tokens + calls backend) | 2026-10-17 |
+| [x] | Delete Account (DPDPA right to erasure — hard delete all data) | 2026-10-17 |
+| [x] | App version number displayed | 2026-10-17 |
 
 ---
 
@@ -406,13 +406,13 @@
 | Module 4 — Notifications | 22 | 22 | 0 |
 | Module 5 — Documents | 10 | 10 | 0 |
 | Module 6 — Scan History | 8 | 8 | 0 |
-| Module 7 — Settings | 6 | 0 | 6 |
+| Module 7 — Settings | 6 | 6 | 0 |
 | UI Polish | 10 | 0 | 10 |
 | Security & Compliance | 11 | 6 | 5 |
 | Deployment | 7 | 0 | 7 |
 | Play Store | 15 | 0 | 15 |
 | Post-Launch | 10 | 0 | 10 |
-| **TOTAL** | **199** | **159** | **40** |
+| **TOTAL** | **199** | **165** | **34** |
 
 ---
 
