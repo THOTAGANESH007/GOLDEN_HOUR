@@ -264,11 +264,11 @@
 ### Flutter
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | `documents_screen.dart` — list with name, type, date | |
-| [ ] | `upload_document_screen.dart` — bottom sheet: gallery / camera / files | |
-| [ ] | Document type selection (Prescription, Lab Report, Discharge, Insurance, Other) | |
-| [ ] | In-app PDF/image viewer | |
-| [ ] | `document_repository.dart` — API integration | |
+| [x] | `documents_screen.dart` — list with name, type, date | 2026-10-17 |
+| [x] | `upload_document_screen.dart` — bottom sheet: gallery / camera / files | 2026-10-17 |
+| [x] | Document type selection (Prescription, Lab Report, Discharge, Insurance, Other) | 2026-10-17 |
+| [x] | In-app PDF/image viewer | 2026-10-17 |
+| [x] | `document_repository.dart` — API integration | 2026-10-17 |
 
 ---
 
@@ -404,7 +404,7 @@
 | Module 2 — Patient Profile | 21 | 21 | 0 |
 | Module 3 — QR Code | 35 | 34 | 1 |
 | Module 4 — Notifications | 22 | 22 | 0 |
-| Module 5 — Documents | 10 | 5 | 5 |
+| Module 5 — Documents | 10 | 10 | 0 |
 | Module 6 — Scan History | 8 | 4 | 4 |
 | Module 7 — Settings | 6 | 0 | 6 |
 | UI Polish | 10 | 0 | 10 |
@@ -412,7 +412,7 @@
 | Deployment | 7 | 0 | 7 |
 | Play Store | 15 | 0 | 15 |
 | Post-Launch | 10 | 0 | 10 |
-| **TOTAL** | **199** | **150** | **49** |
+| **TOTAL** | **199** | **155** | **44** |
 
 ---
 

@@ -174,7 +174,28 @@ class ProfileHomeScreen extends ConsumerWidget {
 
                       // Emergency Contacts Section
                       _buildContactsSection(context, contacts),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 16),
+
+                      // Medical Documents Vault Card
+                      Card(
+                        child: ListTile(
+                          leading: const CircleAvatar(
+                            backgroundColor: AppColors.infoLight,
+                            child: Icon(Icons.folder_shared_rounded,
+                                color: AppColors.info),
+                          ),
+                          title: const Text('Medical Records & Vault',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 14)),
+                          subtitle: const Text(
+                              'Prescriptions, Lab Reports, Insurance Cards',
+                              style: TextStyle(fontSize: 12)),
+                          trailing: const Icon(Icons.arrow_forward_ios_rounded,
+                              size: 14),
+                          onTap: () => context.push('/documents'),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
 
                       // Action Hub Buttons
                       Row(
