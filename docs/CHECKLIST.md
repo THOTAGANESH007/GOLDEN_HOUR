@@ -94,20 +94,20 @@
 ### Flutter
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | GoRouter configured with all routes | |
-| [ ] | Riverpod setup with providers folder | |
-| [ ] | `core/theme/` — app colors, typography, spacing tokens | |
-| [ ] | `core/network/` — Dio HTTP client configured | |
-| [ ] | Dio JWT interceptor (silent token refresh on 401) | |
-| [ ] | `flutter_secure_storage` dependency added | |
-| [ ] | `features/auth/data/auth_remote_source.dart` — API calls | |
-| [ ] | `features/auth/data/auth_repository.dart` — repository layer | |
-| [ ] | `features/auth/domain/auth_provider.dart` — Riverpod provider | |
-| [ ] | `presentation/splash_screen.dart` — JWT check → route decision | |
-| [ ] | `presentation/phone_input_screen.dart` — phone + country code | |
-| [ ] | `presentation/otp_verify_screen.dart` — 6-digit OTP + 60s timer | |
-| [ ] | Auto-login: app opens → valid token → skip login screen | |
-| [ ] | Logout: clears tokens + calls backend logout | |
+| [x] | GoRouter configured with all routes | 2026-10-17 |
+| [x] | Riverpod setup with providers folder | 2026-10-17 |
+| [x] | `core/theme/` — app colors, typography, spacing tokens | 2026-10-17 |
+| [x] | `core/network/` — Dio HTTP client configured | 2026-10-17 |
+| [x] | Dio JWT interceptor (silent token refresh on 401) | 2026-10-17 |
+| [x] | `flutter_secure_storage` dependency added | 2026-10-17 |
+| [x] | `features/auth/data/auth_remote_source.dart` — API calls | 2026-10-17 |
+| [x] | `features/auth/data/auth_repository.dart` — repository layer | 2026-10-17 |
+| [x] | `features/auth/domain/auth_provider.dart` — Riverpod provider | 2026-10-17 |
+| [x] | `presentation/splash_screen.dart` — JWT check → route decision | 2026-10-17 |
+| [x] | `presentation/phone_input_screen.dart` — phone + country code | 2026-10-17 |
+| [x] | `presentation/otp_verify_screen.dart` — 6-digit OTP + 60s timer | 2026-10-17 |
+| [x] | Auto-login: app opens → valid token → skip login screen | 2026-10-17 |
+| [x] | Logout: clears tokens + calls backend logout | 2026-10-17 |
 
 ---
 
@@ -400,7 +400,7 @@
 |-------|-------|------|-----------|
 | Phase 0 — Setup & Accounts | 21 | 15 | 6 |
 | Module 0 — Backend Foundation | 21 | 21 | 0 |
-| Module 1 — Authentication | 22 | 8 | 14 |
+| Module 1 — Authentication | 22 | 22 | 0 |
 | Module 2 — Patient Profile | 21 | 9 | 12 |
 | Module 3 — QR Code | 35 | 25 | 10 |
 | Module 4 — Notifications | 22 | 17 | 5 |
@@ -412,8 +412,8 @@
 | Deployment | 7 | 0 | 7 |
 | Play Store | 15 | 0 | 15 |
 | Post-Launch | 10 | 0 | 10 |
-| **TOTAL** | **199** | **110** | **89** |
+| **TOTAL** | **199** | **124** | **75** |
 
 ---
 
-*Last updated: 2026-10-13 | Target: Google Play Store launch by November 9, 2026*
+*Last updated: 2026-10-17 | Target: Google Play Store launch by November 9, 2026*
