@@ -104,6 +104,59 @@ class ProfileHomeScreen extends ConsumerWidget {
                           context, ref, profile, authState.phone),
                       const SizedBox(height: 16),
 
+                      // QR Code Quick Access Card
+                      Card(
+                        color: AppColors.primary,
+                        child: InkWell(
+                          onTap: () => context.push('/qr'),
+                          borderRadius: BorderRadius.circular(16),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 14),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.2),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(Icons.qr_code_2_rounded,
+                                      color: Colors.white, size: 28),
+                                ),
+                                const SizedBox(width: 14),
+                                const Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'View Emergency QR Code',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      SizedBox(height: 2),
+                                      Text(
+                                        'Instant offline scan for first responders',
+                                        style: TextStyle(
+                                          color: Colors.white70,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Icon(Icons.arrow_forward_ios_rounded,
+                                    color: Colors.white70, size: 16),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
                       // Completion Score Card
                       if (completion != null) ...[
                         _buildCompletionCard(context, completion),

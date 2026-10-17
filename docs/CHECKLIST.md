@@ -164,15 +164,15 @@
 ### Flutter
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | `qr_display_screen.dart` — full-screen QR + blood group below | |
-| [ ] | QR generated offline using cached UID (`flutter_secure_storage`) | |
-| [ ] | QR rendered via `qr_flutter` package | |
-| [ ] | Download QR as PNG (`gallery_saver` or `image_gallery_saver`) | |
-| [ ] | Share QR via any app (`share_plus`) | |
-| [ ] | `qr_share_screen.dart` — download + share options | |
-| [ ] | `qr_preview_webview.dart` — in-app WebView of `goldenhr.pages.dev/p/{uid}` | |
-| [ ] | QR regenerate flow (confirmation dialog → invalidate → new QR) | |
-| [ ] | `qr_repository.dart` + `qr_provider.dart` | |
+| [x] | `qr_display_screen.dart` — full-screen QR + blood group below | 2026-10-17 |
+| [x] | QR generated offline using cached UID (`flutter_secure_storage`) | 2026-10-17 |
+| [x] | QR rendered via `qr_flutter` package | 2026-10-17 |
+| [x] | Download QR as PNG (`gallery_saver` or `image_gallery_saver`) | 2026-10-17 |
+| [x] | Share QR via any app (`share_plus`) | 2026-10-17 |
+| [x] | `qr_share_screen.dart` — download + share options | 2026-10-17 |
+| [x] | `qr_preview_webview.dart` — in-app WebView of `goldenhr.pages.dev/p/{uid}` | 2026-10-17 |
+| [x] | QR regenerate flow (confirmation dialog → invalidate → new QR) | 2026-10-17 |
+| [x] | `qr_repository.dart` + `qr_provider.dart` | 2026-10-17 |
 
 ### Responder Web (React)
 | Status | Task | Completed On |
@@ -402,7 +402,7 @@
 | Module 0 — Backend Foundation | 21 | 21 | 0 |
 | Module 1 — Authentication | 22 | 22 | 0 |
 | Module 2 — Patient Profile | 21 | 21 | 0 |
-| Module 3 — QR Code | 35 | 25 | 10 |
+| Module 3 — QR Code | 35 | 34 | 1 |
 | Module 4 — Notifications | 22 | 17 | 5 |
 | Module 5 — Documents | 10 | 5 | 5 |
 | Module 6 — Scan History | 8 | 4 | 4 |
@@ -412,7 +412,7 @@
 | Deployment | 7 | 0 | 7 |
 | Play Store | 15 | 0 | 15 |
 | Post-Launch | 10 | 0 | 10 |
-| **TOTAL** | **199** | **136** | **63** |
+| **TOTAL** | **199** | **145** | **54** |
 
 ---
 

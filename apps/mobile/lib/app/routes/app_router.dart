@@ -7,6 +7,9 @@ import '../../features/profile/presentation/edit_profile_screen.dart';
 import '../../features/profile/presentation/privacy_settings_screen.dart';
 import '../../features/profile/presentation/profile_home_screen.dart';
 import '../../features/profile/presentation/wizard/profile_wizard_screen.dart';
+import '../../features/qr/presentation/qr_display_screen.dart';
+import '../../features/qr/presentation/qr_preview_webview.dart';
+import '../../features/qr/presentation/qr_share_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -39,6 +42,20 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/profile/privacy',
         builder: (context, state) => const PrivacySettingsScreen(),
+      ),
+      GoRoute(
+        path: '/qr',
+        builder: (context, state) => const QRDisplayScreen(),
+      ),
+      GoRoute(
+        path: '/qr/share',
+        builder: (context, state) => const QRShareScreen(),
+      ),
+      GoRoute(
+        path: '/qr/preview',
+        builder: (context, state) => QRPreviewWebview(
+          initialUid: state.uri.queryParameters['uid'],
+        ),
       ),
     ],
   );

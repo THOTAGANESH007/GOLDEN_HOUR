@@ -53,6 +53,14 @@ class SecureStorageService {
     return token != null && token.isNotEmpty;
   }
 
+  Future<String?> getCachedQrUid() async {
+    return await _storage.read(key: AppConstants.keyCachedQrUid);
+  }
+
+  Future<void> saveCachedQrUid(String uid) async {
+    await _storage.write(key: AppConstants.keyCachedQrUid, value: uid);
+  }
+
   Future<void> clearAll() async {
     await _storage.deleteAll();
   }

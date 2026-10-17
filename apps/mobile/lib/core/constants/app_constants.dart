@@ -9,6 +9,7 @@ class AppConstants {
   static const String keyUserId = 'user_id';
   static const String keyUserPhone = 'user_phone';
   static const String keyWizardCompleted = 'wizard_completed';
+  static const String keyCachedQrUid = 'cached_qr_uid';
 
   // Network Defaults
   static const Duration connectTimeout = Duration(seconds: 15);
@@ -17,6 +18,7 @@ class AppConstants {
   // Default API Base URLs
   // Android emulator loopback: 10.0.2.2, Physical device: set via .env API_BASE_URL
   static const String defaultApiBaseUrl = 'http://10.0.2.2:8000/api/v1';
+  static const String defaultResponderWebUrl = 'https://goldenhr.pages.dev/p';
 
   // DPDPA Consent Text
   static const String dpdpaConsentText =
