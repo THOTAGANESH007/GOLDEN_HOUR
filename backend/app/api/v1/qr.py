@@ -171,6 +171,65 @@ async def public_scan(
     return data
 
 
+# ── PATCH /qr/public/scan/{scan_event_id} ──────────────────────────────────────
+
+from pydantic import BaseModel
+import uuid
+
+
+class PublicScanUpdateRequest(BaseModel):
+    responder_name: str | None = None
+    responder_hospital: str | None = None
+    latitude: float | None = None
+    longitude: float | None = None
+    is_false_alarm: bool | None = None
+
+
+@router.patch("/public/scan/{scan_event_id}")
+async def update_public_scan(
+    scan_event_id: uuid.UUID,
+    payload: PublicScanUpdateRequest,
+    db: AsyncSession = Depends(get_db),
+):
+    """Allow responder page to update responder details, captured GPS, or report a false alarm."""
+    from sqlalchemy import select as sa_select
+    from app.models.scan_event import ScanEvent
+
+    result = await db.execute(
+        sa_select(ScanEvent).where(ScanEvent.id == scan_event_id)
+    )
+    event = result.scalar_one_or_none()
+    if not event:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Scan event not found",
+        )
+
+    if payload.responder_name is not None:
+        event.responder_name = payload.responder_name.strip()
+    if payload.responder_hospital is not None:
+        event.responder_hospital = payload.responder_hospital.strip()
+    if payload.is_false_alarm is not None:
+        event.is_false_alarm = payload.is_false_alarm
+
+    if payload.latitude is not None and payload.longitude is not None:
+        event.latitude = payload.latitude
+        event.longitude = payload.longitude
+        event.google_maps_url = f"https://www.google.com/maps?q={payload.latitude},{payload.longitude}"
+
+    await db.commit()
+    await db.refresh(event)
+
+    return {
+        "status": "updated",
+        "scan_event_id": str(event.id),
+        "responder_name": event.responder_name,
+        "responder_hospital": event.responder_hospital,
+        "google_maps_url": event.google_maps_url,
+        "is_false_alarm": event.is_false_alarm,
+    }
+
+
 def _build_url(uid: str | None) -> str:
     from app.config import get_settings
     s = get_settings()

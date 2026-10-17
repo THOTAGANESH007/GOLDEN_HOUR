@@ -312,15 +312,218 @@ body {
   padding: 12px 0;
 }
 
+/* ── Helplines ──────────────────────────────────────────────────────── */
+.helplines-card .card-header {
+  background: #fee2e2;
+  color: var(--red-dark);
+}
+.helpline-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.helpline-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  padding: 10px 4px;
+  text-decoration: none;
+  color: var(--gray-900);
+  transition: transform .1s, background .15s;
+}
+.helpline-btn:active { transform: scale(0.95); }
+.helpline-icon { font-size: 22px; margin-bottom: 2px; }
+.helpline-number { font-size: 16px; font-weight: 800; color: var(--red); }
+.helpline-label { font-size: 11px; font-weight: 600; color: var(--gray-600); text-transform: uppercase; }
+
+/* ── Clinical Quick Actions ─────────────────────────────────────────── */
+.clinical-tools-card .card-header {
+  background: #fef3c7;
+  color: #92400e;
+}
+.clinical-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.btn-speaking {
+  background: #b91c1c !important;
+  color: #ffffff !important;
+  animation: pulse 1s infinite alternate;
+}
+@keyframes pulse {
+  from { opacity: 0.85; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1.02); }
+}
+
+.false-alarm-btn {
+  background: none;
+  border: 1px dashed var(--gray-400);
+  border-radius: 6px;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.false-alarm-btn:hover {
+  background: var(--gray-100);
+  color: var(--red);
+  border-color: var(--red);
+}
+.false-alarm-confirmed {
+  text-align: center;
+  padding: 8px;
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.synced-badge {
+  text-align: center;
+  padding: 6px 10px;
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ── Header Extras & Badges ─────────────────────────────────────────── */
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.theme-toggle-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 999px;
+  padding: 4px 10px;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.active-pulse-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-top: 5px;
+}
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background: #48bb78;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(72, 187, 120, 0.7);
+  animation: pulse-ring 1.5s infinite;
+}
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(72, 187, 120, 0.7); }
+  70% { box-shadow: 0 0 0 6px rgba(72, 187, 120, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(72, 187, 120, 0); }
+}
+
+/* ── Dark Mode ──────────────────────────────────────────────────────── */
+body.dark-mode {
+  background: #0b0f19;
+  color: #f1f5f9;
+}
+body.dark-mode .card {
+  background: #111827;
+  border: 1px solid #1f2937;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+body.dark-mode .card-header {
+  background: #1f2937;
+  color: #94a3b8;
+  border-color: #374151;
+}
+body.dark-mode .critical-card {
+  border: 2px solid #ef4444;
+}
+body.dark-mode .critical-card .card-header {
+  background: #b91c1c;
+  color: #ffffff;
+}
+body.dark-mode .info-row {
+  border-color: #1f2937;
+}
+body.dark-mode .info-label {
+  color: #9ca3af;
+}
+body.dark-mode .info-value {
+  color: #f9fafb;
+}
+body.dark-mode .med-item,
+body.dark-mode .contact-item {
+  border-color: #1f2937;
+}
+body.dark-mode .contact-name {
+  color: #f9fafb;
+}
+body.dark-mode .contact-relation {
+  color: #9ca3af;
+}
+body.dark-mode .btn-secondary {
+  background: #1f2937;
+  color: #f1f5f9;
+  border: 1px solid #374151;
+}
+body.dark-mode .helpline-btn {
+  background: #1f2937;
+  border-color: #374151;
+  color: #f1f5f9;
+}
+body.dark-mode .helpline-label {
+  color: #9ca3af;
+}
+body.dark-mode .form-group input {
+  background: #1f2937;
+  border-color: #374151;
+  color: #f9fafb;
+}
+body.dark-mode .disclaimer {
+  background: #1e1b12;
+  border-color: #78350f;
+  color: #fcd34d;
+}
+
 /* ── Print styles ────────────────────────────────────────────────────── */
 @media print {
-  .emergency-header { position: static; }
-  .btn, .responder-form, .location-btn-wrap { display: none !important; }
-  .card { box-shadow: none; border: 1px solid #ddd; }
-  body { background: white; }
+  .emergency-header { position: static; background: #000 !important; color: #fff !important; }
+  .btn, .responder-form, .location-btn-wrap, .clinical-tools-card, .helplines-card, .theme-toggle-btn { display: none !important; }
+  .card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+  body { background: white !important; color: black !important; }
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────── */
 @media (min-width: 480px) {
   .blood-group { font-size: 64px; }
+}
+@media (max-width: 400px) {
+  .clinical-actions-grid { grid-template-columns: 1fr; }
+  .helpline-grid { grid-template-columns: repeat(2, 1fr); }
 }

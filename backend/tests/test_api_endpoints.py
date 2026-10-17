@@ -12,6 +12,10 @@ class TestAPIEndpoints(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.transport = ASGITransport(app=app)
 
+    async def asyncTearDown(self):
+        from app.database import engine
+        await engine.dispose()
+
     async def test_send_otp_validation_failure(self):
         async with AsyncClient(transport=self.transport, base_url="http://test") as client:
             # Phone without '+' or country code should return 422 Unprocessable Entity
@@ -57,3 +61,13 @@ class TestAPIEndpoints(unittest.IsolatedAsyncioTestCase):
             response = await client.get("/api/v1/qr/public/NONEXISTENT")
             self.assertEqual(response.status_code, 404)
             self.assertEqual(response.json()["detail"], "QR_NOT_FOUND")
+
+    async def test_patch_public_scan_not_found(self):
+        random_id = "00000000-0000-0000-0000-000000000000"
+        async with AsyncClient(transport=self.transport, base_url="http://test") as client:
+            response = await client.patch(
+                f"/api/v1/qr/public/scan/{random_id}",
+                json={"responder_name": "Dr. Test", "is_false_alarm": True},
+            )
+            self.assertEqual(response.status_code, 404)
+            self.assertEqual(response.json()["detail"], "Scan event not found")

@@ -28,4 +28,25 @@ export async function fetchPublicProfile({
   return response.data;
 }
 
+/**
+ * Update scan event with responder info, GPS coordinates, or false alarm flag.
+ */
+export async function updateScanEvent(scanEventId, {
+  responderName,
+  responderHospital,
+  latitude,
+  longitude,
+  isFalseAlarm,
+}) {
+  const payload = {};
+  if (responderName !== undefined) payload.responder_name = responderName;
+  if (responderHospital !== undefined) payload.responder_hospital = responderHospital;
+  if (latitude !== undefined) payload.latitude = latitude;
+  if (longitude !== undefined) payload.longitude = longitude;
+  if (isFalseAlarm !== undefined) payload.is_false_alarm = isFalseAlarm;
+
+  const response = await api.patch(`/qr/public/scan/${scanEventId}`, payload);
+  return response.data;
+}
+
 export default api;

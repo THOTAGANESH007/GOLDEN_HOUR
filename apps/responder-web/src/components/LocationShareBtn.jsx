@@ -1,13 +1,16 @@
 import { useState } from 'react';
+import { updateScanEvent } from '../services/api';
 
 /**
  * LocationShareBtn.jsx
- * Gets the responder's GPS and opens it in Google Maps,
- * also copies the link to clipboard for sharing.
+ * Gets the responder's GPS, syncs it to the scan event in backend,
+ * and opens it in Google Maps with one-tap clipboard copy.
  */
-export default function LocationShareBtn({ onLocationCaptured }) {
+export default function LocationShareBtn({ scanEventId, onLocationCaptured }) {
   const [status, setStatus] = useState('idle'); // idle | loading | done | error
   const [mapsUrl, setMapsUrl] = useState(null);
+  const [synced, setSynced] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const handleShare = () => {
     if (!navigator.geolocation) {
@@ -17,27 +20,40 @@ export default function LocationShareBtn({ onLocationCaptured }) {
 
     setStatus('loading');
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
+      async (pos) => {
         const { latitude, longitude } = pos.coords;
         const url = `https://www.google.com/maps?q=${latitude},${longitude}`;
         setMapsUrl(url);
         setStatus('done');
         if (onLocationCaptured) onLocationCaptured({ latitude, longitude });
+
+        if (scanEventId) {
+          try {
+            await updateScanEvent(scanEventId, { latitude, longitude });
+            setSynced(true);
+          } catch (e) {
+            console.warn('GPS backend sync fallback:', e);
+          }
+        }
       },
       () => setStatus('error'),
-      { timeout: 8000 }
+      { timeout: 9000, enableHighAccuracy: true }
     );
   };
 
   const handleCopy = () => {
-    if (mapsUrl) navigator.clipboard.writeText(mapsUrl);
+    if (mapsUrl) {
+      navigator.clipboard.writeText(mapsUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    }
   };
 
   return (
     <div className="card">
       <div className="card-header">
         <span className="icon">📍</span>
-        Share Your Location
+        Live Scene Location
       </div>
       <div className="card-body location-btn-wrap">
         {status === 'idle' && (
@@ -48,39 +64,54 @@ export default function LocationShareBtn({ onLocationCaptured }) {
             onClick={handleShare}
             aria-label="Share responder location"
           >
-            📍 Share My Location with Family
+            📍 Share My GPS Location with Family
           </button>
         )}
         {status === 'loading' && (
-          <p style={{ textAlign: 'center', color: '#4b5563' }}>
-            Getting your location…
-          </p>
+          <div style={{ textAlign: 'center', padding: '8px 0' }}>
+            <div className="spinner" style={{ width: 28, height: 28, margin: '0 auto 8px', borderWidth: 3 }} />
+            <p style={{ color: 'var(--gray-600)', fontSize: 14 }}>
+              Acquiring high-accuracy GPS coordinates…
+            </p>
+          </div>
         )}
         {status === 'done' && mapsUrl && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <a
-              className="btn btn-location"
-              href={mapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ width: '100%', justifyContent: 'center' }}
-            >
-              📍 Open in Google Maps
-            </a>
-            <button
-              id="copy-location-btn"
-              className="btn btn-secondary"
-              style={{ width: '100%' }}
-              onClick={handleCopy}
-            >
-              📋 Copy Location Link
-            </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {synced && (
+              <div className="synced-badge">
+                ✓ GPS coordinates securely logged to patient record
+              </div>
+            )}
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <a
+                className="btn btn-location"
+                href={mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ flex: 1, justifyContent: 'center' }}
+              >
+                🗺️ Open in Google Maps
+              </a>
+              <button
+                id="copy-location-btn"
+                className="btn btn-secondary"
+                style={{ flex: 1 }}
+                onClick={handleCopy}
+              >
+                {copied ? '✓ Link Copied!' : '📋 Copy Map Link'}
+              </button>
+            </div>
           </div>
         )}
         {status === 'error' && (
-          <p style={{ color: '#e53e3e', textAlign: 'center', fontSize: 14 }}>
-            Could not get location. Please share manually.
-          </p>
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ color: 'var(--red)', fontSize: 14, marginBottom: 8 }}>
+              Location access denied or unavailable.
+            </p>
+            <button className="btn btn-secondary" onClick={handleShare}>
+              🔄 Try Again
+            </button>
+          </div>
         )}
       </div>
     </div>
