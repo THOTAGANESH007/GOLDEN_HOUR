@@ -8,15 +8,6 @@ import 'auth_state.dart';
 
 // ── Providers ──────────────────────────────────────────────────────────────────
 
-final secureStorageServiceProvider = Provider<SecureStorageService>((ref) {
-  return SecureStorageService();
-});
-
-final apiClientProvider = Provider<ApiClient>((ref) {
-  final storage = ref.watch(secureStorageServiceProvider);
-  return ApiClient(storageService: storage);
-});
-
 final authRemoteSourceProvider = Provider<AuthRemoteSource>((ref) {
   final client = ref.watch(apiClientProvider);
   return AuthRemoteSource(client);

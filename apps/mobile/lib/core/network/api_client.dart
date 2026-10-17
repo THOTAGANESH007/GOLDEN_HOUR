@@ -1,8 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants/app_constants.dart';
 import '../services/secure_storage_service.dart';
 import 'auth_interceptor.dart';
+
+final apiClientProvider = Provider<ApiClient>((ref) {
+  final storage = ref.watch(secureStorageServiceProvider);
+  return ApiClient(storageService: storage);
+});
 
 class ApiClient {
   final Dio dio;

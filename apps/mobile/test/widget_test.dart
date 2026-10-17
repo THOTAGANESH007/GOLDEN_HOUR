@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:golden_hour/core/constants/app_constants.dart';
 import 'package:golden_hour/core/services/secure_storage_service.dart';
-import 'package:golden_hour/features/auth/domain/auth_provider.dart';
 import 'package:golden_hour/features/auth/presentation/phone_input_screen.dart';
 import 'package:golden_hour/features/auth/presentation/splash_screen.dart';
 import 'package:golden_hour/features/auth/presentation/otp_verify_screen.dart';

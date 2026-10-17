@@ -129,22 +129,22 @@
 ### Flutter — Profile Wizard
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Wizard navigation (step indicator + next/back) | |
-| [ ] | `step1_blood_group.dart` — blood group dropdown | |
-| [ ] | `step2_allergies.dart` — multi-chip allergy input | |
-| [ ] | `step3_conditions.dart` — chronic conditions multi-select + custom | |
-| [ ] | `step4_medications.dart` — medication name + dosage + frequency | |
-| [ ] | `step5_contacts.dart` — emergency contacts (up to 5) + WhatsApp toggle | |
-| [ ] | Profile wizard data submitted to backend on completion | |
+| [x] | Wizard navigation (step indicator + next/back) | 2026-10-17 |
+| [x] | `step1_blood_group.dart` — blood group dropdown | 2026-10-17 |
+| [x] | `step2_allergies.dart` — multi-chip allergy input | 2026-10-17 |
+| [x] | `step3_conditions.dart` — chronic conditions multi-select + custom | 2026-10-17 |
+| [x] | `step4_medications.dart` — medication name + dosage + frequency | 2026-10-17 |
+| [x] | `step5_contacts.dart` — emergency contacts (up to 5) + WhatsApp toggle | 2026-10-17 |
+| [x] | Profile wizard data submitted to backend on completion | 2026-10-17 |
 
 ### Flutter — Profile Screens
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | `profile_home_screen.dart` — summary card + completion score | |
-| [ ] | `edit_profile_screen.dart` — full editable form | |
-| [ ] | `privacy_settings_screen.dart` — per-field visibility toggles | |
-| [ ] | `profile_repository.dart` — API integration | |
-| [ ] | `profile_provider.dart` — Riverpod state provider | |
+| [x] | `profile_home_screen.dart` — summary card + completion score | 2026-10-17 |
+| [x] | `edit_profile_screen.dart` — full editable form | 2026-10-17 |
+| [x] | `privacy_settings_screen.dart` — per-field visibility toggles | 2026-10-17 |
+| [x] | `profile_repository.dart` — API integration | 2026-10-17 |
+| [x] | `profile_provider.dart` — Riverpod state provider | 2026-10-17 |
 
 ---
 
@@ -401,7 +401,7 @@
 | Phase 0 — Setup & Accounts | 21 | 15 | 6 |
 | Module 0 — Backend Foundation | 21 | 21 | 0 |
 | Module 1 — Authentication | 22 | 22 | 0 |
-| Module 2 — Patient Profile | 21 | 9 | 12 |
+| Module 2 — Patient Profile | 21 | 21 | 0 |
 | Module 3 — QR Code | 35 | 25 | 10 |
 | Module 4 — Notifications | 22 | 17 | 5 |
 | Module 5 — Documents | 10 | 5 | 5 |
@@ -412,7 +412,7 @@
 | Deployment | 7 | 0 | 7 |
 | Play Store | 15 | 0 | 15 |
 | Post-Launch | 10 | 0 | 10 |
-| **TOTAL** | **199** | **124** | **75** |
+| **TOTAL** | **199** | **136** | **63** |
 
 ---
 
