@@ -195,6 +195,27 @@ class ProfileHomeScreen extends ConsumerWidget {
                           onTap: () => context.push('/documents'),
                         ),
                       ),
+                      const SizedBox(height: 12),
+
+                      // Emergency Scan History & Audit Card
+                      Card(
+                        child: ListTile(
+                          leading: const CircleAvatar(
+                            backgroundColor: AppColors.primaryLight,
+                            child: Icon(Icons.history_toggle_off_rounded,
+                                color: AppColors.primary),
+                          ),
+                          title: const Text('Emergency QR Scan History',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 14)),
+                          subtitle: const Text(
+                              'Incident logs, GPS coordinates, false alarms',
+                              style: TextStyle(fontSize: 12)),
+                          trailing: const Icon(Icons.arrow_forward_ios_rounded,
+                              size: 14),
+                          onTap: () => context.push('/scan-history'),
+                        ),
+                      ),
                       const SizedBox(height: 20),
 
                       // Action Hub Buttons

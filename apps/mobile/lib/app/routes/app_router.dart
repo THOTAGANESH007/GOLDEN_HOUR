@@ -12,6 +12,8 @@ import '../../features/profile/presentation/wizard/profile_wizard_screen.dart';
 import '../../features/qr/presentation/qr_display_screen.dart';
 import '../../features/qr/presentation/qr_preview_webview.dart';
 import '../../features/qr/presentation/qr_share_screen.dart';
+import '../../features/scan_history/presentation/scan_detail_screen.dart';
+import '../../features/scan_history/presentation/scan_history_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -66,6 +68,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/documents',
         builder: (context, state) => const DocumentsScreen(),
+      ),
+      GoRoute(
+        path: '/scan-history',
+        builder: (context, state) => const ScanHistoryScreen(),
+      ),
+      GoRoute(
+        path: '/scan-history/detail',
+        builder: (context, state) {
+          final scanId = state.uri.queryParameters['id'] ?? '';
+          return ScanDetailScreen(scanId: scanId);
+        },
       ),
     ],
   );
