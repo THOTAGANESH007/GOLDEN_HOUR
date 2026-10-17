@@ -1,0 +1,45 @@
+services:
+  - type: web
+    name: golden-hour-backend
+    runtime: docker
+    dockerfilePath: backend/Dockerfile
+    dockerContext: backend
+    plan: free
+    region: singapore
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_BASE_URL
+        value: https://goldenhr.pages.dev
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 15
+      - key: REFRESH_TOKEN_EXPIRE_DAYS
+        value: 30
+      - key: DATABASE_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: FAST2SMS_API_KEY
+        sync: false
+      - key: GREEN_API_INSTANCE_ID
+        sync: false
+      - key: GREEN_API_TOKEN
+        sync: false
+      - key: GREEN_API_HOST
+        value: https://api.green-api.com
+      - key: RESEND_API_KEY
+        sync: false
+      - key: FROM_EMAIL
+        value: alerts@goldenhr.in
+      - key: SENTRY_DSN
+        sync: false
