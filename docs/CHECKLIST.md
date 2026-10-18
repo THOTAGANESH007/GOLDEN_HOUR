@@ -402,18 +402,18 @@
 | Module 0 — Backend Foundation | 21 | 21 | 0 |
 | Module 1 — Authentication | 22 | 22 | 0 |
 | Module 2 — Patient Profile | 21 | 21 | 0 |
-| Module 3 — QR Code | 35 | 35 | 0 |
-| Module 4 — Notifications | 22 | 22 | 0 |
+| Module 3 — QR Code | 41 | 41 | 0 |
+| Module 4 — Notifications & Alerting | 25 | 25 | 0 |
 | Module 5 — Documents | 10 | 10 | 0 |
 | Module 6 — Scan History | 8 | 8 | 0 |
 | Module 7 — Settings | 6 | 6 | 0 |
-| UI Polish | 10 | 8 | 2 |
-| Security & Compliance | 11 | 7 | 4 |
+| UI Polish & Shared Components | 10 | 8 | 2 |
+| Security & Compliance | 11 | 9 | 2 |
 | Deployment | 7 | 7 | 0 |
-| Play Store | 15 | 0 | 15 |
-| Post-Launch | 10 | 0 | 10 |
-| **TOTAL** | **199** | **187** | **12** |
+| Play Store Submission | 15 | 0 | 15 |
+| Post-Launch (Month 2+) | 10 | 0 | 10 |
+| **TOTAL** | **228** | **199** | **29** |
 
 ---
 
-*Last updated: 2026-10-17 | Target: Google Play Store launch by November 9, 2026*
+*Last updated: 2026-10-18 | Target: Google Play Store launch by November 9, 2026*
