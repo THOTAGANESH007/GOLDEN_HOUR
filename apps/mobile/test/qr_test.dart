@@ -72,7 +72,7 @@ void main() {
       final repo = _FakeQRRepository();
       expect(
         repo.buildResponderUrl('XYZ98765'),
-        'https://goldenhr.pages.dev/p/XYZ98765',
+        '${AppConstants.defaultResponderWebUrl}/XYZ98765',
       );
     });
   });

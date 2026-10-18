@@ -16,9 +16,10 @@ class AppConstants {
   static const Duration receiveTimeout = Duration(seconds: 15);
 
   // Default API Base URLs
-  // Android emulator loopback: 10.0.2.2, Physical device: set via .env API_BASE_URL
-  static const String defaultApiBaseUrl = 'http://10.0.2.2:8000/api/v1';
-  static const String defaultResponderWebUrl = 'https://goldenhr.pages.dev/p';
+  static const String defaultApiBaseUrl =
+      'https://golden-hour-cvpg.onrender.com/api/v1';
+  static const String defaultResponderWebUrl =
+      'https://goldenhr.ganeshthota656.workers.dev/p';
 
   // DPDPA Consent Text
   static const String dpdpaConsentText =
