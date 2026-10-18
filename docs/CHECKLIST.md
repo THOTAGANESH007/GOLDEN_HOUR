@@ -345,12 +345,12 @@
 
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Backend deployed to Render.com | |
-| [ ] | `GET /health` returns 200 on Render | |
+| [x] | Backend deployed to Render.com | 2026-10-18 |
+| [x] | `GET /health` returns 200 on Render | 2026-10-18 |
 | [x] | Responder Web deployed to Cloudflare Pages | 2026-10-18 |
 | [x] | Native SPA routing active on Cloudflare (`wrangler.jsonc`) | 2026-10-18 |
 | [ ] | Render free tier kept warm via Better Uptime | |
-| [ ] | Alembic migrations run successfully on production DB | |
+| [x] | Alembic migrations run successfully on production DB | 2026-10-18 |
 | [ ] | End-to-end test on production: Register → Profile → QR scan → Notification | |
 
 ---
@@ -409,10 +409,10 @@
 | Module 7 — Settings | 6 | 6 | 0 |
 | UI Polish | 10 | 8 | 2 |
 | Security & Compliance | 11 | 6 | 5 |
-| Deployment | 7 | 2 | 5 |
+| Deployment | 7 | 5 | 2 |
 | Play Store | 15 | 0 | 15 |
 | Post-Launch | 10 | 0 | 10 |
-| **TOTAL** | **199** | **176** | **23** |
+| **TOTAL** | **199** | **179** | **20** |
 
 ---
 
