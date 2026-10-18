@@ -200,8 +200,8 @@
 | [x] | Print stylesheet (`@media print`) for clinical charts | 2026-10-17 |
 | [x] | Page load < 2 seconds on 3G (no heavy libs, system fonts) | 2026-10-13 |
 | [x] | `<noscript>` fallback text for critical info | 2026-10-13 |
-| [ ] | Deployed to Cloudflare Pages | |
-| [x] | `public/_redirects` file: `/* /index.html 200` | 2026-10-13 |
+| [x] | Deployed to Cloudflare Pages | 2026-10-18 |
+| [x] | Native SPA routing active on Cloudflare (`wrangler.jsonc`) | 2026-10-18 |
 
 ---
 
@@ -347,8 +347,8 @@
 |--------|------|--------------|
 | [ ] | Backend deployed to Render.com | |
 | [ ] | `GET /health` returns 200 on Render | |
-| [ ] | Responder Web deployed to Cloudflare Pages | |
-| [ ] | `_redirects` file active on Cloudflare | |
+| [x] | Responder Web deployed to Cloudflare Pages | 2026-10-18 |
+| [x] | Native SPA routing active on Cloudflare (`wrangler.jsonc`) | 2026-10-18 |
 | [ ] | Render free tier kept warm via Better Uptime | |
 | [ ] | Alembic migrations run successfully on production DB | |
 | [ ] | End-to-end test on production: Register → Profile → QR scan → Notification | |
@@ -402,17 +402,17 @@
 | Module 0 — Backend Foundation | 21 | 21 | 0 |
 | Module 1 — Authentication | 22 | 22 | 0 |
 | Module 2 — Patient Profile | 21 | 21 | 0 |
-| Module 3 — QR Code | 35 | 34 | 1 |
+| Module 3 — QR Code | 35 | 35 | 0 |
 | Module 4 — Notifications | 22 | 22 | 0 |
 | Module 5 — Documents | 10 | 10 | 0 |
 | Module 6 — Scan History | 8 | 8 | 0 |
 | Module 7 — Settings | 6 | 6 | 0 |
 | UI Polish | 10 | 8 | 2 |
 | Security & Compliance | 11 | 6 | 5 |
-| Deployment | 7 | 0 | 7 |
+| Deployment | 7 | 2 | 5 |
 | Play Store | 15 | 0 | 15 |
 | Post-Launch | 10 | 0 | 10 |
-| **TOTAL** | **199** | **173** | **26** |
+| **TOTAL** | **199** | **176** | **23** |
 
 ---
 
