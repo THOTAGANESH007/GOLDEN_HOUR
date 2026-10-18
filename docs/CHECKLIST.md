@@ -16,7 +16,7 @@
 | [x] | Folder structure scaffolded (backend, mobile, responder-web, docs) | 2026-10-11 |
 | [x] | `.gitignore` configured | 2026-10-11 |
 | [x] | Supabase project created | 2026-10-13 |
-| [ ] | Supabase Phone Auth enabled | |
+| [x] | Supabase Phone Auth enabled | 2026-10-18 |
 | [x] | Supabase DB tables created (users, profiles, contacts, scan_events, documents) | 2026-10-13 |
 | [x] | Supabase Row Level Security (RLS) enabled on all tables | 2026-10-17 |
 | [x] | Firebase project created | 2026-10-14 |
@@ -31,7 +31,7 @@
 | [x] | Resend.com API key obtained | 2026-10-14 |
 | [x] | Sentry projects created (backend + web) | 2026-10-14 |
 | [x] | Better Uptime monitor set up (pings `/health` every 10 min) | 2026-10-18 |
-| [ ] | Google Play Console account created ($25 fee) | |
+| [x] | Google Play Console account created ($25 fee) | 2026-10-18 |
 | [x] | All `.env` files filled with real credentials | 2026-10-14 |
 
 ---
@@ -398,7 +398,7 @@
 
 | Phase | Total | Done | Remaining |
 |-------|-------|------|-----------|
-| Phase 0 — Setup & Accounts | 21 | 18 | 3 |
+| Phase 0 — Setup & Accounts | 21 | 21 | 0 |
 | Module 0 — Backend Foundation | 21 | 21 | 0 |
 | Module 1 — Authentication | 22 | 22 | 0 |
 | Module 2 — Patient Profile | 21 | 21 | 0 |
@@ -412,7 +412,7 @@
 | Deployment | 7 | 7 | 0 |
 | Play Store | 15 | 0 | 15 |
 | Post-Launch | 10 | 0 | 10 |
-| **TOTAL** | **199** | **185** | **14** |
+| **TOTAL** | **199** | **187** | **12** |
 
 ---
 
