@@ -351,7 +351,7 @@
 | [x] | Native SPA routing active on Cloudflare (`wrangler.jsonc`) | 2026-10-18 |
 | [x] | Render free tier kept warm via Better Uptime | 2026-10-18 |
 | [x] | Alembic migrations run successfully on production DB | 2026-10-18 |
-| [ ] | End-to-end test on production: Register → Profile → QR scan → Notification | |
+| [x] | End-to-end test on production: Register → Profile → QR scan → Notification | 2026-10-18 |
 
 ---
 
@@ -409,10 +409,10 @@
 | Module 7 — Settings | 6 | 6 | 0 |
 | UI Polish | 10 | 8 | 2 |
 | Security & Compliance | 11 | 7 | 4 |
-| Deployment | 7 | 6 | 1 |
+| Deployment | 7 | 7 | 0 |
 | Play Store | 15 | 0 | 15 |
 | Post-Launch | 10 | 0 | 10 |
-| **TOTAL** | **199** | **184** | **15** |
+| **TOTAL** | **199** | **185** | **14** |
 
 ---
 
