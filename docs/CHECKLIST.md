@@ -22,15 +22,15 @@
 | [x] | Firebase project created | 2026-10-14 |
 | [x] | Firebase Cloud Messaging (FCM) enabled | 2026-10-14 |
 | [x] | `google-services.json` downloaded | 2026-10-14 |
-| [ ] | Cloudflare Pages project created & connected to GitHub | |
-| [ ] | Render.com Web Service created & connected to GitHub | |
+| [x] | Cloudflare Pages project created & connected to GitHub | 2026-10-18 |
+| [x] | Render.com Web Service created & connected to GitHub | 2026-10-18 |
 | [x] | Upstash Redis DB created | 2026-10-14 |
 | [x] | Fast2SMS API key obtained | 2026-10-14 |
 | [x] | Green-API WhatsApp account & instance created | 2026-10-14 |
 | [x] | Green-API linked via WhatsApp QR code | 2026-10-14 |
 | [x] | Resend.com API key obtained | 2026-10-14 |
 | [x] | Sentry projects created (backend + web) | 2026-10-14 |
-| [ ] | Better Uptime monitor set up (pings `/health` every 10 min) | |
+| [x] | Better Uptime monitor set up (pings `/health` every 10 min) | 2026-10-18 |
 | [ ] | Google Play Console account created ($25 fee) | |
 | [x] | All `.env` files filled with real credentials | 2026-10-14 |
 
@@ -337,7 +337,7 @@
 | [ ] | Sentry error monitoring — Flutter | |
 | [x] | Sentry error monitoring — React Web | 2026-10-17 |
 | [x] | Sentry error monitoring — Backend | 2026-10-13 |
-| [ ] | Better Uptime `/health` ping configured (10-min interval) | |
+| [x] | Better Uptime `/health` ping configured (10-min interval) | 2026-10-18 |
 
 ---
 
@@ -349,7 +349,7 @@
 | [x] | `GET /health` returns 200 on Render | 2026-10-18 |
 | [x] | Responder Web deployed to Cloudflare Pages | 2026-10-18 |
 | [x] | Native SPA routing active on Cloudflare (`wrangler.jsonc`) | 2026-10-18 |
-| [ ] | Render free tier kept warm via Better Uptime | |
+| [x] | Render free tier kept warm via Better Uptime | 2026-10-18 |
 | [x] | Alembic migrations run successfully on production DB | 2026-10-18 |
 | [ ] | End-to-end test on production: Register → Profile → QR scan → Notification | |
 
@@ -398,7 +398,7 @@
 
 | Phase | Total | Done | Remaining |
 |-------|-------|------|-----------|
-| Phase 0 — Setup & Accounts | 21 | 15 | 6 |
+| Phase 0 — Setup & Accounts | 21 | 18 | 3 |
 | Module 0 — Backend Foundation | 21 | 21 | 0 |
 | Module 1 — Authentication | 22 | 22 | 0 |
 | Module 2 — Patient Profile | 21 | 21 | 0 |
@@ -408,11 +408,11 @@
 | Module 6 — Scan History | 8 | 8 | 0 |
 | Module 7 — Settings | 6 | 6 | 0 |
 | UI Polish | 10 | 8 | 2 |
-| Security & Compliance | 11 | 6 | 5 |
-| Deployment | 7 | 5 | 2 |
+| Security & Compliance | 11 | 7 | 4 |
+| Deployment | 7 | 6 | 1 |
 | Play Store | 15 | 0 | 15 |
 | Post-Launch | 10 | 0 | 10 |
-| **TOTAL** | **199** | **179** | **20** |
+| **TOTAL** | **199** | **184** | **15** |
 
 ---
 
