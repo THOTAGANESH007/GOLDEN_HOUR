@@ -330,7 +330,7 @@
 | [x] | No PII in QR URL (only opaque UID) | 2026-10-13 |
 | [x] | Supabase RLS enabled and tested on all tables | 2026-10-17 |
 | [x] | All `.env` files + `google-services.json` excluded from git | 2026-10-13 |
-| [ ] | Release keystore (`.jks`) generated and backed up securely | |
+| [x] | Release keystore (`.jks`) generated and backed up securely | 2026-10-18 |
 | [x] | DPDPA 2023 consent checkbox at registration with timestamp logged | 2026-10-13 |
 | [x] | In-app account deletion implemented | 2026-10-13 |
 | [x] | Medical disclaimer on responder page | 2026-10-13 |
@@ -359,14 +359,14 @@
 
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | App icon generated (512x512 PNG, no alpha) | |
+| [x] | App icon generated (512x512 PNG, no alpha) | 2026-10-17 |
 | [ ] | Feature graphic created (1024x500 PNG) | |
 | [ ] | Screenshots taken (min 2, phone form factor) | |
 | [ ] | Short description written (80 chars max) | |
 | [ ] | Full description written (4000 chars max) | |
 | [ ] | Privacy Policy page live at a public URL | |
 | [ ] | Terms of Service page live | |
-| [ ] | `android/app/build.gradle` signed with release keystore | |
+| [x] | `android/app/build.gradle` signed with release keystore | 2026-10-18 |
 | [ ] | Release App Bundle built: `flutter build appbundle --release` | |
 | [ ] | `.aab` uploaded to Play Console (Internal Testing) | |
 | [ ] | Content rating questionnaire completed | |
@@ -408,11 +408,11 @@
 | Module 6 — Scan History | 8 | 8 | 0 |
 | Module 7 — Settings | 6 | 6 | 0 |
 | UI Polish & Shared Components | 10 | 8 | 2 |
-| Security & Compliance | 11 | 9 | 2 |
+| Security & Compliance | 11 | 10 | 1 |
 | Deployment | 7 | 7 | 0 |
-| Play Store Submission | 15 | 0 | 15 |
+| Play Store Submission | 15 | 2 | 13 |
 | Post-Launch (Month 2+) | 10 | 0 | 10 |
-| **TOTAL** | **228** | **199** | **29** |
+| **TOTAL** | **228** | **202** | **26** |
 
 ---
 

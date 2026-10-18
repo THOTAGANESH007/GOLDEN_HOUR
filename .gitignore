@@ -12,8 +12,12 @@ apps/mobile/.flutter-plugins
 apps/mobile/.flutter-plugins-dependencies
 apps/mobile/*.iml
 apps/mobile/android/.gradle/
-apps/mobile/android/app/golden-hour-release.jks
+apps/mobile/android/app/*.jks
+apps/mobile/android/app/*.keystore
+apps/mobile/android/*.jks
 apps/mobile/android/key.properties
+*.jks
+*.keystore
 
 # React Web
 apps/responder-web/node_modules/
