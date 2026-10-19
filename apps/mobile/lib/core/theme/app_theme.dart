@@ -7,6 +7,7 @@ class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
+      splashFactory: InkRipple.splashFactory,
       brightness: Brightness.light,
       primaryColor: AppColors.primary,
       scaffoldBackgroundColor: AppColors.background,
@@ -114,6 +115,7 @@ class AppTheme {
   static ThemeData get darkTheme {
     return ThemeData(
       useMaterial3: true,
+      splashFactory: InkRipple.splashFactory,
       brightness: Brightness.dark,
       primaryColor: AppColors.primary,
       scaffoldBackgroundColor: AppColors.backgroundDark,

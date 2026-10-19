@@ -8,6 +8,7 @@ import 'package:golden_hour/features/profile/data/profile_models.dart';
 import 'package:golden_hour/features/profile/data/profile_repository.dart';
 import 'package:golden_hour/features/profile/domain/profile_provider.dart';
 import 'package:golden_hour/features/profile/domain/profile_state.dart';
+import 'package:golden_hour/core/theme/app_theme.dart';
 import 'package:golden_hour/features/settings/presentation/settings_screen.dart';
 
 class _FakeAuthRepository implements AuthRepository {
@@ -74,8 +75,9 @@ void main() {
             profileNotifierProvider
                 .overrideWith((ref) => MockProfileNotifier(profileState)),
           ],
-          child: const MaterialApp(
-            home: SettingsScreen(),
+          child: MaterialApp(
+            theme: AppTheme.lightTheme,
+            home: const SettingsScreen(),
           ),
         ),
       );
@@ -138,8 +140,9 @@ void main() {
             profileNotifierProvider
                 .overrideWith((ref) => MockProfileNotifier(profileState)),
           ],
-          child: const MaterialApp(
-            home: SettingsScreen(),
+          child: MaterialApp(
+            theme: AppTheme.lightTheme,
+            home: const SettingsScreen(),
           ),
         ),
       );

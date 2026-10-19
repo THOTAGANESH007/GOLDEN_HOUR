@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import '../../features/auth/presentation/otp_verify_screen.dart';
 import '../../features/auth/presentation/phone_input_screen.dart';
 import '../../features/auth/presentation/splash_screen.dart';
@@ -45,6 +46,7 @@ CustomTransitionPage<void> _buildSmoothTransition({
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/splash',
+    observers: [SentryNavigatorObserver()],
     routes: [
       GoRoute(
         path: '/splash',

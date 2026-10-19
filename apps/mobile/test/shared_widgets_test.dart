@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:golden_hour/core/theme/app_theme.dart';
 import 'package:golden_hour/core/errors/error_handler.dart';
 import 'package:golden_hour/shared/widgets/empty_state_widget.dart';
 import 'package:golden_hour/shared/widgets/error_view_widget.dart';
@@ -17,6 +18,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
+          theme: AppTheme.lightTheme,
           home: Scaffold(
             body: GoldenButton(
               label: 'Save Changes',
@@ -73,6 +75,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
+          theme: AppTheme.lightTheme,
           home: Scaffold(
             body: EmptyStateWidget(
               icon: Icons.folder_open_rounded,
@@ -101,6 +104,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
+          theme: AppTheme.lightTheme,
           home: Scaffold(
             body: ErrorViewWidget(
               title: 'Connection Lost',

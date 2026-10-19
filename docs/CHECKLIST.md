@@ -334,7 +334,7 @@
 | [x] | DPDPA 2023 consent checkbox at registration with timestamp logged | 2026-10-13 |
 | [x] | In-app account deletion implemented | 2026-10-13 |
 | [x] | Medical disclaimer on responder page | 2026-10-13 |
-| [ ] | Sentry error monitoring — Flutter | |
+| [x] | Sentry error monitoring — Flutter | 2026-10-19 |
 | [x] | Sentry error monitoring — React Web | 2026-10-17 |
 | [x] | Sentry error monitoring — Backend | 2026-10-13 |
 | [x] | Better Uptime `/health` ping configured (10-min interval) | 2026-10-18 |
@@ -408,11 +408,11 @@
 | Module 6 — Scan History | 8 | 8 | 0 |
 | Module 7 — Settings | 6 | 6 | 0 |
 | UI Polish & Shared Components | 10 | 8 | 2 |
-| Security & Compliance | 11 | 10 | 1 |
+| Security & Compliance | 11 | 11 | 0 |
 | Deployment | 7 | 7 | 0 |
 | Play Store Submission | 15 | 2 | 13 |
 | Post-Launch (Month 2+) | 10 | 0 | 10 |
-| **TOTAL** | **228** | **202** | **26** |
+| **TOTAL** | **228** | **203** | **25** |
 
 ---
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:golden_hour/core/theme/app_theme.dart';
 import 'package:golden_hour/features/profile/data/profile_models.dart';
 import 'package:golden_hour/features/profile/data/profile_repository.dart';
 import 'package:golden_hour/features/profile/domain/profile_provider.dart';
@@ -108,6 +109,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
+          theme: AppTheme.lightTheme,
           home: Scaffold(
             body: Step1BloodGroup(
               selectedBloodGroup: 'O+',
@@ -132,6 +134,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
+          theme: AppTheme.lightTheme,
           home: Scaffold(
             body: Step2Allergies(
               selectedAllergies: currentAllergies,
@@ -158,6 +161,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
+          theme: AppTheme.lightTheme,
           home: Scaffold(
             body: Step3Conditions(
               selectedConditions: currentConditions,
@@ -180,6 +184,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
+          theme: AppTheme.lightTheme,
           home: Scaffold(
             body: Step4Medications(
               medications: currentMeds,
@@ -208,6 +213,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
+          theme: AppTheme.lightTheme,
           home: Scaffold(
             body: Step5Contacts(
               contacts: contacts,
