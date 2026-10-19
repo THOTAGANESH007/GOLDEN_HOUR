@@ -29,7 +29,7 @@ dependencies:
 
   # Share & file
   share_plus: ^10.0.0
-  image_gallery_saver_plus: ^3.0.4
+  image_gallery_saver_plus: ^5.1.1
 
   # WebView (preview responder page)
   webview_flutter: ^4.8.0
