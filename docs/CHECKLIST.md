@@ -360,12 +360,12 @@
 | Status | Task | Completed On |
 |--------|------|--------------|
 | [x] | App icon generated (512x512 PNG, no alpha) | 2026-10-17 |
-| [ ] | Feature graphic created (1024x500 PNG) | |
+| [x] | Feature graphic created (1024x500 PNG) | 2026-10-19 |
 | [ ] | Screenshots taken (min 2, phone form factor) | |
-| [ ] | Short description written (80 chars max) | |
-| [ ] | Full description written (4000 chars max) | |
-| [ ] | Privacy Policy page live at a public URL | |
-| [ ] | Terms of Service page live | |
+| [x] | Short description written (80 chars max) | 2026-10-19 |
+| [x] | Full description written (4000 chars max) | 2026-10-19 |
+| [x] | Privacy Policy page live at a public URL | 2026-10-19 |
+| [x] | Terms of Service page live | 2026-10-19 |
 | [x] | `android/app/build.gradle` signed with release keystore | 2026-10-18 |
 | [ ] | Release App Bundle built: `flutter build appbundle --release` | |
 | [ ] | `.aab` uploaded to Play Console (Internal Testing) | |
@@ -410,9 +410,9 @@
 | UI Polish & Shared Components | 10 | 8 | 2 |
 | Security & Compliance | 11 | 11 | 0 |
 | Deployment | 7 | 7 | 0 |
-| Play Store Submission | 15 | 2 | 13 |
+| Play Store Submission | 15 | 7 | 8 |
 | Post-Launch (Month 2+) | 10 | 0 | 10 |
-| **TOTAL** | **228** | **203** | **25** |
+| **TOTAL** | **228** | **208** | **20** |
 
 ---
 
