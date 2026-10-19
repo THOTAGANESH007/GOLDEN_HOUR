@@ -361,7 +361,7 @@
 |--------|------|--------------|
 | [x] | App icon generated (512x512 PNG, no alpha) | 2026-10-17 |
 | [x] | Feature graphic created (1024x500 PNG) | 2026-10-19 |
-| [ ] | Screenshots taken (min 2, phone form factor) | |
+| [x] | Screenshots taken (min 2, phone form factor) | 2026-10-19 |
 | [x] | Short description written (80 chars max) | 2026-10-19 |
 | [x] | Full description written (4000 chars max) | 2026-10-19 |
 | [x] | Privacy Policy page live at a public URL | 2026-10-19 |
@@ -410,9 +410,9 @@
 | UI Polish & Shared Components | 10 | 8 | 2 |
 | Security & Compliance | 11 | 11 | 0 |
 | Deployment | 7 | 7 | 0 |
-| Play Store Submission | 15 | 8 | 7 |
+| Play Store Submission | 15 | 9 | 6 |
 | Post-Launch (Month 2+) | 10 | 0 | 10 |
-| **TOTAL** | **228** | **209** | **19** |
+| **TOTAL** | **228** | **210** | **18** |
 
 ---
 

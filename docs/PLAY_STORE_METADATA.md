@@ -63,7 +63,10 @@ Download Golden Hour today and protect yourself and your family when seconds cou
 |-------|---------------|-------------------|
 | **App Icon** | 512x512 PNG, 32-bit color, no alpha | `apps/mobile/assets/images/app_icon_512.png` |
 | **Feature Graphic** | 1024x500 PNG / JPEG, no alpha | `apps/mobile/assets/images/play_store_feature_graphic.png` |
-| **Screenshots** | Min 2, Max 8 per form factor (16:9 or 18:9) | Captured from mobile test runs |
+| **Screenshot 1** | Emergency QR Medical ID Card (768x1376 PNG) | `docs/assets/screenshots/1_emergency_qr_card.png` |
+| **Screenshot 2** | First Responder Public Emergency View (768x1376 PNG) | `docs/assets/screenshots/2_first_responder_view.png` |
+| **Screenshot 3** | Instant SOS & Multi-Channel Alerting (768x1376 PNG) | `docs/assets/screenshots/3_instant_sos_alerts.png` |
+| **Screenshot 4** | Offline Life-Saving First Aid & CPR (768x1376 PNG) | `docs/assets/screenshots/4_offline_first_aid_guides.png` |
 | **Privacy Policy URL** | Publicly accessible URL | `https://goldenhr.ganeshthota656.workers.dev/privacy` |
 | **Terms of Service URL**| Publicly accessible URL | `https://goldenhr.ganeshthota656.workers.dev/terms` |
 
