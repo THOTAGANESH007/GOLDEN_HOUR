@@ -2,9 +2,11 @@
 Auth endpoints: send-otp, verify-otp, refresh, logout, delete-account,
 and FCM token update.
 """
+import logging
 import uuid
 from datetime import datetime, timezone
 
+import sentry_sdk
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -22,6 +24,7 @@ from app.schemas.auth import (
 from app.services import auth_service
 from app.services.qr_service import get_or_create_profile
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
@@ -33,6 +36,8 @@ async def send_otp(body: SendOTPRequest, db: AsyncSession = Depends(get_db)):
     try:
         await auth_service.send_otp(body.phone)
     except Exception as exc:
+        logger.error(f"OTP send failed for {body.phone}: {exc}")
+        sentry_sdk.capture_exception(exc)
         raise HTTPException(status_code=502, detail=f"OTP send failed: {exc}")
     return {"message": "OTP sent successfully"}
 
@@ -44,7 +49,9 @@ async def verify_otp(body: VerifyOTPRequest, db: AsyncSession = Depends(get_db))
     """Verify OTP → return JWT access + refresh tokens. Creates user if first login."""
     try:
         await auth_service.verify_otp(body.phone, body.otp)
-    except Exception:
+    except Exception as exc:
+        logger.error(f"OTP verification failed for {body.phone}: {exc}")
+        sentry_sdk.capture_exception(exc)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid OTP"
         )

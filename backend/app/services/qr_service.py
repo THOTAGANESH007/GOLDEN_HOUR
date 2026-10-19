@@ -37,9 +37,6 @@ async def _ensure_unique_uid(db: AsyncSession) -> str:
 
 async def get_or_create_profile(db: AsyncSession, user: User) -> Profile:
     """Return existing profile or create a blank one."""
-    if user.profile is not None:
-        return user.profile
-
     result = await db.execute(select(Profile).where(Profile.user_id == user.id))
     profile = result.scalar_one_or_none()
 

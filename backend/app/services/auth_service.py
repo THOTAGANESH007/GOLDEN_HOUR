@@ -59,8 +59,11 @@ def hash_token(token: str) -> str:
 SUPABASE_AUTH_URL = f"{settings.supabase_url}/auth/v1"
 SUPABASE_HEADERS = {
     "apikey": settings.supabase_service_key,
+    "Authorization": f"Bearer {settings.supabase_service_key}",
     "Content-Type": "application/json",
 }
+
+_AUTH_TIMEOUT = httpx.Timeout(20.0, connect=10.0)
 
 
 async def send_otp(phone: str) -> dict:
@@ -68,12 +71,11 @@ async def send_otp(phone: str) -> dict:
     Ask Supabase to send an OTP SMS to the given phone number.
     Returns the raw Supabase response.
     """
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=_AUTH_TIMEOUT) as client:
         resp = await client.post(
             f"{SUPABASE_AUTH_URL}/otp",
             headers=SUPABASE_HEADERS,
             json={"phone": phone, "channel": "sms"},
-            timeout=10,
         )
     resp.raise_for_status()
     return resp.json()
@@ -84,12 +86,11 @@ async def verify_otp(phone: str, otp: str) -> dict:
     Verify the OTP with Supabase. Returns Supabase session data on success.
     Raises httpx.HTTPStatusError on wrong OTP.
     """
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=_AUTH_TIMEOUT) as client:
         resp = await client.post(
             f"{SUPABASE_AUTH_URL}/verify",
             headers=SUPABASE_HEADERS,
             json={"phone": phone, "token": otp, "type": "sms"},
-            timeout=10,
         )
     resp.raise_for_status()
     return resp.json()

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/services/secure_storage_service.dart';
 import '../data/auth_remote_source.dart';
@@ -92,7 +93,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
         errorMessage: null,
       );
       return true;
-    } catch (e) {
+    } catch (e, stackTrace) {
+      await Sentry.captureException(e, stackTrace: stackTrace);
       state = state.copyWith(
         status: AuthStatus.error,
         errorMessage: e.toString(),
@@ -129,7 +131,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
         errorMessage: null,
       );
       return true;
-    } catch (e) {
+    } catch (e, stackTrace) {
+      await Sentry.captureException(e, stackTrace: stackTrace);
       state = state.copyWith(
         status: AuthStatus.error,
         errorMessage: e.toString(),

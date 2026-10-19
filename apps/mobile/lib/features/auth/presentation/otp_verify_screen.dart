@@ -29,9 +29,13 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
     super.dispose();
   }
 
+  bool _isSubmitting = false;
+
   String get _currentOtp => _controllers.map((c) => c.text).join();
 
   Future<void> _handleVerify() async {
+    if (_isSubmitting || ref.read(authNotifierProvider).isLoading) return;
+
     final otp = _currentOtp;
     if (otp.length != 6) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -43,11 +47,23 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
       return;
     }
 
-    final success =
-        await ref.read(authNotifierProvider.notifier).verifyOtp(otp);
+    setState(() {
+      _isSubmitting = true;
+    });
 
-    if (success && mounted) {
-      context.go('/home');
+    try {
+      final success =
+          await ref.read(authNotifierProvider.notifier).verifyOtp(otp);
+
+      if (success && mounted) {
+        context.go('/home');
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
     }
   }
 
@@ -204,7 +220,7 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
-                  onPressed: isLoading ? null : _handleVerify,
+                  onPressed: (isLoading || _isSubmitting) ? null : _handleVerify,
                   child: isLoading
                       ? const SizedBox(
                           width: 22,
