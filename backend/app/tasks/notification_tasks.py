@@ -118,7 +118,7 @@ async def _async_notify(
         phone = contact["phone"]
         whatsapp_enabled = contact.get("whatsapp_enabled", False)
 
-        # 1. High-Priority FCM Push Notification (Free & Instant)
+        # 1. High-Priority FCM Push Notification (Instant Siren to App Users)
         contact_fcm = contact_fcm_tokens.get(phone)
         if contact_fcm:
             fcm_contact_ok = await send_emergency_contact_fcm(
@@ -133,23 +133,8 @@ async def _async_notify(
                 results["fcm_sent"] = True
                 results["contacts_notified"] += 1
 
-        # 2. SMS Alert
-        sms_ok = await send_sms(
-            phone=phone,
-            patient_name=patient_name,
-            scan_time=scan_time,
-            maps_url=maps_url,
-            responder_name=responder_name,
-        )
-
-        if sms_ok:
-            results["sms_sent"] = True
-            if not contact_fcm:
-                results["contacts_notified"] += 1
-        else:
-            logger.warning("SMS failed for contact %s", phone)
-
-        # 3. WhatsApp Alert
+        # 2. WhatsApp Emergency Alert (Primary Channel: Meta Cloud API / Green-API)
+        wa_ok = False
         if whatsapp_enabled:
             wa_ok = await send_whatsapp(
                 phone=phone,
@@ -160,6 +145,25 @@ async def _async_notify(
             )
             if wa_ok:
                 results["whatsapp_sent"] = True
+                if not contact_fcm:
+                    results["contacts_notified"] += 1
+
+        # 3. Fast2SMS Offline Safety Net (Fallback if WhatsApp failed or disabled)
+        if not wa_ok:
+            logger.info("WhatsApp not delivered for %s; dispatching Fast2SMS safety net fallback", phone)
+            sms_ok = await send_sms(
+                phone=phone,
+                patient_name=patient_name,
+                scan_time=scan_time,
+                maps_url=maps_url,
+                responder_name=responder_name,
+            )
+            if sms_ok:
+                results["sms_sent"] = True
+                if not contact_fcm and not wa_ok:
+                    results["contacts_notified"] += 1
+            else:
+                logger.warning("Fast2SMS safety net failed for contact %s", phone)
 
     # ── FCM push to patient device ──────────────────────────────────────────
     if fcm_token:
