@@ -20,15 +20,16 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     # 1. Make phone nullable
-    op.alter_column('users', 'phone', existing_type=sa.String(length=20), nullable=True)
+    op.execute("ALTER TABLE users ALTER COLUMN phone DROP NOT NULL;")
 
-    # 2. Add email and google_id
-    op.add_column('users', sa.Column('email', sa.String(length=255), nullable=True))
-    op.add_column('users', sa.Column('google_id', sa.String(length=128), nullable=True))
+    # 2. Add email and google_id if not already present
+    op.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR(255);")
+    op.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS google_id VARCHAR(128);")
 
-    # 3. Create unique indices
-    op.create_index('ix_users_email', 'users', ['email'], unique=True)
-    op.create_index('ix_users_google_id', 'users', ['google_id'], unique=True)
+    # 3. Create unique indices if not already present
+    op.execute("CREATE UNIQUE INDEX IF NOT EXISTS ix_users_email ON users (email);")
+    op.execute("CREATE UNIQUE INDEX IF NOT EXISTS ix_users_google_id ON users (google_id);")
+
 
 
 def downgrade() -> None:
