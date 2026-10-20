@@ -69,26 +69,11 @@ class TestNotificationService(unittest.IsolatedAsyncioTestCase):
         # 12:00 UTC + 5:30 = 17:30 IST
         self.assertEqual(ist_str, "17:30 IST")
 
-    async def test_send_meta_whatsapp_unconfigured(self):
+    async def test_send_whatsapp_unconfigured(self):
         from unittest.mock import patch
-        from app.services.notification_service import send_meta_whatsapp
-        with patch("app.services.notification_service.settings.whatsapp_access_token", ""), \
-             patch("app.services.notification_service.settings.whatsapp_phone_number_id", ""):
-            res = await send_meta_whatsapp(
-                phone="+919876543210",
-                patient_name="Test Patient",
-                scan_time=datetime.now(timezone.utc),
-                maps_url=None,
-                responder_name=None,
-            )
-            self.assertFalse(res)
-
-    async def test_send_whatsapp_fallback_to_green_api(self):
-        from unittest.mock import patch, AsyncMock
         from app.services.notification_service import send_whatsapp
         with patch("app.services.notification_service.settings.whatsapp_access_token", ""), \
-             patch("app.services.notification_service.send_green_api_whatsapp", new_callable=AsyncMock) as mock_green:
-            mock_green.return_value = True
+             patch("app.services.notification_service.settings.whatsapp_phone_number_id", ""):
             res = await send_whatsapp(
                 phone="+919876543210",
                 patient_name="Test Patient",
@@ -96,8 +81,7 @@ class TestNotificationService(unittest.IsolatedAsyncioTestCase):
                 maps_url=None,
                 responder_name=None,
             )
-            self.assertTrue(res)
-            mock_green.assert_called_once()
+            self.assertFalse(res)
 
 
 class TestSchemas(unittest.TestCase):

@@ -14,9 +14,9 @@ This document maintains the credentials mapping, connectivity status, setup inst
 | **Firebase** | Google Auth & Push (FCM) | ✅ **Active** | 2026-10-20 | Project `goldenhour-7d0ed`, 1-Tap Google Sign-In + real-time emergency push notifications |
 | **Cloudflare Pages** | Responder Web Hosting | ✅ **Active** | 2026-10-18 | Live on `https://goldenhr.pages.dev` & `https://goldenhr.ganeshthota656.workers.dev` |
 | **Document Storage** | Local NVMe SSD / R2 | ✅ **Migrated** | 2026-10-20 | Zero external cost, persistent NVMe host volume (`~/documents_data` -> `/app/uploads`), served via FastAPI FileResponse |
-| **Fast2SMS** | Emergency SMS | 🔄 *Migrating* | 2026-10-14 | ₹50 balance; replacing with TextBee Android SIM Gateway / Firebase Push |
-| **Green-API** | WhatsApp Alerts | 🔄 *Migrating* | 2026-10-14 | Active; replacing with Official Meta WhatsApp Cloud API (1,000 free/mo) |
-| **Twilio** | SMS / OTP Verify | ❌ *Decommissioned* | 2026-10-20 | Fully replaced by Firebase Google 1-Tap Sign-In & Meta WhatsApp |
+| **WhatsApp (Meta Cloud API)** | Primary Emergency Alert | ✅ **Migrated** | 2026-10-21 | Official Meta Graph API v21.0, 1,000 free sessions/month, verified sender |
+| **Fast2SMS** | Offline Safety Net (SMS) | ✅ **Active** | 2026-10-21 | ₹50 balance (~200 SMS), automated fallback when contact has no mobile data |
+| **Twilio & Green-API** | Third-party Bridges | ❌ *Decommissioned* | 2026-10-21 | 100% removed in favor of Firebase Auth, Meta WhatsApp, and Fast2SMS safety net |
 | **Resend** | Email Fallback | ✅ **Active** | 2026-10-14 | API key authenticated with sending permission |
 | **Sentry** | Error Monitoring | ✅ **Active** | 2026-10-14 | DSN verified; test diagnostics event dispatched |
 | **DuckDNS** | Free Dynamic DNS | ✅ **Active** | 2026-10-20 | `goldenhour-backend.duckdns.org` pointing to OCI VM IP |
@@ -79,23 +79,18 @@ This document maintains the credentials mapping, connectivity status, setup inst
 
 ---
 
-### 6. WhatsApp Emergency Alerts (Meta Cloud API & Green-API Fallback)
-* **Architecture:** Dual-engine architecture. Prefers official **Meta WhatsApp Cloud API (Graph API v21.0)** with automatic zero-downtime fallback to **Green-API**.
-* **Meta WhatsApp Cloud API (Primary):**
-  - **Portal:** [developers.facebook.com](https://developers.facebook.com)
-  - **Endpoint:** `POST https://graph.facebook.com/v21.0/{WHATSAPP_PHONE_NUMBER_ID}/messages`
-  - **Free Tier:** 1,000 free service conversations every month directly from Meta.
-  - **Configuration (`backend/.env`):**
-    ```env
-    WHATSAPP_ACCESS_TOKEN=your_meta_system_user_access_token
-    WHATSAPP_PHONE_NUMBER_ID=your_phone_number_id
-    WHATSAPP_BUSINESS_ACCOUNT_ID=your_waba_id
-    ```
-* **Green-API (Automatic Fallback):**
-  - **Instance ID:** `710722764283`
-  - **Host:** `https://7107.api.greenapi.com`
-  - **Status:** `authorized` (linked via device QR scan)
-  - **Fallback Role:** If Meta credentials are not yet configured (e.g., during account approval) or if Meta returns an error, alerts seamlessly route via Green-API so no emergency notification is ever missed.
+### 6. WhatsApp Emergency Alerts (Official Meta Cloud API)
+* **Architecture:** 100% official server-to-server messaging via **Meta WhatsApp Cloud API (Graph API v21.0)**.
+* **Portal:** [developers.facebook.com](https://developers.facebook.com)
+* **Endpoint:** `POST https://graph.facebook.com/v21.0/{WHATSAPP_PHONE_NUMBER_ID}/messages`
+* **Free Tier:** 1,000 free service conversations every month directly from Meta.
+* **Configuration (`backend/.env`):**
+  ```env
+  WHATSAPP_ACCESS_TOKEN=your_meta_system_user_access_token
+  WHATSAPP_PHONE_NUMBER_ID=your_phone_number_id
+  WHATSAPP_BUSINESS_ACCOUNT_ID=your_waba_id
+  ```
+* **Offline Fallback:** If WhatsApp delivery fails or the recipient has no data, Golden Hour automatically routes emergency alerts through **Fast2SMS** as the carrier SMS safety net.
 
 ---
 

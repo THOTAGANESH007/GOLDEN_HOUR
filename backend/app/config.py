@@ -32,14 +32,11 @@ class Settings(BaseSettings):
     # ── Notifications ──────────────────────────────────────────────────────
     fast2sms_api_key: str = ""
 
-    # ── WhatsApp (Meta Cloud API & Green-API Fallback) ─────────────────────
+    # ── WhatsApp (Official Meta Cloud API) ─────────────────────────────────
     whatsapp_access_token: str = ""
     whatsapp_phone_number_id: str = ""
     whatsapp_business_account_id: str = ""
     whatsapp_template_name: str = ""
-    green_api_instance_id: str = ""
-    green_api_token: str = ""
-    green_api_host: str = "https://api.green-api.com"
 
     firebase_credentials_json: str = "./firebase-service-account.json"
 
