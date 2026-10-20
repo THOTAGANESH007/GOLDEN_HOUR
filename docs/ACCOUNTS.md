@@ -79,29 +79,29 @@ This document maintains the credentials mapping, connectivity status, setup inst
 
 ---
 
-### 6. Green-API & WhatsApp Emergency Alerts
-* **Current Status:** `authorized` instance `710722764283`
-* **Limitation:** Unofficial WhatsApp Web bridge risks number bans if message volume increases.
-* **Better Alternative & Migration Plan:** **Official Meta WhatsApp Cloud API (Graph API v21.0)**
-  - **1,000 free service conversations per month** directly from Meta.
-  - Direct server-to-server HTTPS delivery (`https://graph.facebook.com/v21.0/{phone_number_id}/messages`).
-  - Zero risk of phone number bans; verified WhatsApp Business sender.
+### 6. WhatsApp Emergency Alerts (Meta Cloud API & Green-API Fallback)
+* **Architecture:** Dual-engine architecture. Prefers official **Meta WhatsApp Cloud API (Graph API v21.0)** with automatic zero-downtime fallback to **Green-API**.
+* **Meta WhatsApp Cloud API (Primary):**
+  - **Portal:** [developers.facebook.com](https://developers.facebook.com)
+  - **Endpoint:** `POST https://graph.facebook.com/v21.0/{WHATSAPP_PHONE_NUMBER_ID}/messages`
+  - **Free Tier:** 1,000 free service conversations every month directly from Meta.
+  - **Configuration (`backend/.env`):**
+    ```env
+    WHATSAPP_ACCESS_TOKEN=your_meta_system_user_access_token
+    WHATSAPP_PHONE_NUMBER_ID=your_phone_number_id
+    WHATSAPP_BUSINESS_ACCOUNT_ID=your_waba_id
+    ```
+* **Green-API (Automatic Fallback):**
+  - **Instance ID:** `710722764283`
+  - **Host:** `https://7107.api.greenapi.com`
+  - **Status:** `authorized` (linked via device QR scan)
+  - **Fallback Role:** If Meta credentials are not yet configured (e.g., during account approval) or if Meta returns an error, alerts seamlessly route via Green-API so no emergency notification is ever missed.
 
 ---
 
 ### 7. Twilio (Decommissioned)
 * **Status:** ❌ **Decommissioned**
 * **Replacement:** Replaced by **Firebase Google 1-Tap Sign-In** (`POST /api/v1/auth/google`) and fallback WhatsApp alerts, eliminating Twilio's $0.05/SMS fee and $1.15/month US phone number rental charges.
-
----
-
-### 4. Green-API (WhatsApp Emergency Alerts)
-* **Website:** [green-api.com](https://green-api.com)
-* **Instance ID:** `710722764283`
-* **Host:** `https://7107.api.greenapi.com`
-* **Status:** `authorized` (linked to WhatsApp via device QR scan)
-* **Advantage:** No Facebook account required, no Meta utility template approvals needed.
-* **Recipient format:** `<clean_number>@c.us` (e.g. `919876543210@c.us`)
 
 ---
 

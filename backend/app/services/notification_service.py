@@ -69,25 +69,111 @@ async def send_sms(
         return False
 
 
-# ── WhatsApp via Green-API ────────────────────────────────────────────────────
- 
-async def send_whatsapp(
+# ── WhatsApp (Meta Cloud API with Green-API Fallback) ─────────────────────────
+
+async def send_meta_whatsapp(
     phone: str,
     patient_name: str,
     scan_time: datetime,
     maps_url: str | None,
     responder_name: str | None,
 ) -> bool:
-    """Send emergency alert via Green-API WhatsApp."""
+    """Send emergency alert via official Meta WhatsApp Cloud API."""
+    if not settings.whatsapp_access_token or not settings.whatsapp_phone_number_id:
+        return False
+
+    time_str = _ist_time(scan_time)
+    location = maps_url or "Location unavailable"
+    responder = responder_name or "Unknown responder"
+    clean_phone = phone.lstrip("+").strip()
+
+    url = f"https://graph.facebook.com/v21.0/{settings.whatsapp_phone_number_id}/messages"
+    headers = {
+        "Authorization": f"Bearer {settings.whatsapp_access_token}",
+        "Content-Type": "application/json",
+    }
+
+    if settings.whatsapp_template_name:
+        # Pre-approved Utility Template
+        payload = {
+            "messaging_product": "whatsapp",
+            "recipient_type": "individual",
+            "to": clean_phone,
+            "type": "template",
+            "template": {
+                "name": settings.whatsapp_template_name,
+                "language": {"code": "en"},
+                "components": [
+                    {
+                        "type": "body",
+                        "parameters": [
+                            {"type": "text", "text": patient_name},
+                            {"type": "text", "text": time_str},
+                            {"type": "text", "text": location},
+                            {"type": "text", "text": responder},
+                        ],
+                    }
+                ],
+            },
+        }
+    else:
+        # Direct formatted text alert
+        message_text = (
+            f"🚨 *EMERGENCY ALERT — Golden Hour*\n\n"
+            f"*{patient_name}*'s medical emergency QR was just scanned.\n"
+            f"⏰ *Time:* {time_str}\n"
+            f"📍 *Location:* {location}\n"
+            f"👤 *First Responder:* {responder}\n\n"
+            f"Please call 108 or reach out immediately."
+        )
+        payload = {
+            "messaging_product": "whatsapp",
+            "recipient_type": "individual",
+            "to": clean_phone,
+            "type": "text",
+            "text": {
+                "preview_url": True,
+                "body": message_text,
+            },
+        }
+
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(url, headers=headers, json=payload, timeout=15)
+        if resp.status_code in (200, 201):
+            data = resp.json()
+            if "messages" in data:
+                msg_id = data["messages"][0].get("id", "")
+                logger.info("WhatsApp sent via Meta Cloud API to %s (id: %s)", phone, msg_id)
+                return True
+        logger.warning(
+            "Meta WhatsApp Cloud API failed for %s (%s): %s",
+            phone,
+            resp.status_code,
+            resp.text,
+        )
+        return False
+    except Exception as exc:
+        logger.error("Meta WhatsApp Cloud API exception for %s: %s", phone, exc)
+        return False
+
+
+async def send_green_api_whatsapp(
+    phone: str,
+    patient_name: str,
+    scan_time: datetime,
+    maps_url: str | None,
+    responder_name: str | None,
+) -> bool:
+    """Send emergency alert via Green-API WhatsApp (fallback)."""
     if not settings.green_api_instance_id or not settings.green_api_token:
-        logger.warning("Green-API credentials not configured; skipping WhatsApp notification")
+        logger.warning("Green-API credentials not configured; skipping fallback")
         return False
 
     time_str = _ist_time(scan_time)
     location = maps_url or "Location unavailable"
     responder = responder_name or "Unknown responder"
 
-    # Green-API chatId format: <country_code><number>@c.us (e.g. 919876543210@c.us)
     clean_phone = phone.lstrip("+").strip()
     chat_id = f"{clean_phone}@c.us"
 
@@ -110,21 +196,56 @@ async def send_whatsapp(
 
     try:
         async with httpx.AsyncClient() as client:
-            resp = await client.post(
-                url,
-                json=payload,
-                timeout=15,
-            )
+            resp = await client.post(url, json=payload, timeout=15)
         if resp.status_code == 200:
             data = resp.json()
             if "idMessage" in data:
-                logger.info("WhatsApp sent via Green-API to %s (id: %s)", phone, data["idMessage"])
+                logger.info(
+                    "WhatsApp sent via Green-API fallback to %s (id: %s)",
+                    phone,
+                    data["idMessage"],
+                )
                 return True
         logger.warning("Green-API WhatsApp failed for %s: %s", phone, resp.text)
         return False
     except Exception as exc:
         logger.error("Green-API WhatsApp exception for %s: %s", phone, exc)
         return False
+
+
+async def send_whatsapp(
+    phone: str,
+    patient_name: str,
+    scan_time: datetime,
+    maps_url: str | None,
+    responder_name: str | None,
+) -> bool:
+    """
+    Unified WhatsApp dispatcher:
+    1. Tries Meta WhatsApp Cloud API if credentials are configured.
+    2. Falls back seamlessly to Green-API if Meta is not configured or fails.
+    """
+    if settings.whatsapp_access_token and settings.whatsapp_phone_number_id:
+        meta_ok = await send_meta_whatsapp(
+            phone=phone,
+            patient_name=patient_name,
+            scan_time=scan_time,
+            maps_url=maps_url,
+            responder_name=responder_name,
+        )
+        if meta_ok:
+            return True
+        logger.info(
+            "Meta WhatsApp Cloud API failed or unconfigured; falling back to Green-API"
+        )
+
+    return await send_green_api_whatsapp(
+        phone=phone,
+        patient_name=patient_name,
+        scan_time=scan_time,
+        maps_url=maps_url,
+        responder_name=responder_name,
+    )
 
 
 # ── FCM Push (to patient & emergency contacts) ────────────────────────────────
