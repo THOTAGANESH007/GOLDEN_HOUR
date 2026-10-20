@@ -66,55 +66,54 @@
 
 | Layer            | Tool                        | Purpose                                          |
 | ---------------- | --------------------------- | ------------------------------------------------ |
-| Framework        | **FastAPI (Python)**        | High-performance async REST API                  |
-| ORM              | **SQLAlchemy + Alembic**    | DB models and migrations                         |
+| Framework        | **FastAPI (Python 3.12)**   | High-performance async REST API                  |
+| ORM              | **SQLAlchemy + Alembic**    | DB models and schema migrations                  |
 | Validation       | **Pydantic v2**             | Request/response schema validation               |
-| Auth             | **python-jose + passlib**   | JWT generation, OTP verification                 |
-| Task Queue       | **Celery**                  | Async background jobs (notifications)            |
-| Message Broker   | **Upstash Redis**           | Celery broker + session cache (free tier)        |
-| Hosting          | **Render.com**              | Free tier backend hosting                        |
-| CORS             | **FastAPI CORSMiddleware**  | Allow Flutter app and React web app              |
-| Rate Limiting    | **slowapi**                 | Protect QR scan endpoint from abuse              |
-| Logging          | **Loguru**                  | Structured logging                               |
+| Auth             | **Firebase Auth + JWT**     | 1-Tap Google Sign-In, token verification, JWT    |
+| Task Queue       | **Celery**                  | Async background emergency dispatching           |
+| Message Broker   | **Local Redis (Docker)**    | In-memory broker (`golden-hour-redis`), < 0.5ms  |
+| Hosting          | **Oracle Cloud (OCI)**      | Always-Free `VM.Standard.E2.1.Micro` (Ubuntu)    |
+| SSL & Domain     | **Caddy + DuckDNS**         | `https://goldenhour-backend.duckdns.org` (TLS)   |
+| CORS             | **FastAPI CORSMiddleware**  | Allow Flutter app, Cloudflare Pages, localhost   |
+| Rate Limiting    | **slowapi**                 | Protect QR scan and auth endpoints from abuse    |
+| Monitoring       | **Sentry**                  | Real-time exception & error tracking             |
 
 ---
 
-### 🗄️ Database & Storage (Supabase — Free Tier)
+### 🗄️ Database & Storage (Local Production Stack)
 
 | Service                      | Usage                                                  |
 | ---------------------------- | ------------------------------------------------------ |
-| **PostgreSQL**               | All patient, contact, scan event, user data            |
-| **Supabase Auth**            | OTP-based login (phone number)                         |
+| **PostgreSQL 16 (Docker)**   | Primary database on persistent SSD volume (`~/postgres_data`) |
+| **Database Container**       | `golden-hour-db`, private port 5432 on `golden-net`     |
 | **Supabase Storage**         | Medical documents, profile photos                      |
-| **Row Level Security (RLS)** | Patients can only read/write their own rows            |
+| **Row Level Security (RLS)** | Patients can only read/write their own records         |
 
 ---
 
-### 🔔 Notifications (All Free Tiers)
+### 🔔 Notifications (100% Free Production Stack)
 
 | Channel       | Tool                   | Free Limit                          |
 | ------------- | ---------------------- | ----------------------------------- |
-| Push (in-app) | **Firebase FCM**       | Unlimited (completely free)         |
-| WhatsApp      | **WhatsApp Cloud API** | 1,000 conversations/month free      |
-| SMS           | **Fast2SMS**           | Free credits on signup (India)      |
-| Email         | **Resend.com**         | 3,000 emails/month free             |
+| Emergency Push (Patient & Contacts) | **Firebase FCM** | **Unlimited (100% Free Forever)** — High priority with maps link |
+| WhatsApp      | **Green-API**          | Instant emergency alert dispatch    |
+| SMS           | **Fast2SMS**           | ₹50 signup wallet (India)           |
+| Email Fallback| **Resend.com**         | 3,000 emails/month free             |
 
 ---
 
 ### 🔧 DevOps & Tooling (All Free)
 
-| Component       | Tool                         |
-| --------------- | ---------------------------- |
-| Version Control | **GitHub** (monorepo)        |
-| CI/CD           | **GitHub Actions**           |
-| Web Hosting     | **Cloudflare Pages**         |
-| Backend Hosting | **Render.com**               |
-| DB + Auth       | **Supabase**                 |
-| Cache           | **Upstash Redis**            |
-| Monitoring      | **Sentry** (free 5K errors)  |
-| Uptime Check    | **Better Uptime** (free)     |
-| API Testing     | **Thunder Client / Postman** |
-| DNS + CDN       | **Cloudflare** (free plan)   |
+| Component       | Tool                                               |
+| --------------- | -------------------------------------------------- |
+| Version Control | **GitHub** (monorepo)                              |
+| Web Hosting     | **Cloudflare Pages & Workers** (`goldenhr.pages.dev`) |
+| VM Host         | **Oracle Cloud Always Free** (`129.225.91.215`)     |
+| Dynamic DNS     | **DuckDNS** (`goldenhour-backend.duckdns.org`)      |
+| Reverse Proxy   | **Caddy v2** (Automated Let's Encrypt TLS 1.3)     |
+| Monitoring      | **Sentry** (Mobile + Backend + Web)                |
+| API Testing     | **Thunder Client / Postman / cURL**                |
+| DNS + CDN       | **Cloudflare** (Free Global CDN)                   |
 
 ---
 

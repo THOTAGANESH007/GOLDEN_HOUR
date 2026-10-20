@@ -8,40 +8,48 @@ This document maintains the credentials mapping, connectivity status, setup inst
 
 | Service | Category | Status | Tested & Verified | Notes |
 |---|---|:---:|:---:|---|
-| **Supabase** | DB, Auth & Storage | ✅ **Active** | 2026-10-13 | REST API + PostgreSQL 17 Session pooler live; tables migrated |
-| **Upstash Redis** | Celery Task Broker | ✅ **Active** | 2026-10-14 | TLS/SSL `rediss://` connection ping successful |
+| **Oracle Cloud (OCI)** | Compute & Host (VM) | ✅ **Active** | 2026-10-20 | Always-Free `VM.Standard.E2.1.Micro` (Ubuntu 24.04, IP `129.225.91.215`), Caddy HTTPS with Let's Encrypt |
+| **PostgreSQL 16** | Relational Database | ✅ **Active** | 2026-10-20 | Local Docker container (`golden-hour-db`) on persistent SSD volume (`~/postgres_data`), isolated on `golden-net` |
+| **Local Redis** | Celery Task Broker | ✅ **Active** | 2026-10-20 | Local Docker container (`golden-hour-redis`) on `golden-net`, sub-ms latency, ₹0 cost |
+| **Firebase** | Google Auth & Push (FCM) | ✅ **Active** | 2026-10-20 | Project `goldenhour-7d0ed`, 1-Tap Google Sign-In + real-time emergency push notifications |
+| **Cloudflare Pages** | Responder Web Hosting | ✅ **Active** | 2026-10-18 | Live on `https://goldenhr.pages.dev` & `https://goldenhr.ganeshthota656.workers.dev` |
 | **Fast2SMS** | Emergency SMS | ✅ **Active** | 2026-10-14 | ₹50 wallet balance, 200 SMS credits ready |
 | **Green-API** | WhatsApp Alerts | ✅ **Active** | 2026-10-14 | Instance `710722764283` is **Authorized** via QR scan |
-| **Firebase** | Android Push (FCM) | ✅ **Active** | 2026-10-14 | Project `goldenhour-7d0ed`, service account key verified |
 | **Resend** | Email Fallback | ✅ **Active** | 2026-10-14 | API key authenticated with sending permission |
 | **Sentry** | Error Monitoring | ✅ **Active** | 2026-10-14 | DSN verified; test diagnostics event dispatched |
-| **Cloudflare Pages** | Web Hosting (Step 8) | ⏳ *Pending* | — | *To be set up in Step 8* |
-| **Render.com** | Backend Hosting (Step 8) | ⏳ *Pending* | — | *To be set up in Step 8* |
-| **Better Uptime** | Keep-Warm Ping (Step 9) | ⏳ *Pending* | — | *To be set up in Step 9* |
-| **Google Play Console** | Store Release (Step 9) | ⏳ *Pending* | — | *To be set up in Step 9 ($25 fee)* |
+| **DuckDNS** | Free Dynamic DNS | ✅ **Active** | 2026-10-20 | `goldenhour-backend.duckdns.org` pointing to OCI VM IP |
+| **Google Play Console** | Store Release | ⏳ *Pending* | — | *Account ready for release track upload* |
 
 ---
 
 ## 🛠️ Service Setup Documentation
 
-### 1. Supabase (Database, Auth & Storage)
-* **Website:** [supabase.com](https://supabase.com)
-* **Project Name:** `golden-hour` (Region: `ap-southeast-2`)
-* **Tables Created:** `users`, `profiles`, `emergency_contacts`, `scan_events`, `documents`, `alembic_version`
-* **Configuration:**
-  - `SUPABASE_URL`: `https://trbvfjotjedvzegcyqws.supabase.co`
-  - `DATABASE_URL`: Session mode on port 5432 using `postgresql+asyncpg://`
-* **Storage Bucket:** Create a public bucket named `documents` in the Supabase Dashboard under Storage.
+### 1. Oracle Cloud Infrastructure (Always-Free Compute & Hosting)
+* **Instance Type:** `VM.Standard.E2.1.Micro` (Always Free, AMD 64-bit, 1 GB RAM, 44 GB NVMe SSD)
+* **Public IP:** `129.225.91.215`
+* **Operating System:** Ubuntu 24.04 LTS
+* **Reverse Proxy:** Caddy v2 with automated Let's Encrypt TLS 1.3 / HTTP/2 SSL
+* **Domain:** `https://goldenhour-backend.duckdns.org`
+* **Docker Network:** `golden-net` (isolates API, Database, Redis, and Celery)
+* **Zero Cold Starts:** Runs 24/7 with zero sleeping or warm-up delays.
 
 ---
 
-### 2. Upstash Redis (Celery Broker)
-* **Website:** [console.upstash.com](https://console.upstash.com)
-* **Database Name:** `humble-elk-231845`
-* **Protocol:** `rediss://` (TLS encrypted)
-* **Used by:** Celery task queue in `backend/app/tasks/celery_app.py` for background dispatching of SMS, WhatsApp, FCM, and Email alerts.
+### 2. PostgreSQL 16 (Local High-Performance Database)
+* **Container:** `golden-hour-db` (Image: `postgres:16-alpine`)
+* **Storage Volume:** `~/postgres_data` (permanent host SSD directory)
+* **Tables:** `users`, `profiles`, `emergency_contacts`, `scan_events`, `documents`, `alembic_version`
+* **Connection String:** `postgresql+asyncpg://postgres:<password>@golden-hour-db:5432/golden_hour`
+* **Security:** Port `5432` is private to `golden-net` and shielded from public internet exposure.
 
 ---
+
+### 3. Local Redis (Ultra-Fast Task Broker & Cache)
+* **Container:** `golden-hour-redis` (Image: `redis:alpine`)
+* **Network:** `golden-net`
+* **Connection String:** `redis://golden-hour-redis:6379/0`
+* **Latency:** < 0.5ms (in-memory hardware bus, replaces Upstash)
+* **Used by:** Celery background worker for dispatching Push notifications, WhatsApp, and SMS alerts.
 
 ### 3. Fast2SMS (Emergency SMS to Family)
 * **Website:** [fast2sms.com](https://www.fast2sms.com)
@@ -62,12 +70,15 @@ This document maintains the credentials mapping, connectivity status, setup inst
 
 ---
 
-### 5. Firebase Cloud Messaging (Patient Push Alerts)
+### 5. Firebase (Google Sign-In & High-Priority Push Alerts)
 * **Console:** [console.firebase.google.com](https://console.firebase.google.com)
 * **Project ID:** `goldenhour-7d0ed`
+* **Features Configured:**
+  - **1-Tap Google Sign-In:** SHA-1 certificate hashes added for release & debug keystores; Web Client ID `226834628996-j852ld7lg3j4hf0m7cvc5fh2ccf1rnor.apps.googleusercontent.com`
+  - **Emergency Push (FCM):** High-priority `emergency_alerts` notification channel with vibration, sound, and instant dispatching to both patients and emergency contacts.
 * **Files Configured:**
-  - `backend/firebase-service-account.json` (Admin SDK private key)
-  - `apps/mobile/android/app/google-services.json` (Client config for Flutter FCM)
+  - `backend/firebase-service-account.json` (Admin SDK private key for backend dispatching)
+  - `apps/mobile/android/app/google-services.json` (Client configuration for Flutter)
 
 ---
 
@@ -87,44 +98,36 @@ This document maintains the credentials mapping, connectivity status, setup inst
 
 ---
 
-## 🚀 Steps to Complete Later
+## 🚀 Deployed Production Environments
 
-### ⏳ Step 8: Cloud Deployment (Cloudflare Pages + Render.com)
+### ✅ 8.1 Cloudflare Pages & Workers (Responder Web App)
+* **Status:** **Live & Deployed**
+* **Domains:** 
+  - `https://goldenhr.pages.dev`
+  - `https://goldenhr.ganeshthota656.workers.dev`
+* **Build Configuration:**
+  - **Framework preset:** `Vite`
+  - **Root directory:** `apps/responder-web`
+  - **Build output:** `dist`
+  - **Environment Variable:** `VITE_API_BASE_URL=https://goldenhour-backend.duckdns.org/api/v1`
 
-#### 8.1 Cloudflare Pages (Responder Web App)
-1. Go to [dash.cloudflare.com](https://dash.cloudflare.com) → **Workers & Pages** → **Create application** → **Pages** → **Connect to Git**.
-2. Select repository: `THOTAGANESH007/GOLDEN_HOUR`.
-3. Set build configuration:
-   - **Framework preset:** `Vite`
-   - **Root directory:** `apps/responder-web`
-   - **Build command:** `npm run build`
-   - **Build output directory:** `dist`
-4. Set Environment Variable:
-   - `VITE_API_BASE_URL`: `https://<render-service-name>.onrender.com/api/v1`
-5. Click **Save and Deploy**.
-
-#### 8.2 Render.com (Backend Web Service)
-1. Go to [dashboard.render.com](https://dashboard.render.com) → **New +** → **Web Service**.
-2. Connect repository: `THOTAGANESH007/GOLDEN_HOUR`.
-3. Set configuration:
-   - **Name:** `golden-hour-backend`
-   - **Region:** Singapore or Frankfurt
-   - **Root Directory:** `backend`
-   - **Runtime:** `Docker` (automatically detects `backend/Dockerfile`)
-   - **Instance Type:** `Free`
-4. Copy all environment variables from `backend/.env` into Render's **Environment** tab.
-5. Click **Deploy Web Service**.
+### ✅ 8.2 Oracle Cloud Infrastructure (FastAPI Backend + Database + Redis)
+* **Status:** **Live & Deployed**
+* **Public IP:** `129.225.91.215`
+* **Public Domain:** `https://goldenhour-backend.duckdns.org`
+* **SSL Proxy:** Caddy v2 Reverse Proxy with Let's Encrypt TLS 1.3
+* **Stack:** Docker containers on `golden-net`:
+  - `golden-hour-api` (FastAPI Web Server on port 8000)
+  - `golden-hour-db` (PostgreSQL 16 on persistent volume `~/postgres_data`)
+  - `golden-hour-redis` (Redis 7 Alpine broker)
 
 ---
 
-### ⏳ Step 9: Production Monitoring & Google Play Console
+### ⏳ Step 9: Production Release & Google Play Store
 
-#### 9.1 Better Uptime (Prevent Render Cold Starts)
-1. Go to [betterstack.com](https://betterstack.com) → **Uptime**.
-2. Add a new HTTP monitor:
-   - **URL:** `https://<your-render-url>.onrender.com/health`
-   - **Check frequency:** `10 minutes`
-   - *This keeps the free Render instance awake so emergency responders experience sub-second response times.*
+#### 9.1 Health Check Uptime Monitor
+* **URL:** `https://goldenhour-backend.duckdns.org/health`
+* **Service:** Uptime monitoring (Better Stack / UptimeRobot) pings health check to verify 100% 24/7 availability.
 
 #### 9.2 Google Play Console
 1. Go to [play.google.com/console](https://play.google.com/console).

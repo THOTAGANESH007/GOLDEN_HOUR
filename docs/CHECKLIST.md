@@ -85,11 +85,13 @@
 | [x] | `api/v1/auth.py` — router file created | 2026-10-13 |
 | [x] | `POST /auth/send-otp` — sends OTP via Supabase Auth | 2026-10-13 |
 | [x] | `POST /auth/verify-otp` — verifies OTP, returns JWT + refresh token | 2026-10-13 |
+| [x] | `POST /auth/google` — 1-Tap Google Sign-In with ID token verification | 2026-10-20 |
 | [x] | `POST /auth/refresh` — rotates refresh token → new access token | 2026-10-13 |
 | [x] | `POST /auth/logout` — revokes refresh token server-side | 2026-10-13 |
 | [x] | `DELETE /auth/delete-account` — hard deletes all user PII | 2026-10-13 |
 | [x] | JWT access token (15 min) + refresh token (30 days) working | 2026-10-13 |
 | [x] | `services/auth_service.py` — auth business logic isolated | 2026-10-13 |
+| [x] | Alembic migration `0002_add_google_auth_fields` (email, google_id, nullable phone) | 2026-10-20 |
 
 ### Flutter
 | Status | Task | Completed On |
@@ -105,6 +107,8 @@
 | [x] | `features/auth/domain/auth_provider.dart` — Riverpod provider | 2026-10-17 |
 | [x] | `presentation/splash_screen.dart` — JWT check → route decision | 2026-10-17 |
 | [x] | `presentation/phone_input_screen.dart` — phone + country code | 2026-10-17 |
+| [x] | `presentation/phone_input_screen.dart` — 1-Tap "Continue with Google" button | 2026-10-20 |
+| [x] | Google Sign-In with Web Client ID + Firebase Auth integration | 2026-10-20 |
 | [x] | `presentation/otp_verify_screen.dart` — 6-digit OTP + 60s timer | 2026-10-17 |
 | [x] | Auto-login: app opens → valid token → skip login screen | 2026-10-17 |
 | [x] | Logout: clears tokens + calls backend logout | 2026-10-17 |
@@ -227,7 +231,9 @@
 | [x] | SMS via Fast2SMS — integrated and tested | 2026-10-13 |
 | [x] | WhatsApp via Green-API — integrated | 2026-10-14 |
 | [x] | Green-API instance linked & tested | 2026-10-14 |
-| [x] | FCM push to patient device — integrated | 2026-10-13 |
+| [x] | FCM push to patient device — integrated with rich data & priority | 2026-10-20 |
+| [x] | FCM high-priority emergency alert push to emergency contacts (₹0 cost) | 2026-10-20 |
+| [x] | Celery emergency contact user lookup & push dispatching | 2026-10-20 |
 | [x] | Email fallback via Resend.com — integrated | 2026-10-13 |
 | [x] | Email fallback only triggers after SMS fails 3 retries | 2026-10-13 |
 
@@ -244,7 +250,9 @@
 |--------|------|--------------|
 | [x] | `firebase_messaging` package added to `pubspec.yaml` | 2026-10-17 |
 | [x] | FCM `onBackgroundMessage` handler configured | 2026-10-17 |
-| [x] | FCM token registered to backend on login | 2026-10-17 |
+| [x] | `fcmServiceProvider` with auto token sync on login & home entry | 2026-10-20 |
+| [x] | High-priority Android notification channel `emergency_alerts` | 2026-10-20 |
+| [x] | In-app foreground emergency alert banner with sound & direct link | 2026-10-20 |
 | [x] | Push notification received on QR scan — tested | 2026-10-17 |
 | [x] | "Test Notification" button in settings screen | 2026-10-17 |
 
@@ -345,13 +353,17 @@
 
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [x] | Backend deployed to Render.com | 2026-10-18 |
-| [x] | `GET /health` returns 200 on Render | 2026-10-18 |
-| [x] | Responder Web deployed to Cloudflare Pages | 2026-10-18 |
+| [x] | Oracle Cloud (OCI) Always-Free VM provisioned (Ubuntu 24.04, 129.225.91.215) | 2026-10-20 |
+| [x] | DuckDNS dynamic domain configured (`goldenhour-backend.duckdns.org`) | 2026-10-20 |
+| [x] | Caddy v2 reverse proxy with automated Let's Encrypt TLS 1.3 | 2026-10-20 |
+| [x] | Local PostgreSQL 16 container (`golden-hour-db`) with persistent SSD volume | 2026-10-20 |
+| [x] | Database data migrated from Supabase Sydney to local PostgreSQL 16 | 2026-10-20 |
+| [x] | Local Redis container (`golden-hour-redis`) replacing Upstash for offline queue | 2026-10-20 |
+| [x] | `GET /health` returns 200 on `https://goldenhour-backend.duckdns.org/health` | 2026-10-20 |
+| [x] | Responder Web deployed to Cloudflare Pages & Workers | 2026-10-18 |
 | [x] | Native SPA routing active on Cloudflare (`wrangler.jsonc`) | 2026-10-18 |
-| [x] | Render free tier kept warm via Better Uptime | 2026-10-18 |
-| [x] | Alembic migrations run successfully on production DB | 2026-10-18 |
-| [x] | End-to-end test on production: Register → Profile → QR scan → Notification | 2026-10-18 |
+| [x] | Alembic migrations run successfully on production DB (`0002_add_google_auth_fields`) | 2026-10-20 |
+| [x] | Zero cold-start production backend: 24/7 sub-second response times | 2026-10-20 |
 
 ---
 
