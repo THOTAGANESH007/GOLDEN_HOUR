@@ -1,5 +1,6 @@
 # Environment files — NEVER commit these
 .env
+.env.*
 *.env
 firebase-service-account.json
 google-services.json
