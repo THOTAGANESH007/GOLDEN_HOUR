@@ -1,6 +1,9 @@
 #!/bin/sh
 set -e
 
+echo "[Golden Hour] Ensuring uploads directory exists..."
+mkdir -p /app/uploads
+
 echo "[Golden Hour] Running database migrations..."
 alembic upgrade head
 

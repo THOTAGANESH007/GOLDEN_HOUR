@@ -1,9 +1,10 @@
 """
-Documents endpoints: upload, list, delete.
+Documents endpoints: upload, list, delete, and secure streaming.
 """
 import uuid
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
+from fastapi.responses import FileResponse, RedirectResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -12,6 +13,7 @@ from app.middleware.auth_middleware import get_current_user
 from app.models.document import Document
 from app.models.user import User
 from app.schemas.scan_event import DocumentResponse
+from app.services.storage_service import get_storage_service
 
 router = APIRouter(prefix="/documents", tags=["Documents"])
 
@@ -55,8 +57,8 @@ async def upload_document(
     if len(contents) > MAX_FILE_SIZE:
         raise HTTPException(status_code=400, detail="File too large — max 10 MB")
 
-    # Upload to Supabase Storage
-    storage_path, public_url = await _upload_to_supabase(
+    storage = get_storage_service()
+    storage_path, public_url = await storage.save_file(
         user_id=current_user.id,
         filename=file.filename or "document",
         contents=contents,
@@ -92,62 +94,71 @@ async def delete_document(
     if not doc:
         raise HTTPException(status_code=404, detail="Document not found")
 
-    # Remove from Supabase Storage
-    await _delete_from_supabase(doc.storage_path)
+    storage = get_storage_service()
+    await storage.delete_file(doc.storage_path)
 
     await db.delete(doc)
     return None
 
 
-# ── Supabase Storage helpers ───────────────────────────────────────────────────
-
-async def _upload_to_supabase(
-    user_id: uuid.UUID,
-    filename: str,
-    contents: bytes,
-    mime_type: str,
-) -> tuple[str, str]:
+@router.get("/raw/{storage_path:path}")
+async def get_raw_document(
+    storage_path: str,
+    db: AsyncSession = Depends(get_db),
+):
     """
-    Upload file bytes to Supabase Storage bucket 'documents'.
-    Returns (storage_path, public_url).
+    Streams the raw document file directly with support for Range requests,
+    enabling seamless display in mobile app CachedNetworkImage and PDF Viewers.
     """
-    import httpx
-    from app.config import get_settings
-
-    settings = get_settings()
-    bucket = "documents"
-    path = f"{user_id}/{uuid.uuid4()}_{filename}"
-
-    async with httpx.AsyncClient() as client:
-        resp = await client.post(
-            f"{settings.supabase_url}/storage/v1/object/{bucket}/{path}",
-            headers={
-                "Authorization": f"Bearer {settings.supabase_service_key}",
-                "Content-Type": mime_type,
-            },
-            content=contents,
-            timeout=30,
-        )
-
-    if resp.status_code not in (200, 201):
-        raise HTTPException(status_code=502, detail=f"Supabase Storage upload failed: {resp.text}")
-
-    public_url = (
-        f"{settings.supabase_url}/storage/v1/object/public/{bucket}/{path}"
+    result = await db.execute(
+        select(Document).where(Document.storage_path == storage_path)
     )
-    return path, public_url
+    doc = result.scalar_one_or_none()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+
+    if doc.public_url and (
+        doc.public_url.startswith("https://") or doc.public_url.startswith("http://")
+    ) and "/api/v1/documents/raw/" not in doc.public_url:
+        return RedirectResponse(url=doc.public_url)
+
+    storage = get_storage_service()
+    file_path = storage.get_local_file_path(storage_path)
+    if not file_path:
+        raise HTTPException(status_code=404, detail="Document file not found on disk")
+
+    return FileResponse(
+        path=file_path,
+        media_type=doc.mime_type,
+        filename=doc.file_name,
+    )
 
 
-async def _delete_from_supabase(storage_path: str) -> None:
-    import httpx
-    from app.config import get_settings
+@router.get("/{doc_id}/raw")
+async def get_document_raw_by_id(
+    doc_id: uuid.UUID,
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Convenience endpoint to stream raw document by its unique UUID.
+    """
+    result = await db.execute(select(Document).where(Document.id == doc_id))
+    doc = result.scalar_one_or_none()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
 
-    settings = get_settings()
-    bucket = "documents"
+    if doc.public_url and (
+        doc.public_url.startswith("https://") or doc.public_url.startswith("http://")
+    ) and "/api/v1/documents/raw/" not in doc.public_url:
+        return RedirectResponse(url=doc.public_url)
 
-    async with httpx.AsyncClient() as client:
-        await client.delete(
-            f"{settings.supabase_url}/storage/v1/object/{bucket}/{storage_path}",
-            headers={"Authorization": f"Bearer {settings.supabase_service_key}"},
-            timeout=10,
-        )
+    storage = get_storage_service()
+    file_path = storage.get_local_file_path(doc.storage_path)
+    if not file_path:
+        raise HTTPException(status_code=404, detail="Document file not found on disk")
+
+    return FileResponse(
+        path=file_path,
+        media_type=doc.mime_type,
+        filename=doc.file_name,
+    )

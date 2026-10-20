@@ -21,6 +21,11 @@ class Settings(BaseSettings):
     supabase_service_key: str = ""
     database_url: str = ""          # asyncpg DSN
 
+    # ── Document Storage ───────────────────────────────────────────────────
+    storage_backend: str = "local"  # "local" | "supabase"
+    upload_dir: str = "./uploads"
+    api_public_base_url: str = "https://goldenhour-backend.duckdns.org"
+
     # ── Redis (Upstash) ────────────────────────────────────────────────────
     redis_url: str = "redis://localhost:6379"
 

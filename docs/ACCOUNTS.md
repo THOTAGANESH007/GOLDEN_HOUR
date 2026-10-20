@@ -13,8 +13,10 @@ This document maintains the credentials mapping, connectivity status, setup inst
 | **Local Redis** | Celery Task Broker | ✅ **Active** | 2026-10-20 | Local Docker container (`golden-hour-redis`) on `golden-net`, sub-ms latency, ₹0 cost |
 | **Firebase** | Google Auth & Push (FCM) | ✅ **Active** | 2026-10-20 | Project `goldenhour-7d0ed`, 1-Tap Google Sign-In + real-time emergency push notifications |
 | **Cloudflare Pages** | Responder Web Hosting | ✅ **Active** | 2026-10-18 | Live on `https://goldenhr.pages.dev` & `https://goldenhr.ganeshthota656.workers.dev` |
-| **Fast2SMS** | Emergency SMS | ✅ **Active** | 2026-10-14 | ₹50 wallet balance, 200 SMS credits ready |
-| **Green-API** | WhatsApp Alerts | ✅ **Active** | 2026-10-14 | Instance `710722764283` is **Authorized** via QR scan |
+| **Document Storage** | Local NVMe SSD / R2 | ✅ **Migrated** | 2026-10-20 | Zero external cost, persistent NVMe host volume (`~/documents_data` -> `/app/uploads`), served via FastAPI FileResponse |
+| **Fast2SMS** | Emergency SMS | 🔄 *Migrating* | 2026-10-14 | ₹50 balance; replacing with TextBee Android SIM Gateway / Firebase Push |
+| **Green-API** | WhatsApp Alerts | 🔄 *Migrating* | 2026-10-14 | Active; replacing with Official Meta WhatsApp Cloud API (1,000 free/mo) |
+| **Twilio** | SMS / OTP Verify | ❌ *Decommissioned* | 2026-10-20 | Fully replaced by Firebase Google 1-Tap Sign-In & Meta WhatsApp |
 | **Resend** | Email Fallback | ✅ **Active** | 2026-10-14 | API key authenticated with sending permission |
 | **Sentry** | Error Monitoring | ✅ **Active** | 2026-10-14 | DSN verified; test diagnostics event dispatched |
 | **DuckDNS** | Free Dynamic DNS | ✅ **Active** | 2026-10-20 | `goldenhour-backend.duckdns.org` pointing to OCI VM IP |
@@ -51,12 +53,45 @@ This document maintains the credentials mapping, connectivity status, setup inst
 * **Latency:** < 0.5ms (in-memory hardware bus, replaces Upstash)
 * **Used by:** Celery background worker for dispatching Push notifications, WhatsApp, and SMS alerts.
 
-### 3. Fast2SMS (Emergency SMS to Family)
+---
+
+### 4. Document Storage (Local NVMe SSD & Cloudflare R2 Compatible)
+* **Status:** ✅ **Migrated from Supabase Storage**
+* **Storage Location:** Persistent host directory `~/documents_data` mounted to `/app/uploads` in Docker
+* **Cost:** ₹0 forever (utilizes Oracle Cloud's free 44 GB NVMe SSD)
+* **Performance:** Sub-millisecond disk writes, zero bandwidth egress charges, zero external rate limits
+* **Streaming Endpoint:** `GET /api/v1/documents/raw/{storage_path}` and `GET /api/v1/documents/{doc_id}/raw`
+  - Returns `FileResponse` with HTTP Range support for seamless PDF page streaming and image rendering in Flutter `CachedNetworkImage` and Google Docs Viewer
+  - Built-in path traversal security (`is_relative_to` upload directory verification)
+* **Cloudflare R2 / S3 Ready:** Supports optional S3/R2 endpoints via `STORAGE_BACKEND=r2` if off-server replication is ever desired.
+
+---
+
+### 5. Fast2SMS (Emergency SMS to Family)
 * **Website:** [fast2sms.com](https://www.fast2sms.com)
 * **Route:** Quick SMS (`route: q`)
 * **Target:** 10-digit Indian numbers (`+91` prefix automatically stripped)
 * **Message format:**
   > `EMERGENCY ALERT: <Patient>'s medical QR was scanned. Time: <HH:MM IST> | <Google Maps URL> Responder: <Name>. Please call 108 immediately. - Golden Hour`
+* **Alternative & Migration Plan:** **TextBee Android Gateway / Firebase Push (FCM)**
+  - Family members with the app installed receive **100% free, unlimited, instant high-priority Push alerts** via FCM.
+  - For SMS to non-app users: Replace paid Fast2SMS gateway with **TextBee** (`textbee.dev`), routing SMS through an Android phone with a carrier SIM (Jio / Airtel provides 100 free SMS/day = 3,000 free SMS/month).
+
+---
+
+### 6. Green-API & WhatsApp Emergency Alerts
+* **Current Status:** `authorized` instance `710722764283`
+* **Limitation:** Unofficial WhatsApp Web bridge risks number bans if message volume increases.
+* **Better Alternative & Migration Plan:** **Official Meta WhatsApp Cloud API (Graph API v21.0)**
+  - **1,000 free service conversations per month** directly from Meta.
+  - Direct server-to-server HTTPS delivery (`https://graph.facebook.com/v21.0/{phone_number_id}/messages`).
+  - Zero risk of phone number bans; verified WhatsApp Business sender.
+
+---
+
+### 7. Twilio (Decommissioned)
+* **Status:** ❌ **Decommissioned**
+* **Replacement:** Replaced by **Firebase Google 1-Tap Sign-In** (`POST /api/v1/auth/google`) and fallback WhatsApp alerts, eliminating Twilio's $0.05/SMS fee and $1.15/month US phone number rental charges.
 
 ---
 
