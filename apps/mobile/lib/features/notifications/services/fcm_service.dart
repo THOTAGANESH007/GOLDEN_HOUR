@@ -1,6 +1,7 @@
 import 'dart:developer' as developer;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/notification_repository.dart';
 
 @pragma('vm:entry-point')
@@ -16,6 +17,11 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   );
 }
 
+final fcmServiceProvider = Provider<FCMService>((ref) {
+  final repo = ref.watch(notificationRepositoryProvider);
+  return FCMService(repo);
+});
+
 class FCMService {
   final NotificationRepository? _repository;
   bool _isInitialized = false;
@@ -26,6 +32,7 @@ class FCMService {
 
   Future<void> initialize({
     Function(RemoteMessage)? onForegroundMessage,
+    Function(RemoteMessage)? onNotificationClick,
   }) async {
     try {
       if (Firebase.apps.isEmpty) {
@@ -59,7 +66,12 @@ class FCMService {
         developer.log('Device FCM Token obtained: ${token.substring(0, 12)}...',
             name: 'FCMService');
         if (_repository != null) {
-          await _repository.registerFcmToken(token);
+          try {
+            await _repository.registerFcmToken(token);
+          } catch (e) {
+            developer.log('Initial FCM token registration deferred: $e',
+                name: 'FCMService');
+          }
         }
       }
 
@@ -88,10 +100,47 @@ class FCMService {
         }
       });
 
+      // 6. Handle notification click when app is opened from background
+      FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+        developer.log(
+          'Emergency notification clicked: ${message.data}',
+          name: 'FCMService',
+        );
+        if (onNotificationClick != null) {
+          onNotificationClick(message);
+        }
+      });
+
+      // 7. Check if app was launched from terminated state via notification click
+      final initialMessage = await messaging.getInitialMessage();
+      if (initialMessage != null) {
+        developer.log(
+          'App opened via notification click from terminated state: ${initialMessage.data}',
+          name: 'FCMService',
+        );
+        if (onNotificationClick != null) {
+          onNotificationClick(initialMessage);
+        }
+      }
+
       _isInitialized = true;
     } catch (e) {
-      // In simulator/test or environments without Google Services JSON, log gracefully
       developer.log('FCM initialization skipped or failed: $e',
+          name: 'FCMService');
+    }
+  }
+
+  Future<void> syncTokenWithBackend() async {
+    try {
+      final messaging = FirebaseMessaging.instance;
+      final token = await messaging.getToken();
+      if (token != null && token.isNotEmpty && _repository != null) {
+        await _repository.registerFcmToken(token);
+        developer.log('FCM token synchronized with backend successfully',
+            name: 'FCMService');
+      }
+    } catch (e) {
+      developer.log('Failed to sync FCM token with backend: $e',
           name: 'FCMService');
     }
   }
@@ -104,3 +153,4 @@ class FCMService {
     }
   }
 }
+

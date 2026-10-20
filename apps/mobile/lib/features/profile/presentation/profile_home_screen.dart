@@ -7,6 +7,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../auth/domain/auth_provider.dart';
 import '../data/profile_models.dart';
 import '../domain/profile_provider.dart';
+import '../../notifications/services/fcm_service.dart';
 
 class ProfileHomeScreen extends ConsumerWidget {
   const ProfileHomeScreen({super.key});
@@ -18,6 +19,47 @@ class ProfileHomeScreen extends ConsumerWidget {
     final profile = profileState.profile;
     final completion = profileState.completion;
     final contacts = profileState.contacts;
+
+    // Initialize FCM and synchronize token with backend on home entry
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(fcmServiceProvider).initialize(
+        onForegroundMessage: (message) {
+          final title = message.notification?.title ?? 'Emergency Alert';
+          final body = message.notification?.body ?? 'Your QR was scanned.';
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  const Icon(Icons.emergency_rounded, color: Colors.white),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+                        Text(body, style: const TextStyle(fontSize: 12)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              backgroundColor: AppColors.error,
+              duration: const Duration(seconds: 8),
+              action: SnackBarAction(
+                label: 'VIEW',
+                textColor: Colors.white,
+                onPressed: () => context.push('/notifications'),
+              ),
+            ),
+          );
+        },
+        onNotificationClick: (message) {
+          context.push('/notifications');
+        },
+      );
+      ref.read(fcmServiceProvider).syncTokenWithBackend();
+    });
 
     return Scaffold(
       appBar: AppBar(

@@ -79,10 +79,12 @@ async def _async_notify(
         send_sms,
         send_whatsapp,
         send_fcm_push,
+        send_emergency_contact_fcm,
         send_email_fallback,
     )
     from app.database import AsyncSessionLocal
     from app.models.scan_event import ScanEvent
+    from app.models.user import User
     from sqlalchemy import select, update
 
     results = {
@@ -93,11 +95,45 @@ async def _async_notify(
         "contacts_notified": 0,
     }
 
+    # ── Check if any emergency contacts have Golden Hour app installed ────
+    contact_phones = [c["phone"] for c in contacts if c.get("phone")]
+    contact_fcm_tokens: dict[str, str] = {}
+    if contact_phones:
+        try:
+            async with AsyncSessionLocal() as db:
+                rows = (
+                    await db.execute(
+                        select(User.phone, User.fcm_token).where(
+                            User.phone.in_(contact_phones),
+                            User.fcm_token.isnot(None),
+                        )
+                    )
+                ).all()
+                contact_fcm_tokens = {r[0]: r[1] for r in rows if r[1]}
+        except Exception as exc:
+            logger.warning("Could not query emergency contacts FCM tokens: %s", exc)
+
     # ── Notify each emergency contact ──────────────────────────────────────
     for contact in contacts:
         phone = contact["phone"]
         whatsapp_enabled = contact.get("whatsapp_enabled", False)
 
+        # 1. High-Priority FCM Push Notification (Free & Instant)
+        contact_fcm = contact_fcm_tokens.get(phone)
+        if contact_fcm:
+            fcm_contact_ok = await send_emergency_contact_fcm(
+                fcm_token=contact_fcm,
+                patient_name=patient_name,
+                location_area=location_area,
+                maps_url=maps_url,
+                scan_time=scan_time,
+                responder_name=responder_name,
+            )
+            if fcm_contact_ok:
+                results["fcm_sent"] = True
+                results["contacts_notified"] += 1
+
+        # 2. SMS Alert
         sms_ok = await send_sms(
             phone=phone,
             patient_name=patient_name,
@@ -108,11 +144,12 @@ async def _async_notify(
 
         if sms_ok:
             results["sms_sent"] = True
-            results["contacts_notified"] += 1
+            if not contact_fcm:
+                results["contacts_notified"] += 1
         else:
-            # Email fallback only — we don't store contact emails, so log only
-            logger.warning("SMS failed for contact %s — no email fallback (no email stored)", phone)
+            logger.warning("SMS failed for contact %s", phone)
 
+        # 3. WhatsApp Alert
         if whatsapp_enabled:
             wa_ok = await send_whatsapp(
                 phone=phone,
@@ -124,14 +161,17 @@ async def _async_notify(
             if wa_ok:
                 results["whatsapp_sent"] = True
 
-    # ── FCM push to patient ─────────────────────────────────────────────────
+    # ── FCM push to patient device ──────────────────────────────────────────
     if fcm_token:
         fcm_ok = await send_fcm_push(
             fcm_token=fcm_token,
             location_area=location_area,
             scan_time=scan_time,
+            maps_url=maps_url,
+            responder_name=responder_name,
         )
-        results["fcm_sent"] = fcm_ok
+        if fcm_ok:
+            results["fcm_sent"] = True
 
     # ── Update scan_event record with delivery status ───────────────────────
     async with AsyncSessionLocal() as db:
