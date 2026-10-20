@@ -35,16 +35,32 @@ async def _ensure_unique_uid(db: AsyncSession) -> str:
     raise RuntimeError("Could not generate a unique QR UID after 10 attempts")
 
 
-async def get_or_create_profile(db: AsyncSession, user: User) -> Profile:
+async def get_or_create_profile(
+    db: AsyncSession,
+    user: User,
+    full_name: str | None = None,
+    photo_url: str | None = None,
+) -> Profile:
     """Return existing profile or create a blank one."""
     result = await db.execute(select(Profile).where(Profile.user_id == user.id))
     profile = result.scalar_one_or_none()
 
     if profile is None:
         uid = await _ensure_unique_uid(db)
-        profile = Profile(user_id=user.id, qr_uid=uid)
+        profile = Profile(
+            user_id=user.id,
+            qr_uid=uid,
+            full_name=full_name,
+            photo_url=photo_url,
+        )
         db.add(profile)
         await db.flush()
+    else:
+        if full_name and not profile.full_name:
+            profile.full_name = full_name
+        if photo_url and not profile.photo_url:
+            profile.photo_url = photo_url
+        db.add(profile)
 
     return profile
 

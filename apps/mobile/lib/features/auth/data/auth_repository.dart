@@ -46,6 +46,35 @@ class AuthRepository {
     return data;
   }
 
+  /// Sign in with Google ID token, persist tokens, and return user session data
+  Future<Map<String, dynamic>> signInWithGoogle({
+    required String idToken,
+    String? fcmToken,
+  }) async {
+    final data = await _remoteSource.googleAuth(
+      idToken: idToken,
+      fcmToken: fcmToken,
+    );
+
+    final accessToken = data['access_token'] as String;
+    final refreshToken = data['refresh_token'] as String;
+    final userId = data['user_id']?.toString() ?? '';
+
+    await _storageService.saveTokens(
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    );
+
+    if (userId.isNotEmpty) {
+      await _storageService.saveUserData(
+        userId: userId,
+        phone: data['phone']?.toString() ?? '',
+      );
+    }
+
+    return data;
+  }
+
   /// Check whether valid token exists in storage for auto-login
   Future<bool> isAuthenticated() async {
     return await _storageService.hasValidToken();

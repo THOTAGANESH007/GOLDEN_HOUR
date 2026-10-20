@@ -45,6 +45,25 @@ class AuthRemoteSource {
     }
   }
 
+  /// Authenticate with Google ID token and obtain JWT access + refresh tokens
+  Future<Map<String, dynamic>> googleAuth({
+    required String idToken,
+    String? fcmToken,
+  }) async {
+    try {
+      final response = await _dio.post(
+        '/auth/google',
+        data: {
+          'id_token': idToken,
+          if (fcmToken != null) 'fcm_token': fcmToken,
+        },
+      );
+      return Map<String, dynamic>.from(response.data as Map);
+    } catch (e) {
+      throw ApiClient.getErrorMessage(e);
+    }
+  }
+
   /// Revoke tokens on server side
   Future<void> logout({required String refreshToken}) async {
     try {

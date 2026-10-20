@@ -17,9 +17,15 @@ class User(Base):
     )
 
     # ── Identity ───────────────────────────────────────────────────────────
-    phone: Mapped[str] = mapped_column(
-        String(20), unique=True, nullable=False, index=True
+    phone: Mapped[str | None] = mapped_column(
+        String(20), unique=True, nullable=True, index=True
     )  # E.164 format: +91XXXXXXXXXX
+    email: Mapped[str | None] = mapped_column(
+        String(255), unique=True, nullable=True, index=True
+    )
+    google_id: Mapped[str | None] = mapped_column(
+        String(128), unique=True, nullable=True, index=True
+    )
 
     # ── FCM ───────────────────────────────────────────────────────────────
     fcm_token: Mapped[str | None] = mapped_column(Text, nullable=True)
@@ -58,4 +64,4 @@ class User(Base):
     )
 
     def __repr__(self) -> str:
-        return f"<User id={self.id} phone={self.phone}>"
+        return f"<User id={self.id} phone={self.phone} email={self.email}>"

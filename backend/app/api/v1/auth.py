@@ -16,6 +16,7 @@ from app.models.profile import Profile
 from app.models.user import User
 from app.schemas.auth import (
     FCMTokenUpdate,
+    GoogleAuthRequest,
     RefreshRequest,
     SendOTPRequest,
     TokenResponse,
@@ -68,7 +69,62 @@ async def verify_otp(body: VerifyOTPRequest, db: AsyncSession = Depends(get_db))
     return TokenResponse(access_token=access_token, refresh_token=refresh_token)
 
 
+# ── POST /auth/google ─────────────────────────────────────────────────────────
+
+@router.post("/google", response_model=TokenResponse)
+async def google_auth(body: GoogleAuthRequest, db: AsyncSession = Depends(get_db)):
+    """
+    Authenticate or register via Google ID token.
+    Validates token, provisions user and profile, and issues JWT tokens.
+    """
+    try:
+        token_info = auth_service.verify_google_id_token(body.id_token)
+    except Exception as exc:
+        logger.error(f"Google token verification failed: {exc}")
+        sentry_sdk.capture_exception(exc)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Invalid Google token: {exc}",
+        )
+
+    google_id = token_info.get("sub")
+    email = token_info.get("email")
+    name = token_info.get("name")
+    picture = token_info.get("picture")
+
+    if not google_id or not email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Google token missing required user identification (sub/email)",
+        )
+
+    user, is_new = await auth_service.get_or_create_google_user(
+        db, google_id=google_id, email=email
+    )
+
+    # Save FCM token if supplied
+    if body.fcm_token:
+        user.fcm_token = body.fcm_token
+        db.add(user)
+
+    # Auto-create profile + QR UID with Google Name and Photo
+    profile = await get_or_create_profile(
+        db, user, full_name=name, photo_url=picture
+    )
+
+    access_token = auth_service.create_access_token(user.id)
+    refresh_token = auth_service.create_refresh_token(user.id)
+    await auth_service.store_refresh_token(db, user, refresh_token)
+
+    return TokenResponse(
+        access_token=access_token,
+        refresh_token=refresh_token,
+        wizard_completed=profile.wizard_completed,
+    )
+
+
 # ── POST /auth/refresh ─────────────────────────────────────────────────────────
+
 
 @router.post("/refresh", response_model=TokenResponse)
 async def refresh_token(body: RefreshRequest, db: AsyncSession = Depends(get_db)):

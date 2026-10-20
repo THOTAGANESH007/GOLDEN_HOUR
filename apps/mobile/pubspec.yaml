@@ -38,9 +38,11 @@ dependencies:
   pdf: ^3.10.8
   printing: ^5.12.0
 
-  # Firebase (push notifications)
+  # Firebase & Google Auth
   firebase_core: ^3.4.0
   firebase_messaging: ^15.1.2
+  firebase_auth: ^5.1.4
+  google_sign_in: ^6.2.1
 
   # Supabase auth
   supabase_flutter: ^2.5.5

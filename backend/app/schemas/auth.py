@@ -37,6 +37,7 @@ class TokenResponse(BaseModel):
     access_token: str
     refresh_token: str
     token_type: str = "bearer"
+    wizard_completed: bool = False
 
 
 class RefreshRequest(BaseModel):
@@ -45,3 +46,8 @@ class RefreshRequest(BaseModel):
 
 class FCMTokenUpdate(BaseModel):
     fcm_token: str
+
+
+class GoogleAuthRequest(BaseModel):
+    id_token: str
+    fcm_token: str | None = None

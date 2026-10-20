@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/services/secure_storage_service.dart';
@@ -141,6 +143,60 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  /// Sign in with Google / Firebase
+  Future<bool> signInWithGoogle() async {
+    state = state.copyWith(status: AuthStatus.loading, errorMessage: null);
+
+    try {
+      final googleSignIn = GoogleSignIn(
+        serverClientId: '226834628996-j852ld7lg3j4hf0m7cvc5fh2ccf1rnor.apps.googleusercontent.com',
+        scopes: ['email', 'profile'],
+      );
+      final googleAccount = await googleSignIn.signIn();
+
+      if (googleAccount == null) {
+        // User dismissed the Google sign-in dialog
+        state = state.copyWith(status: AuthStatus.unauthenticated);
+        return false;
+      }
+
+      final googleAuth = await googleAccount.authentication;
+      final idToken = googleAuth.idToken;
+
+      if (idToken == null) {
+        throw 'Failed to obtain Google ID token. Please check Google Play Services.';
+      }
+
+      // Link with Firebase Auth locally
+      try {
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+        await FirebaseAuth.instance.signInWithCredential(credential);
+      } catch (_) {
+        // Continue if local firebase auth client encounters non-critical issue
+      }
+
+      // Authenticate with Golden Hour Backend
+      final data = await _repository.signInWithGoogle(idToken: idToken);
+
+      state = state.copyWith(
+        status: AuthStatus.authenticated,
+        userId: data['user_id']?.toString(),
+        errorMessage: null,
+      );
+      return true;
+    } catch (e, stackTrace) {
+      await Sentry.captureException(e, stackTrace: stackTrace);
+      state = state.copyWith(
+        status: AuthStatus.error,
+        errorMessage: e.toString(),
+      );
+      return false;
+    }
+  }
+
   /// Resend OTP after 60s cooldown
   Future<bool> resendOtp() async {
     if (state.resendCountdown > 0 || state.phone == null) return false;
@@ -153,6 +209,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(status: AuthStatus.loading);
     try {
       await _repository.logout();
+      try {
+        await GoogleSignIn().signOut();
+        await FirebaseAuth.instance.signOut();
+      } catch (_) {}
     } finally {
       state = const AuthState(status: AuthStatus.unauthenticated);
     }
