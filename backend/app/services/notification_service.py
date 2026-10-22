@@ -69,6 +69,30 @@ async def send_sms(
         return False
 
 
+async def send_custom_sms(phone: str, message: str) -> bool:
+    """Send arbitrary SMS text via Fast2SMS (e.g. for fallback OTP)."""
+    if not settings.fast2sms_api_key:
+        return False
+    number = phone.lstrip("+").lstrip("91")[-10:]
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(
+                "https://www.fast2sms.com/dev/bulkV2",
+                headers={"authorization": settings.fast2sms_api_key},
+                params={
+                    "variables_values": message,
+                    "route": "q",
+                    "numbers": number,
+                },
+                timeout=10,
+            )
+        data = resp.json()
+        return bool(data.get("return"))
+    except Exception as exc:
+        logger.error("Custom SMS exception for %s: %s", phone, exc)
+        return False
+
+
 # ── WhatsApp via Official Meta Cloud API ──────────────────────────────────────
 
 async def send_whatsapp(
@@ -158,6 +182,48 @@ async def send_whatsapp(
         return False
     except Exception as exc:
         logger.error("Meta WhatsApp Cloud API exception for %s: %s", phone, exc)
+        return False
+
+
+async def send_custom_whatsapp(phone: str, message_text: str) -> bool:
+    """Send arbitrary text message (e.g. login OTP) via Meta WhatsApp Cloud API."""
+    if not settings.whatsapp_access_token or not settings.whatsapp_phone_number_id:
+        return False
+
+    clean_phone = phone.lstrip("+").strip()
+    url = f"https://graph.facebook.com/v21.0/{settings.whatsapp_phone_number_id}/messages"
+    headers = {
+        "Authorization": f"Bearer {settings.whatsapp_access_token}",
+        "Content-Type": "application/json",
+    }
+    payload = {
+        "messaging_product": "whatsapp",
+        "recipient_type": "individual",
+        "to": clean_phone,
+        "type": "text",
+        "text": {
+            "preview_url": False,
+            "body": message_text,
+        },
+    }
+
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(url, headers=headers, json=payload, timeout=12)
+        if resp.status_code in (200, 201):
+            data = resp.json()
+            if "messages" in data:
+                logger.info("Custom WhatsApp message sent to %s", phone)
+                return True
+        logger.warning(
+            "Meta WhatsApp custom message failed for %s (%s): %s",
+            phone,
+            resp.status_code,
+            resp.text,
+        )
+        return False
+    except Exception as exc:
+        logger.error("Custom WhatsApp exception for %s: %s", phone, exc)
         return False
 
 

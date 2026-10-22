@@ -54,46 +54,91 @@ def hash_token(token: str) -> str:
     return hashlib.sha256(token.encode()).hexdigest()
 
 
-# ── Supabase OTP ───────────────────────────────────────────────────────────────
+# ── WhatsApp OTP via Redis ────────────────────────────────────────────────────
 
-SUPABASE_AUTH_URL = f"{settings.supabase_url}/auth/v1"
-SUPABASE_HEADERS = {
-    "apikey": settings.supabase_service_key,
-    "Authorization": f"Bearer {settings.supabase_service_key}",
-    "Content-Type": "application/json",
-}
+_in_memory_otp_cache: dict[str, tuple[str, datetime]] = {}
 
-_AUTH_TIMEOUT = httpx.Timeout(20.0, connect=10.0)
+
+async def _get_redis_client():
+    try:
+        import redis.asyncio as aioredis
+        client = aioredis.from_url(settings.redis_url, decode_responses=True)
+        await client.ping()
+        return client
+    except Exception:
+        return None
 
 
 async def send_otp(phone: str) -> dict:
     """
-    Ask Supabase to send an OTP SMS to the given phone number.
-    Returns the raw Supabase response.
+    Generate 6-digit OTP, store in Redis with 10-min TTL, and dispatch via WhatsApp (or SMS safety net).
     """
-    async with httpx.AsyncClient(timeout=_AUTH_TIMEOUT) as client:
-        resp = await client.post(
-            f"{SUPABASE_AUTH_URL}/otp",
-            headers=SUPABASE_HEADERS,
-            json={"phone": phone, "channel": "sms"},
+    clean_phone = phone.lstrip("+").strip()
+    otp_code = f"{secrets.randbelow(1000000):06d}"
+
+    # 1. Store in Redis with 10-minute expiry (TTL 600s)
+    stored = False
+    redis_client = await _get_redis_client()
+    if redis_client:
+        try:
+            await redis_client.set(f"otp:{clean_phone}", otp_code, ex=600)
+            await redis_client.aclose()
+            stored = True
+        except Exception:
+            pass
+
+    if not stored:
+        _in_memory_otp_cache[clean_phone] = (
+            otp_code,
+            datetime.now(timezone.utc) + timedelta(minutes=10),
         )
-    resp.raise_for_status()
-    return resp.json()
+
+    # 2. Dispatch via WhatsApp
+    from app.services.notification_service import send_custom_whatsapp, send_custom_sms
+
+    whatsapp_msg = (
+        f"🔐 *Golden Hour Sign-In Code*\n\n"
+        f"Your verification code is: *{otp_code}*\n\n"
+        f"⏰ Valid for 10 minutes. Do not share this code with anyone."
+    )
+    sent = await send_custom_whatsapp(phone, whatsapp_msg)
+
+    # 3. Fallback to SMS if WhatsApp delivery failed or unconfigured
+    if not sent:
+        sms_msg = f"Golden Hour sign-in code: {otp_code}. Valid for 10 minutes."
+        await send_custom_sms(phone, sms_msg)
+
+    return {"status": "success", "message": "OTP dispatched successfully"}
 
 
 async def verify_otp(phone: str, otp: str) -> dict:
     """
-    Verify the OTP with Supabase. Returns Supabase session data on success.
-    Raises httpx.HTTPStatusError on wrong OTP.
+    Verify 6-digit OTP code against Redis / cache.
+    Raises ValueError on invalid or expired OTP.
     """
-    async with httpx.AsyncClient(timeout=_AUTH_TIMEOUT) as client:
-        resp = await client.post(
-            f"{SUPABASE_AUTH_URL}/verify",
-            headers=SUPABASE_HEADERS,
-            json={"phone": phone, "token": otp, "type": "sms"},
-        )
-    resp.raise_for_status()
-    return resp.json()
+    clean_phone = phone.lstrip("+").strip()
+    target_otp = otp.strip()
+
+    stored_otp = None
+    redis_client = await _get_redis_client()
+    if redis_client:
+        try:
+            stored_otp = await redis_client.get(f"otp:{clean_phone}")
+            if stored_otp:
+                await redis_client.delete(f"otp:{clean_phone}")
+            await redis_client.aclose()
+        except Exception:
+            pass
+
+    if not stored_otp and clean_phone in _in_memory_otp_cache:
+        val, expiry = _in_memory_otp_cache.pop(clean_phone)
+        if datetime.now(timezone.utc) <= expiry:
+            stored_otp = val
+
+    if not stored_otp or stored_otp != target_otp:
+        raise ValueError("Invalid or expired OTP code")
+
+    return {"status": "verified"}
 
 
 # ── User DB helpers ────────────────────────────────────────────────────────────
