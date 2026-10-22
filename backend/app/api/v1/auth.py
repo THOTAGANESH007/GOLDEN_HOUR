@@ -60,13 +60,17 @@ async def verify_otp(body: VerifyOTPRequest, db: AsyncSession = Depends(get_db))
     user = await auth_service.get_or_create_user(db, body.phone)
 
     # Auto-create blank profile + QR UID on first login
-    await get_or_create_profile(db, user)
+    profile = await get_or_create_profile(db, user)
 
     access_token = auth_service.create_access_token(user.id)
     refresh_token = auth_service.create_refresh_token(user.id)
     await auth_service.store_refresh_token(db, user, refresh_token)
 
-    return TokenResponse(access_token=access_token, refresh_token=refresh_token)
+    return TokenResponse(
+        access_token=access_token,
+        refresh_token=refresh_token,
+        wizard_completed=profile.wizard_completed,
+    )
 
 
 # ── POST /auth/google ─────────────────────────────────────────────────────────
