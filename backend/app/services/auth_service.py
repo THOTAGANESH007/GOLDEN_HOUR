@@ -62,7 +62,12 @@ _in_memory_otp_cache: dict[str, tuple[str, datetime]] = {}
 async def _get_redis_client():
     try:
         import redis.asyncio as aioredis
-        client = aioredis.from_url(settings.redis_url, decode_responses=True)
+        client = aioredis.from_url(
+            settings.redis_url,
+            decode_responses=True,
+            socket_timeout=3,
+            socket_connect_timeout=3,
+        )
         await client.ping()
         return client
     except Exception:
@@ -101,7 +106,7 @@ async def send_otp(phone: str) -> dict:
         f"Your verification code is: *{otp_code}*\n\n"
         f"⏰ Valid for 10 minutes. Do not share this code with anyone."
     )
-    sent = await send_custom_whatsapp(phone, whatsapp_msg)
+    sent = await send_custom_whatsapp(phone, whatsapp_msg, otp_code=otp_code)
 
     # 3. Fallback to SMS if WhatsApp delivery failed or unconfigured
     if not sent:

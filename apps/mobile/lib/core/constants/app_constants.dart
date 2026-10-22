@@ -17,7 +17,7 @@ class AppConstants {
 
   // Default API Base URLs
   static const String defaultApiBaseUrl =
-      'https://golden-hour-cvpg.onrender.com/api/v1';
+      'https://goldenhour-backend.duckdns.org/api/v1';
   static const String defaultResponderWebUrl =
       'https://goldenhr.ganeshthota656.workers.dev/p';
 

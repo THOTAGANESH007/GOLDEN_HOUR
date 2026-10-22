@@ -185,8 +185,8 @@ async def send_whatsapp(
         return False
 
 
-async def send_custom_whatsapp(phone: str, message_text: str) -> bool:
-    """Send arbitrary text message (e.g. login OTP) via Meta WhatsApp Cloud API."""
+async def send_custom_whatsapp(phone: str, message_text: str, otp_code: str | None = None) -> bool:
+    """Send arbitrary text message or authentication template (e.g. login OTP) via Meta WhatsApp Cloud API."""
     if not settings.whatsapp_access_token or not settings.whatsapp_phone_number_id:
         return False
 
@@ -196,6 +196,41 @@ async def send_custom_whatsapp(phone: str, message_text: str) -> bool:
         "Authorization": f"Bearer {settings.whatsapp_access_token}",
         "Content-Type": "application/json",
     }
+
+    # 1. If an OTP code is provided, first try the official authentication template
+    if otp_code:
+        tpl_payload = {
+            "messaging_product": "whatsapp",
+            "recipient_type": "individual",
+            "to": clean_phone,
+            "type": "template",
+            "template": {
+                "name": "golden_hour_auth_otp",
+                "language": {"code": "en_US"},
+                "components": [
+                    {
+                        "type": "body",
+                        "parameters": [{"type": "text", "text": otp_code}],
+                    },
+                    {
+                        "type": "button",
+                        "sub_type": "url",
+                        "index": "0",
+                        "parameters": [{"type": "text", "text": otp_code}],
+                    },
+                ],
+            },
+        }
+        try:
+            async with httpx.AsyncClient() as client:
+                resp = await client.post(url, headers=headers, json=tpl_payload, timeout=10)
+            if resp.status_code in (200, 201) and "messages" in resp.json():
+                logger.info("WhatsApp authentication template OTP sent to %s", phone)
+                return True
+        except Exception:
+            pass
+
+    # 2. Direct formatted text message (works whenever 24h conversation window is active)
     payload = {
         "messaging_product": "whatsapp",
         "recipient_type": "individual",
