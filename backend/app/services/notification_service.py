@@ -197,9 +197,30 @@ async def send_custom_whatsapp(phone: str, message_text: str, otp_code: str | No
         "Content-Type": "application/json",
     }
 
-    # 1. If an OTP code is provided, try official authentication templates (golden_hour_verify, golden_hour_auth_otp)
+    # 1. Try direct text message first (instant delivery, no billing lock)
+    direct_payload = {
+        "messaging_product": "whatsapp",
+        "recipient_type": "individual",
+        "to": clean_phone,
+        "type": "text",
+        "text": {
+            "preview_url": False,
+            "body": message_text,
+        },
+    }
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(url, headers=headers, json=direct_payload, timeout=10)
+        if resp.status_code in (200, 201) and "messages" in resp.json():
+            logger.info("Direct WhatsApp text message sent to %s", phone)
+            return True
+        logger.warning("Direct WhatsApp failed for %s (%s): %s", phone, resp.status_code, resp.text)
+    except Exception as exc:
+        logger.warning("Direct WhatsApp exception for %s: %s", phone, exc)
+
+    # 2. Fallback to approved authentication templates (for numbers outside 24h customer window)
     if otp_code:
-        for tpl_name, lang_code in [("golden_hour_verify", "en"), ("golden_hour_auth_otp", "en_US")]:
+        for tpl_name, lang_code in [("golden_hour_auth_otp", "en_US"), ("golden_hour_verify", "en")]:
             tpl_payload = {
                 "messaging_product": "whatsapp",
                 "recipient_type": "individual",
@@ -226,33 +247,10 @@ async def send_custom_whatsapp(phone: str, message_text: str, otp_code: str | No
                 async with httpx.AsyncClient() as client:
                     resp = await client.post(url, headers=headers, json=tpl_payload, timeout=10)
                 if resp.status_code in (200, 201) and "messages" in resp.json():
-                    logger.info("WhatsApp authentication template (%s) OTP sent to %s", tpl_name, phone)
+                    logger.info("WhatsApp authentication template (%s) sent to %s", tpl_name, phone)
                     return True
-                else:
-                    logger.debug("Template %s attempt returned %s: %s", tpl_name, resp.status_code, resp.text)
             except Exception as e:
-                logger.debug("Template %s exception: %s", tpl_name, e)
-
-    # 2. Direct formatted text message (works whenever 24h conversation window is active)
-    payload = {
-        "messaging_product": "whatsapp",
-        "recipient_type": "individual",
-        "to": clean_phone,
-        "type": "text",
-        "text": {
-            "preview_url": False,
-            "body": message_text,
-        },
-    }
-
-    try:
-        async with httpx.AsyncClient() as client:
-            resp = await client.post(url, headers=headers, json=payload, timeout=12)
-        if resp.status_code in (200, 201):
-            data = resp.json()
-            if "messages" in data:
-                logger.info("Custom WhatsApp message sent to %s", phone)
-                return True
+                logger.debug("Template %s error: %s", tpl_name, e)
         logger.warning(
             "Meta WhatsApp custom message failed for %s (%s): %s",
             phone,
