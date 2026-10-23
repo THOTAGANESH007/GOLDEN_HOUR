@@ -197,38 +197,41 @@ async def send_custom_whatsapp(phone: str, message_text: str, otp_code: str | No
         "Content-Type": "application/json",
     }
 
-    # 1. If an OTP code is provided, first try the official authentication template
+    # 1. If an OTP code is provided, try official authentication templates (golden_hour_verify, golden_hour_auth_otp)
     if otp_code:
-        tpl_payload = {
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": clean_phone,
-            "type": "template",
-            "template": {
-                "name": "golden_hour_auth_otp",
-                "language": {"code": "en_US"},
-                "components": [
-                    {
-                        "type": "body",
-                        "parameters": [{"type": "text", "text": otp_code}],
-                    },
-                    {
-                        "type": "button",
-                        "sub_type": "url",
-                        "index": "0",
-                        "parameters": [{"type": "text", "text": otp_code}],
-                    },
-                ],
-            },
-        }
-        try:
-            async with httpx.AsyncClient() as client:
-                resp = await client.post(url, headers=headers, json=tpl_payload, timeout=10)
-            if resp.status_code in (200, 201) and "messages" in resp.json():
-                logger.info("WhatsApp authentication template OTP sent to %s", phone)
-                return True
-        except Exception:
-            pass
+        for tpl_name, lang_code in [("golden_hour_verify", "en"), ("golden_hour_auth_otp", "en_US")]:
+            tpl_payload = {
+                "messaging_product": "whatsapp",
+                "recipient_type": "individual",
+                "to": clean_phone,
+                "type": "template",
+                "template": {
+                    "name": tpl_name,
+                    "language": {"code": lang_code},
+                    "components": [
+                        {
+                            "type": "body",
+                            "parameters": [{"type": "text", "text": otp_code}],
+                        },
+                        {
+                            "type": "button",
+                            "sub_type": "url",
+                            "index": "0",
+                            "parameters": [{"type": "text", "text": otp_code}],
+                        },
+                    ],
+                },
+            }
+            try:
+                async with httpx.AsyncClient() as client:
+                    resp = await client.post(url, headers=headers, json=tpl_payload, timeout=10)
+                if resp.status_code in (200, 201) and "messages" in resp.json():
+                    logger.info("WhatsApp authentication template (%s) OTP sent to %s", tpl_name, phone)
+                    return True
+                else:
+                    logger.debug("Template %s attempt returned %s: %s", tpl_name, resp.status_code, resp.text)
+            except Exception as e:
+                logger.debug("Template %s exception: %s", tpl_name, e)
 
     # 2. Direct formatted text message (works whenever 24h conversation window is active)
     payload = {
