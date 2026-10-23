@@ -127,7 +127,41 @@ async def send_custom_whatsapp(phone: str, message_text: str, otp_code: str | No
         "Content-Type": "application/json",
     }
 
-    # 1. Try direct text message first (instant delivery, no billing lock)
+    # 1. Official Approved Authentication Template (golden_hour_auth_otp)
+    if otp_code:
+        tpl_payload = {
+            "messaging_product": "whatsapp",
+            "recipient_type": "individual",
+            "to": clean_phone,
+            "type": "template",
+            "template": {
+                "name": "golden_hour_auth_otp",
+                "language": {"code": "en_US"},
+                "components": [
+                    {
+                        "type": "body",
+                        "parameters": [{"type": "text", "text": otp_code}],
+                    },
+                    {
+                        "type": "button",
+                        "sub_type": "url",
+                        "index": "0",
+                        "parameters": [{"type": "text", "text": otp_code}],
+                    },
+                ],
+            },
+        }
+        try:
+            async with httpx.AsyncClient() as client:
+                resp = await client.post(url, headers=headers, json=tpl_payload, timeout=10)
+            if resp.status_code in (200, 201) and "messages" in resp.json():
+                logger.info("WhatsApp authentication template (golden_hour_auth_otp) sent to %s", phone)
+                return True
+            logger.warning("Template golden_hour_auth_otp failed for %s (%s): %s", phone, resp.status_code, resp.text)
+        except Exception as e:
+            logger.warning("Template golden_hour_auth_otp error for %s: %s", phone, e)
+
+    # 2. Fallback to direct formatted text message
     direct_payload = {
         "messaging_product": "whatsapp",
         "recipient_type": "individual",
@@ -148,41 +182,8 @@ async def send_custom_whatsapp(phone: str, message_text: str, otp_code: str | No
     except Exception as exc:
         logger.warning("Direct WhatsApp exception for %s: %s", phone, exc)
 
-    # 2. Fallback to approved authentication templates (for numbers outside 24h customer window)
-    if otp_code:
-        for tpl_name, lang_code in [("golden_hour_auth_otp", "en_US"), ("golden_hour_verify", "en")]:
-            tpl_payload = {
-                "messaging_product": "whatsapp",
-                "recipient_type": "individual",
-                "to": clean_phone,
-                "type": "template",
-                "template": {
-                    "name": tpl_name,
-                    "language": {"code": lang_code},
-                    "components": [
-                        {
-                            "type": "body",
-                            "parameters": [{"type": "text", "text": otp_code}],
-                        },
-                        {
-                            "type": "button",
-                            "sub_type": "url",
-                            "index": "0",
-                            "parameters": [{"type": "text", "text": otp_code}],
-                        },
-                    ],
-                },
-            }
-            try:
-                async with httpx.AsyncClient() as client:
-                    resp = await client.post(url, headers=headers, json=tpl_payload, timeout=10)
-                if resp.status_code in (200, 201) and "messages" in resp.json():
-                    logger.info("WhatsApp authentication template (%s) sent to %s", tpl_name, phone)
-                    return True
-            except Exception as e:
-                logger.debug("Template %s error: %s", tpl_name, e)
-
     return False
+
 
 
 
