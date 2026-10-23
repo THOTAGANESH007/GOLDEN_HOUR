@@ -81,3 +81,40 @@ async def health_check():
         "version": "1.0.0",
         "env": settings.app_env,
     }
+
+
+# ── Privacy Policy ────────────────────────────────────────────────────────────
+@app.get("/privacy", tags=["Legal"], response_class=FastAPI.default_response_class)
+async def privacy_policy():
+    from fastapi.responses import HTMLResponse
+    html_content = """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Privacy Policy - Golden Hour</title>
+        <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 40px auto; padding: 0 20px; color: #333; }
+            h1 { color: #d32f2f; }
+            h2 { color: #1976d2; margin-top: 24px; }
+            p { margin-bottom: 16px; }
+        </style>
+    </head>
+    <body>
+        <h1>Privacy Policy for Golden Hour</h1>
+        <p><strong>Effective Date:</strong> October 2026</p>
+        <p>Golden Hour is committed to protecting your privacy and medical information. This Privacy Policy describes how we handle information in our universal medical emergency QR code application.</p>
+        <h2>1. Information We Collect</h2>
+        <p>We collect essential emergency contact details and medical info you choose to disclose (such as blood group, allergies, emergency contacts) to display to first responders during an emergency.</p>
+        <h2>2. How We Use Information</h2>
+        <p>Information is used solely to provide life-saving alerts and critical details during emergency QR code scans.</p>
+        <h2>3. Data Deletion</h2>
+        <p>Users may request complete deletion of their account and emergency profile at any time through the app or by contacting support at support@goldenhr.in.</p>
+        <h2>4. Contact Us</h2>
+        <p>If you have any questions, contact us at support@goldenhr.in.</p>
+    </body>
+    </html>
+    """
+    return HTMLResponse(content=html_content, status_code=200)
+
