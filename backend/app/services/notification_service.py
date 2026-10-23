@@ -251,16 +251,9 @@ async def send_custom_whatsapp(phone: str, message_text: str, otp_code: str | No
                     return True
             except Exception as e:
                 logger.debug("Template %s error: %s", tpl_name, e)
-        logger.warning(
-            "Meta WhatsApp custom message failed for %s (%s): %s",
-            phone,
-            resp.status_code,
-            resp.text,
-        )
-        return False
-    except Exception as exc:
-        logger.error("Custom WhatsApp exception for %s: %s", phone, exc)
-        return False
+
+    return False
+
 
 
 # ── FCM Push (to patient & emergency contacts) ────────────────────────────────
