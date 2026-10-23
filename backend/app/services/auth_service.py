@@ -101,7 +101,7 @@ async def send_otp(phone: str) -> dict:
         )
 
     # 2. Dispatch via WhatsApp
-    from app.services.notification_service import send_custom_whatsapp, send_custom_sms
+    from app.services.notification_service import send_custom_whatsapp
 
     whatsapp_msg = (
         f"🔐 *Golden Hour Sign-In Code*\n\n"
@@ -110,25 +110,18 @@ async def send_otp(phone: str) -> dict:
     )
     sent = await send_custom_whatsapp(phone, whatsapp_msg, otp_code=otp_code)
 
-    # 3. Fallback to SMS if WhatsApp delivery failed or unconfigured
     if not sent:
-        logger.warning(
-            "WhatsApp OTP delivery failed or unconfigured for %s. Attempting SMS fallback.",
+        logger.error(
+            "CRITICAL: WhatsApp OTP delivery failed for %s! Please verify WHATSAPP_ACCESS_TOKEN and WHATSAPP_PHONE_NUMBER_ID in backend/.env.",
             phone,
         )
-        sms_msg = f"Golden Hour sign-in code: {otp_code}. Valid for 10 minutes."
-        sms_sent = await send_custom_sms(phone, sms_msg)
-        if not sms_sent:
-            logger.error(
-                "CRITICAL: All OTP delivery channels failed for %s! Please verify WHATSAPP_ACCESS_TOKEN and WHATSAPP_PHONE_NUMBER_ID in backend/.env on the server.",
-                phone,
-            )
-            raise RuntimeError(
-                "Failed to deliver verification code via WhatsApp or SMS. "
-                "Please verify server WhatsApp credentials or try again."
-            )
+        raise RuntimeError(
+            "Failed to deliver verification code via WhatsApp. "
+            "Please check your WhatsApp connection or try again."
+        )
 
     return {"status": "success", "message": "OTP dispatched successfully"}
+
 
 
 async def verify_otp(phone: str, otp: str) -> dict:

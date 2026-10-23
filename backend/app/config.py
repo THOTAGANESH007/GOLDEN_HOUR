@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379"
 
     # ── Notifications ──────────────────────────────────────────────────────
-    fast2sms_api_key: str = ""
+
 
     # ── WhatsApp (Official Meta Cloud API) ─────────────────────────────────
     whatsapp_access_token: str = ""

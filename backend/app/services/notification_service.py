@@ -1,5 +1,5 @@
 """
-Notification service — SMS (Fast2SMS), WhatsApp Cloud API, FCM, Email (Resend).
+Notification service — WhatsApp Cloud API, FCM Push, and Email (Resend).
 All channels are called from the Celery task, not directly from the API.
 """
 import json
@@ -21,76 +21,6 @@ def _ist_time(dt: datetime | None = None) -> str:
     base = dt or datetime.now(timezone.utc)
     ist = base + ist_offset
     return ist.strftime("%H:%M IST")
-
-
-# ── SMS via Fast2SMS ───────────────────────────────────────────────────────────
-
-async def send_sms(
-    phone: str,     # E.164: +91XXXXXXXXXX → strip to 10 digits for Fast2SMS
-    patient_name: str,
-    scan_time: datetime,
-    maps_url: str | None,
-    responder_name: str | None,
-) -> bool:
-    """Returns True on success."""
-    # Fast2SMS expects 10-digit Indian number
-    number = phone.lstrip("+").lstrip("91")[-10:]
-    time_str = _ist_time(scan_time)
-    location = maps_url or "Location unavailable"
-    responder = responder_name or "Unknown"
-
-    message = (
-        f"EMERGENCY ALERT: {patient_name}'s medical QR was scanned. "
-        f"Time: {time_str} | {location} "
-        f"Responder: {responder} "
-        "Please call 108 immediately. - Golden Hour"
-    )
-
-    try:
-        async with httpx.AsyncClient() as client:
-            resp = await client.post(
-                "https://www.fast2sms.com/dev/bulkV2",
-                headers={"authorization": settings.fast2sms_api_key},
-                params={
-                    "variables_values": message,
-                    "route": "q",
-                    "numbers": number,
-                },
-                timeout=10,
-            )
-        data = resp.json()
-        if data.get("return"):
-            logger.info("SMS sent to %s", phone)
-            return True
-        logger.warning("SMS failed for %s: %s", phone, data)
-        return False
-    except Exception as exc:
-        logger.error("SMS exception for %s: %s", phone, exc)
-        return False
-
-
-async def send_custom_sms(phone: str, message: str) -> bool:
-    """Send arbitrary SMS text via Fast2SMS (e.g. for fallback OTP)."""
-    if not settings.fast2sms_api_key:
-        return False
-    number = phone.lstrip("+").lstrip("91")[-10:]
-    try:
-        async with httpx.AsyncClient() as client:
-            resp = await client.post(
-                "https://www.fast2sms.com/dev/bulkV2",
-                headers={"authorization": settings.fast2sms_api_key},
-                params={
-                    "variables_values": message,
-                    "route": "q",
-                    "numbers": number,
-                },
-                timeout=10,
-            )
-        data = resp.json()
-        return bool(data.get("return"))
-    except Exception as exc:
-        logger.error("Custom SMS exception for %s: %s", phone, exc)
-        return False
 
 
 # ── WhatsApp via Official Meta Cloud API ──────────────────────────────────────

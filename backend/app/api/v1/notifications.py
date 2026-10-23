@@ -73,16 +73,9 @@ async def send_test_notification(
 ):
     """Send a test SMS and WhatsApp to the patient's own phone number."""
     from datetime import datetime, timezone
-    from app.services.notification_service import send_sms, send_whatsapp
+    from app.services.notification_service import send_whatsapp
 
     now = datetime.now(timezone.utc)
-    sms_ok = await send_sms(
-        phone=current_user.phone,
-        patient_name="Test Patient",
-        scan_time=now,
-        maps_url=None,
-        responder_name="Golden Hour Test",
-    )
     wa_ok = await send_whatsapp(
         phone=current_user.phone,
         patient_name="Test Patient",
@@ -92,7 +85,7 @@ async def send_test_notification(
     )
 
     return {
-        "sms_sent": sms_ok,
         "whatsapp_sent": wa_ok,
         "message": "Test notification dispatched",
     }
+
