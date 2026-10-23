@@ -84,9 +84,10 @@ async def health_check():
 
 
 # ── Privacy Policy ────────────────────────────────────────────────────────────
-@app.get("/privacy", tags=["Legal"], response_class=FastAPI.default_response_class)
+from fastapi.responses import HTMLResponse
+
+@app.get("/privacy", tags=["Legal"], response_class=HTMLResponse)
 async def privacy_policy():
-    from fastapi.responses import HTMLResponse
     html_content = """
     <!DOCTYPE html>
     <html lang="en">
