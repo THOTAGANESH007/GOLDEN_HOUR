@@ -61,6 +61,14 @@ class SecureStorageService {
     await _storage.write(key: AppConstants.keyCachedQrUid, value: uid);
   }
 
+  Future<String?> getThemeMode() async {
+    return await _storage.read(key: AppConstants.keyThemeMode);
+  }
+
+  Future<void> saveThemeMode(String mode) async {
+    await _storage.write(key: AppConstants.keyThemeMode, value: mode);
+  }
+
   Future<void> clearAll() async {
     await _storage.deleteAll();
   }

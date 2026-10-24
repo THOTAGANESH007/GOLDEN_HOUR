@@ -1,6 +1,6 @@
 # 🧪 Golden Hour — Comprehensive Module Testing & Verification Log
 
-**Document Version:** 1.2.0  
+**Document Version:** 1.3.0  
 **Last Updated:** 2026-10-24  
 **Scope:** Complete module-by-module audit, functional testing, bug fixing, and status tracking for Golden Hour (Mobile Flutter App + FastAPI Backend + Responder Web).
 
@@ -128,6 +128,7 @@
 | **ISS-10** | Medical Documents / Security | Document upload allowed client-side extensions without server-side MIME type and extension enforcement | High | Added strict whitelist (`ALLOWED_EXTENSIONS` and `ALLOWED_MIME_TYPES` for PDF, PNG, JPG, JPEG, WEBP) in `backend/app/api/v1/documents.py`, rejecting disallowed files with HTTP 400; deployed to Oracle VM | 🟢 RESOLVED |
 | **ISS-11** | Notifications / UI | Notifications screen displayed developer "Test Emergency Channels" trigger buttons in production view | Low | Removed developer test card and direct simulation buttons from `notifications_screen.dart`, providing a clean, production-ready Emergency Alert Log | 🟢 RESOLVED |
 | **ISS-12** | Settings & Legal / Mobile | Legal & Compliance modal bottom sheet (DPDPA Privacy Policy, Medical Disclaimer, Terms of Service) used hardcoded dark text (`#1A202C`), making text unreadable in Dark Mode | High | Replaced hardcoded dark colors in `_showInfoModal` with `theme.colorScheme.onSurface` and adapted section headers to theme tokens for crisp readability across both Dark and Light themes | 🟢 RESOLVED |
+| **ISS-13** | Theme & Appearance / Mobile | App lacked persistent Dark/Light mode selection (hardcoded to `ThemeMode.system`), and card outlines/colors were hardcoded light grey (`Colors.grey.shade200`) | High | Built `themeModeProvider` backed by `FlutterSecureStorage`, implemented comprehensive `AppTheme.lightTheme` and `AppTheme.darkTheme` (slate 900 background `#0F172A`, midnight slate 800 cards `#1E293B`, dynamic surface containers, crimson accents), added 3-way Theme Selector in Settings, and added instant 1-tap quick theme toggle in Profile Home AppBar | 🟢 RESOLVED |
 
 ---
 
@@ -135,4 +136,5 @@
 - **Backend Deployment:** Live on Oracle Cloud VM (`129.225.91.215` / `https://goldenhour-backend.duckdns.org`), container `golden-hour-api` updated with document validation whitelist.
 - **Mobile Codebase Quality:** Passed `flutter analyze` with **0 errors and 0 warnings**.
 - **All 7 Core Modules:** Audited, verified end-to-end, and confirmed 100% working as expected.
+
 

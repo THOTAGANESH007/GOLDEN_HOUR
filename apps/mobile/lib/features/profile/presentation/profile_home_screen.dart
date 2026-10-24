@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/theme_provider.dart';
 import '../../auth/domain/auth_provider.dart';
 import '../data/profile_models.dart';
 import '../domain/profile_provider.dart';
@@ -19,6 +20,7 @@ class ProfileHomeScreen extends ConsumerWidget {
     final profile = profileState.profile;
     final completion = profileState.completion;
     final contacts = profileState.contacts;
+    final currentThemeMode = ref.watch(themeModeProvider);
 
     // Initialize FCM and synchronize token with backend on home entry
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -91,6 +93,24 @@ class ProfileHomeScreen extends ConsumerWidget {
             icon: const Icon(Icons.shield_outlined),
             tooltip: 'Privacy Settings',
             onPressed: () => context.push('/profile/privacy'),
+          ),
+          IconButton(
+            icon: Icon(
+              currentThemeMode == ThemeMode.dark
+                  ? Icons.light_mode_rounded
+                  : currentThemeMode == ThemeMode.light
+                      ? Icons.dark_mode_rounded
+                      : Icons.brightness_auto_rounded,
+            ),
+            tooltip: currentThemeMode == ThemeMode.dark
+                ? 'Switch to Light Theme'
+                : 'Switch to Dark Theme',
+            onPressed: () {
+              final nextMode = currentThemeMode == ThemeMode.dark
+                  ? ThemeMode.light
+                  : ThemeMode.dark;
+              ref.read(themeModeProvider.notifier).setThemeMode(nextMode);
+            },
           ),
           IconButton(
             icon: const Icon(Icons.settings_outlined),

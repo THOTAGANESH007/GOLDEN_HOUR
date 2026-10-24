@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/theme_provider.dart';
 import '../../auth/domain/auth_provider.dart';
 import '../../profile/domain/profile_provider.dart';
 
@@ -236,6 +237,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final authState = ref.watch(authNotifierProvider);
     final profileState = ref.watch(profileNotifierProvider);
     final profile = profileState.profile;
+    final currentThemeMode = ref.watch(themeModeProvider);
+    final theme = Theme.of(context);
 
     final isQrActive = profile?.qrIsActive ?? true;
     final phone = authState.phone ?? profile?.bloodGroup ?? 'Registered Patient';
@@ -265,7 +268,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
-                  side: BorderSide(color: Colors.grey.shade200),
+                  side: BorderSide(
+                    color: theme.colorScheme.outline.withValues(alpha: 0.25),
+                  ),
                 ),
                 child: Column(
                   children: [
@@ -347,7 +352,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
-                  side: BorderSide(color: Colors.grey.shade200),
+                  side: BorderSide(
+                    color: theme.colorScheme.outline.withValues(alpha: 0.25),
+                  ),
                 ),
                 child: Column(
                   children: [
@@ -386,8 +393,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ListTile(
                       leading: Container(
                         padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(
-                          color: AppColors.primaryLight,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.12),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(
@@ -397,14 +404,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         ),
                       ),
                       title: const Text(
-                        'Notifications & Channel Test',
+                        'Emergency Alert Logs',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),
                       ),
                       subtitle: const Text(
-                        'Verify Fast2SMS, WhatsApp, and FCM push alerts',
+                        'View WhatsApp broadcasts & emergency push notifications',
                         style: TextStyle(fontSize: 12),
                       ),
                       trailing: const Icon(
@@ -418,8 +425,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ListTile(
                       leading: Container(
                         padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(
-                          color: AppColors.infoLight,
+                        decoration: BoxDecoration(
+                          color: AppColors.info.withValues(alpha: 0.12),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(
@@ -449,6 +456,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ],
                 ),
               ),
+              const SizedBox(height: 20),
+
+              // Section 3: Appearance & Theme
+              _buildSectionHeader('APPEARANCE & THEME'),
+              const SizedBox(height: 8),
+              _buildThemeSelector(currentThemeMode),
               const SizedBox(height: 20),
 
               // Section 3: Legal & Compliance
@@ -592,19 +605,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
-                  side: BorderSide(color: Colors.grey.shade200),
+                  side: BorderSide(
+                    color: theme.colorScheme.outline.withValues(alpha: 0.25),
+                  ),
                 ),
                 child: Column(
                   children: [
                     ListTile(
-                      leading: const Icon(Icons.logout_rounded,
-                          color: AppColors.textPrimary, size: 22),
-                      title: const Text(
+                      leading: Icon(
+                        Icons.logout_rounded,
+                        color: theme.colorScheme.onSurface,
+                        size: 22,
+                      ),
+                      title: Text(
                         'Log Out',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                          color: theme.colorScheme.onSurface,
                         ),
                       ),
                       subtitle: const Text(
@@ -746,7 +764,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: AppColors.successLight,
+                    color: AppColors.success.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(6),
                     border: Border.all(
                       color: AppColors.success.withValues(alpha: 0.3),
@@ -766,6 +784,126 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildThemeSelector(ThemeMode currentMode) {
+    final theme = Theme.of(context);
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: theme.colorScheme.outline.withValues(alpha: 0.25),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Column(
+          children: [
+            _buildThemeOptionTile(
+              title: 'Light Theme',
+              subtitle: 'Clean, high-visibility medical presentation',
+              icon: Icons.light_mode_rounded,
+              iconColor: const Color(0xFFE28743),
+              isSelected: currentMode == ThemeMode.light,
+              onTap: () {
+                ref
+                    .read(themeModeProvider.notifier)
+                    .setThemeMode(ThemeMode.light);
+              },
+            ),
+            const Divider(height: 1, indent: 64),
+            _buildThemeOptionTile(
+              title: 'Dark Theme',
+              subtitle: 'Midnight slate, comfortable in low-light emergencies',
+              icon: Icons.dark_mode_rounded,
+              iconColor: const Color(0xFF818CF8),
+              isSelected: currentMode == ThemeMode.dark,
+              onTap: () {
+                ref
+                    .read(themeModeProvider.notifier)
+                    .setThemeMode(ThemeMode.dark);
+              },
+            ),
+            const Divider(height: 1, indent: 64),
+            _buildThemeOptionTile(
+              title: 'System Default',
+              subtitle: 'Automatically syncs with device display setting',
+              icon: Icons.brightness_auto_rounded,
+              iconColor: AppColors.primary,
+              isSelected: currentMode == ThemeMode.system,
+              onTap: () {
+                ref
+                    .read(themeModeProvider.notifier)
+                    .setThemeMode(ThemeMode.system);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildThemeOptionTile({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Color iconColor,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    final theme = Theme.of(context);
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: iconColor.withValues(alpha: 0.12),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, color: iconColor, size: 22),
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+          fontSize: 14,
+          color: theme.colorScheme.onSurface,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: TextStyle(
+          fontSize: 12,
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.65),
+        ),
+      ),
+      trailing: isSelected
+          ? Container(
+              padding: const EdgeInsets.all(4),
+              decoration: const BoxDecoration(
+                color: AppColors.primary,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.check_rounded,
+                color: Colors.white,
+                size: 16,
+              ),
+            )
+          : Container(
+              width: 24,
+              height: 24,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: theme.colorScheme.outline.withValues(alpha: 0.35),
+                  width: 1.5,
+                ),
+              ),
+            ),
+      onTap: onTap,
     );
   }
 

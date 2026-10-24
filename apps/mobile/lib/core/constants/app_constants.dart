@@ -10,6 +10,7 @@ class AppConstants {
   static const String keyUserPhone = 'user_phone';
   static const String keyWizardCompleted = 'wizard_completed';
   static const String keyCachedQrUid = 'cached_qr_uid';
+  static const String keyThemeMode = 'app_theme_mode';
 
   // Network Defaults
   static const Duration connectTimeout = Duration(seconds: 15);
