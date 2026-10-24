@@ -51,13 +51,13 @@ class ProfileHomeScreen extends ConsumerWidget {
               action: SnackBarAction(
                 label: 'VIEW',
                 textColor: Colors.white,
-                onPressed: () => context.push('/notifications'),
+                onPressed: () => context.push('/scan-history'),
               ),
             ),
           );
         },
         onNotificationClick: (message) {
-          context.push('/notifications');
+          context.push('/scan-history');
         },
       );
       ref.read(fcmServiceProvider).syncTokenWithBackend();
@@ -103,11 +103,6 @@ class ProfileHomeScreen extends ConsumerWidget {
                   : ThemeMode.dark;
               ref.read(themeModeProvider.notifier).setThemeMode(nextMode);
             },
-          ),
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
-            tooltip: 'Emergency Alerts',
-            onPressed: () => context.push('/notifications'),
           ),
           IconButton(
             icon: const Icon(Icons.settings_outlined),

@@ -31,6 +31,7 @@ async def send_whatsapp(
     scan_time: datetime,
     maps_url: str | None,
     responder_name: str | None,
+    location_area: str | None = None,
 ) -> bool:
     """Send emergency alert via official Meta WhatsApp Cloud API."""
     if not settings.whatsapp_access_token or not settings.whatsapp_phone_number_id:
@@ -40,7 +41,14 @@ async def send_whatsapp(
         return False
 
     time_str = _ist_time(scan_time)
-    location = maps_url or "Location unavailable"
+    if location_area and maps_url:
+        location = f"{location_area} ({maps_url})"
+    elif location_area:
+        location = location_area
+    elif maps_url:
+        location = maps_url
+    else:
+        location = "Location unavailable"
     responder = responder_name or "Unknown responder"
     clean_phone = phone.lstrip("+").strip()
 

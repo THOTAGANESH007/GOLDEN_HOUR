@@ -94,6 +94,54 @@ async def is_duplicate_scan(db: AsyncSession, uid: str) -> bool:
     return result.scalar_one_or_none() is not None
 
 
+async def reverse_geocode(latitude: float | None, longitude: float | None) -> str | None:
+    """Reverse geocode GPS coordinates into a clean, human-readable locality / city name."""
+    if latitude is None or longitude is None:
+        return None
+    import httpx
+    import logging
+    _log = logging.getLogger(__name__)
+    try:
+        url = f"https://nominatim.openstreetmap.org/reverse?lat={latitude}&lon={longitude}&format=json&addressdetails=1"
+        headers = {
+            "User-Agent": "GoldenHour-EmergencyApp/1.0 (emergency-medical-id)"
+        }
+        async with httpx.AsyncClient(timeout=4.0) as client:
+            resp = await client.get(url, headers=headers)
+            if resp.status_code == 200:
+                data = resp.json()
+                address = data.get("address", {})
+                
+                local = (
+                    address.get("suburb")
+                    or address.get("neighbourhood")
+                    or address.get("residential")
+                    or address.get("road")
+                )
+                city = (
+                    address.get("city")
+                    or address.get("town")
+                    or address.get("village")
+                    or address.get("county")
+                    or address.get("state_district")
+                )
+                state = address.get("state")
+                
+                parts = [p.strip() for p in [local, city, state] if p and p.strip()]
+                if len(parts) >= 2:
+                    return f"{parts[0]}, {parts[1]}"
+                elif parts:
+                    return parts[0]
+                
+                display = data.get("display_name")
+                if display:
+                    display_parts = [p.strip() for p in display.split(",") if p.strip()]
+                    return ", ".join(display_parts[:2])
+    except Exception as exc:
+        _log.warning("Reverse geocoding error: %s", exc)
+    return None
+
+
 async def log_scan_event(
     db: AsyncSession,
     user_id: uuid.UUID,
@@ -108,8 +156,10 @@ async def log_scan_event(
     """Create and persist a scan event record."""
     device_type = _parse_device_type(user_agent)
     maps_url = None
+    location_area = None
     if latitude and longitude:
         maps_url = f"https://www.google.com/maps?q={latitude},{longitude}"
+        location_area = await reverse_geocode(latitude, longitude)
 
     event = ScanEvent(
         user_id=user_id,
@@ -118,6 +168,7 @@ async def log_scan_event(
         responder_hospital=responder_hospital,
         latitude=latitude,
         longitude=longitude,
+        location_area=location_area,
         google_maps_url=maps_url,
         user_agent=user_agent,
         device_type=device_type,

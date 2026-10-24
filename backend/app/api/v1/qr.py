@@ -216,6 +216,10 @@ async def update_public_scan(
         event.latitude = payload.latitude
         event.longitude = payload.longitude
         event.google_maps_url = f"https://www.google.com/maps?q={payload.latitude},{payload.longitude}"
+        from app.services.qr_service import reverse_geocode
+        resolved_area = await reverse_geocode(payload.latitude, payload.longitude)
+        if resolved_area:
+            event.location_area = resolved_area
 
     await db.commit()
     await db.refresh(event)
@@ -226,6 +230,7 @@ async def update_public_scan(
         "responder_name": event.responder_name,
         "responder_hospital": event.responder_hospital,
         "google_maps_url": event.google_maps_url,
+        "location_area": event.location_area,
         "is_false_alarm": event.is_false_alarm,
     }
 

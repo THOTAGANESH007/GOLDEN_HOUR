@@ -182,7 +182,8 @@ class NotificationsScreen extends ConsumerWidget {
     ScanEventItem event,
   ) {
     final theme = Theme.of(context);
-    final dateStr = DateFormat('MMM d, yyyy • h:mm a').format(event.scannedAt);
+    final dateStr =
+        DateFormat('MMM d, yyyy • h:mm a').format(event.scannedAt.toLocal());
 
     return Card(
       child: Padding(

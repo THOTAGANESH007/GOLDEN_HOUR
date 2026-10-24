@@ -393,15 +393,15 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
                     color: AppColors.secondary, size: 20),
                 SizedBox(width: 8),
                 Text(
-                  'Location & GPS Coordinates',
+                  'Incident Location',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                 ),
               ],
             ),
             const Divider(height: 20),
             _buildDetailRow(
-              icon: Icons.map_rounded,
-              label: 'Location Area',
+              icon: Icons.place_rounded,
+              label: 'Area / Locality',
               value: event.displayLocation,
             ),
             if (hasCoordinates) ...[

@@ -10,6 +10,7 @@ export default function LocationShareBtn({ scanEventId, onLocationCaptured }) {
   const [status, setStatus] = useState('idle'); // idle | loading | done | error
   const [mapsUrl, setMapsUrl] = useState(null);
   const [synced, setSynced] = useState(false);
+  const [locationArea, setLocationArea] = useState('');
   const [copied, setCopied] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [loadingMsg, setLoadingMsg] = useState('Acquiring high-accuracy GPS coordinates…');
@@ -34,7 +35,10 @@ export default function LocationShareBtn({ scanEventId, onLocationCaptured }) {
 
       if (scanEventId) {
         try {
-          await updateScanEvent(scanEventId, { latitude, longitude });
+          const res = await updateScanEvent(scanEventId, { latitude, longitude });
+          if (res?.location_area) {
+            setLocationArea(res.location_area);
+          }
           setSynced(true);
         } catch (e) {
           console.warn('GPS backend sync fallback:', e);
@@ -111,7 +115,7 @@ export default function LocationShareBtn({ scanEventId, onLocationCaptured }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {synced && (
               <div className="synced-badge">
-                ✓ GPS coordinates securely logged to patient record
+                ✓ Location {locationArea ? `near ${locationArea} ` : ''}securely logged to patient record
               </div>
             )}
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>

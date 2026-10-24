@@ -159,9 +159,18 @@ class ScanHistoryItem {
       return locationArea!.trim();
     }
     if (latitude != null && longitude != null) {
-      return '${latitude!.toStringAsFixed(4)}, ${longitude!.toStringAsFixed(4)}';
+      return 'Live Scene Location (Tap for Map)';
     }
     return 'Location unavailable';
+  }
+
+  bool get hasCoordinates => latitude != null && longitude != null;
+
+  String get formattedCoordinates {
+    if (latitude != null && longitude != null) {
+      return '${latitude!.toStringAsFixed(5)}, ${longitude!.toStringAsFixed(5)}';
+    }
+    return '';
   }
 
   String get displayResponder {

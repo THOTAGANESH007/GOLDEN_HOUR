@@ -141,6 +141,7 @@ async def _async_notify(
                 scan_time=scan_time,
                 maps_url=maps_url,
                 responder_name=responder_name,
+                location_area=location_area,
             )
             if wa_ok:
                 results["whatsapp_sent"] = True
