@@ -229,6 +229,7 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
   }
 
   Widget _buildStatusBanner(ScanHistoryItem event) {
+    final theme = Theme.of(context);
     final isFalse = event.isFalseAlarm;
     return Container(
       padding: const EdgeInsets.all(16),
@@ -275,8 +276,8 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
                         color: isFalse
-                            ? Colors.orange.shade900
-                            : AppColors.primaryDark,
+                            ? AppColors.warning
+                            : theme.colorScheme.onSurface,
                       ),
                     ),
                   ],
@@ -284,23 +285,30 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
                 const SizedBox(height: 4),
                 Text(
                   'Scanned ${event.relativeTime} (${event.formattedDate})',
-                  style: const TextStyle(fontSize: 12, color: Colors.black87),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
+                  ),
                 ),
                 const SizedBox(height: 6),
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: theme.colorScheme.surfaceContainerHighest
+                        .withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: Colors.grey.shade300),
+                    border: Border.all(
+                      color: theme.colorScheme.outline.withValues(alpha: 0.25),
+                    ),
                   ),
                   child: Text(
                     'QR UID: ${event.qrUid}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'monospace',
                       fontWeight: FontWeight.w700,
                       fontSize: 11,
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -313,11 +321,14 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
   }
 
   Widget _buildResponderCard(ScanHistoryItem event) {
+    final theme = Theme.of(context);
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.shade200),
+        side: BorderSide(
+          color: theme.colorScheme.outline.withValues(alpha: 0.15),
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -359,6 +370,7 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
   }
 
   Widget _buildLocationCard(ScanHistoryItem event) {
+    final theme = Theme.of(context);
     final mapsUrl = event.resolvedMapsUrl;
     final hasCoordinates = event.latitude != null && event.longitude != null;
 
@@ -366,7 +378,9 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.shade200),
+        side: BorderSide(
+          color: theme.colorScheme.outline.withValues(alpha: 0.15),
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -432,7 +446,9 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.shade200),
+        side: BorderSide(
+          color: theme.colorScheme.outline.withValues(alpha: 0.15),
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -455,7 +471,7 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
             const Divider(height: 20),
             _buildChannelStatus(
               context: context,
-              channel: 'WhatsApp (Green-API)',
+              channel: 'WhatsApp',
               sent: event.whatsappSent,
               icon: Icons.chat_bubble_outline_rounded,
               description: 'Live location map & trauma alert sent to contacts',
@@ -560,8 +576,8 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
             borderRadius: BorderRadius.circular(6),
             border: Border.all(
               color: sent
-                  ? AppColors.success.withValues(alpha: 0.3)
-                  : theme.colorScheme.outline.withValues(alpha: 0.2),
+                ? AppColors.success.withValues(alpha: 0.3)
+                : theme.colorScheme.outline.withValues(alpha: 0.2),
             ),
           ),
           child: Text(
@@ -585,10 +601,11 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
     required String value,
     Widget? trailing,
   }) {
+    final theme = Theme.of(context);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 16, color: Colors.grey.shade600),
+        Icon(icon, size: 16, color: theme.colorScheme.primary),
         const SizedBox(width: 8),
         Expanded(
           child: Column(
@@ -596,13 +613,17 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
             children: [
               Text(
                 label,
-                style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+                style: TextStyle(
+                  fontSize: 11,
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.65),
+                ),
               ),
               Text(
                 value,
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
             ],
@@ -614,26 +635,29 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
   }
 
   Widget _buildFalseAlarmSection(ScanHistoryItem event, bool isMarking) {
+    final theme = Theme.of(context);
     if (event.isFalseAlarm) {
       return Container(
         width: double.infinity,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.grey.shade100,
+          color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade300),
+          border: Border.all(
+            color: theme.colorScheme.outline.withValues(alpha: 0.2),
+          ),
         ),
-        child: const Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.check_circle_outline_rounded,
+            const Icon(Icons.check_circle_outline_rounded,
                 color: AppColors.success, size: 20),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Text(
               'Marked as False Alarm',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
+                color: theme.colorScheme.onSurface,
               ),
             ),
           ],
@@ -658,21 +682,25 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
                 )
               : Icon(
                   Icons.report_gmailerrorred_rounded,
-                  color: isCooldownActive ? Colors.grey : AppColors.warning,
+                  color: isCooldownActive
+                      ? theme.colorScheme.outline
+                      : AppColors.warning,
                 ),
           label: Text(
             isCooldownActive
                 ? 'False Alarm (Available in ${_secondsRemaining}s)'
                 : 'Mark as False Alarm',
             style: TextStyle(
-              color: isCooldownActive ? Colors.grey : AppColors.warning,
+              color: isCooldownActive
+                  ? theme.colorScheme.outline
+                  : AppColors.warning,
               fontWeight: FontWeight.bold,
             ),
           ),
           style: OutlinedButton.styleFrom(
             side: BorderSide(
               color: isCooldownActive
-                  ? Colors.grey.shade300
+                  ? theme.colorScheme.outline.withValues(alpha: 0.3)
                   : AppColors.warning.withValues(alpha: 0.6),
             ),
             minimumSize: const Size.fromHeight(48),
@@ -683,7 +711,10 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
           isCooldownActive
               ? 'Security Cooldown: False alarm button unlocks 60s after scan to protect ongoing trauma triage.'
               : 'Tap to mark this scan as accidental or non-emergency.',
-          style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+          style: TextStyle(
+            fontSize: 11,
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.65),
+          ),
           textAlign: TextAlign.center,
         ),
       ],

@@ -3,8 +3,9 @@ Profile endpoints: CRUD for patient profile, privacy, contacts, QR status.
 """
 import uuid
 
+from datetime import date
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
@@ -29,21 +30,32 @@ router = APIRouter(prefix="/profile", tags=["Profile"])
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
 
-def _completion_score(profile: Profile) -> ProfileCompletionResponse:
+def _completion_score(profile: Profile, contact_count: int = 0) -> ProfileCompletionResponse:
     fields = {
-        "blood_group": profile.blood_group,
-        "full_name": profile.full_name,
-        "date_of_birth": profile.date_of_birth,
-        "gender": profile.gender,
-        "allergies": profile.allergies,
-        "chronic_conditions": profile.chronic_conditions,
-        "medications": profile.medications,
-        "emergency_contacts": None,   # checked separately
+        "blood_group": bool(profile.blood_group),
+        "full_name": bool(profile.full_name),
+        "age": bool(profile.date_of_birth),
+        "gender": bool(profile.gender),
+        "allergies": profile.allergies is not None,
+        "chronic_conditions": profile.chronic_conditions is not None,
+        "medications": profile.medications is not None,
+        "emergency_contacts": contact_count >= 1,
     }
     missing = [k for k, v in fields.items() if not v]
     filled = len(fields) - len(missing)
     score = int((filled / len(fields)) * 100)
     return ProfileCompletionResponse(score=score, missing=missing)
+
+
+def _attach_computed_age(profile: Profile) -> None:
+    if profile.date_of_birth:
+        today = date.today()
+        calculated_age = today.year - profile.date_of_birth.year - (
+            (today.month, today.day) < (profile.date_of_birth.month, profile.date_of_birth.day)
+        )
+        setattr(profile, "age", max(0, calculated_age))
+    else:
+        setattr(profile, "age", None)
 
 
 async def _get_profile(db: AsyncSession, user: User) -> Profile:
@@ -62,6 +74,7 @@ async def get_my_profile(
     db: AsyncSession = Depends(get_db),
 ):
     profile = await get_or_create_profile(db, current_user)
+    _attach_computed_age(profile)
     return profile
 
 
@@ -76,6 +89,13 @@ async def update_profile(
     profile = await _get_profile(db, current_user)
     update_data = body.model_dump(exclude_unset=True)
 
+    # If age is supplied, translate to approximate date_of_birth (Jan 1 of birth year)
+    if "age" in update_data:
+        age_val = update_data.pop("age")
+        if age_val is not None:
+            today = date.today()
+            profile.date_of_birth = date(today.year - age_val, 1, 1)
+
     # Convert MedicationItem list → plain dicts for JSON column
     if "medications" in update_data and update_data["medications"]:
         update_data["medications"] = [
@@ -87,6 +107,9 @@ async def update_profile(
         setattr(profile, field, value)
 
     db.add(profile)
+    await db.commit()
+    await db.refresh(profile)
+    _attach_computed_age(profile)
     return profile
 
 
@@ -102,6 +125,9 @@ async def update_privacy(
     for field, value in body.model_dump(exclude_unset=True).items():
         setattr(profile, field, value)
     db.add(profile)
+    await db.commit()
+    await db.refresh(profile)
+    _attach_computed_age(profile)
     return profile
 
 
@@ -116,6 +142,9 @@ async def update_qr_status(
     profile = await _get_profile(db, current_user)
     profile.qr_is_active = body.qr_is_active
     db.add(profile)
+    await db.commit()
+    await db.refresh(profile)
+    _attach_computed_age(profile)
     return profile
 
 
@@ -127,7 +156,11 @@ async def get_completion(
     db: AsyncSession = Depends(get_db),
 ):
     profile = await _get_profile(db, current_user)
-    return _completion_score(profile)
+    contact_res = await db.execute(
+        select(func.count(EmergencyContact.id)).where(EmergencyContact.user_id == current_user.id)
+    )
+    contact_count = contact_res.scalar_one_or_none() or 0
+    return _completion_score(profile, contact_count)
 
 
 # ── Emergency Contacts ─────────────────────────────────────────────────────────

@@ -67,33 +67,20 @@ class ProfileHomeScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.12),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.health_and_safety_rounded,
-                color: AppColors.primary,
-                size: 22,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.asset(
+                'assets/images/app_icon.png',
+                width: 28,
+                height: 28,
+                fit: BoxFit.cover,
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 10),
             const Text('Golden Hour'),
           ],
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
-            tooltip: 'Emergency Alerts',
-            onPressed: () => context.push('/notifications'),
-          ),
-          IconButton(
-            icon: const Icon(Icons.shield_outlined),
-            tooltip: 'Privacy Settings',
-            onPressed: () => context.push('/profile/privacy'),
-          ),
           IconButton(
             icon: Icon(
               currentThemeMode == ThemeMode.dark
@@ -113,43 +100,14 @@ class ProfileHomeScreen extends ConsumerWidget {
             },
           ),
           IconButton(
+            icon: const Icon(Icons.notifications_outlined),
+            tooltip: 'Emergency Alerts',
+            onPressed: () => context.push('/notifications'),
+          ),
+          IconButton(
             icon: const Icon(Icons.settings_outlined),
             tooltip: 'Settings',
             onPressed: () => context.push('/settings'),
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout_rounded),
-            tooltip: 'Logout',
-            onPressed: () async {
-              final confirm = await showDialog<bool>(
-                context: context,
-                builder: (ctx) => AlertDialog(
-                  title: const Text('Logout'),
-                  content: const Text(
-                      'Are you sure you want to log out of Golden Hour?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(ctx, false),
-                      child: const Text('Cancel'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => Navigator.pop(ctx, true),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.error,
-                      ),
-                      child: const Text('Logout'),
-                    ),
-                  ],
-                ),
-              );
-
-              if (confirm == true) {
-                await ref.read(authNotifierProvider.notifier).logout();
-                if (context.mounted) {
-                  context.go('/login');
-                }
-              }
-            },
           ),
         ],
       ),
@@ -285,34 +243,7 @@ class ProfileHomeScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 20),
 
-                      // Action Hub Buttons
-                      Row(
-                        children: [
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: () => context.push('/profile/edit'),
-                              icon: const Icon(Icons.edit_note_rounded),
-                              label: const Text('Edit Profile'),
-                              style: OutlinedButton.styleFrom(
-                                minimumSize: const Size.fromHeight(48),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: FilledButton.icon(
-                              onPressed: () =>
-                                  context.push('/profile/wizard'),
-                              icon: const Icon(Icons.auto_fix_high_rounded),
-                              label: const Text('Profile Wizard'),
-                              style: FilledButton.styleFrom(
-                                minimumSize: const Size.fromHeight(48),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 24),
                     ],
                   ),
                 ),
@@ -339,7 +270,7 @@ class ProfileHomeScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Profile Incomplete',
+                  'Medical Setup Incomplete',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
@@ -348,7 +279,7 @@ class ProfileHomeScreen extends ConsumerWidget {
                 ),
                 SizedBox(height: 2),
                 Text(
-                  'Complete the 5-step emergency wizard so first responders have your lifesaving data.',
+                  'Complete the emergency medical checklist so first responders have your lifesaving data.',
                   style: TextStyle(fontSize: 12),
                 ),
               ],
@@ -362,7 +293,7 @@ class ProfileHomeScreen extends ConsumerWidget {
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             ),
-            child: const Text('Start', style: TextStyle(fontSize: 13)),
+            child: const Text('Checklist', style: TextStyle(fontSize: 13)),
           ),
         ],
       ),
@@ -422,10 +353,31 @@ class ProfileHomeScreen extends ConsumerWidget {
                               .withValues(alpha: 0.7),
                         ),
                       ),
-                      const SizedBox(height: 6),
-                      Row(
-                        children: [
-                          if (profile?.bloodGroup != null)
+                    ],
+                  ),
+                ),
+                OutlinedButton.icon(
+                  onPressed: () => context.push('/profile/edit'),
+                  icon: const Icon(Icons.edit_outlined, size: 14),
+                  label: const Text('Edit',
+                      style: TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.bold)),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 4),
+                    minimumSize: const Size(0, 32),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                if (profile?.bloodGroup != null)
                             Container(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 8, vertical: 3),
@@ -484,11 +436,6 @@ class ProfileHomeScreen extends ConsumerWidget {
                           ],
                         ],
                       ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
             const Divider(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -593,6 +540,20 @@ class ProfileHomeScreen extends ConsumerWidget {
                 ),
               ),
             ],
+            const SizedBox(height: 14),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.tonalIcon(
+                onPressed: () => context.push('/profile/wizard'),
+                icon: const Icon(Icons.checklist_rounded, size: 18),
+                label: Text(
+                  score >= 100
+                      ? 'Review Medical Setup Checklist'
+                      : 'Complete Medical Setup Checklist',
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                ),
+              ),
+            ),
           ],
         ),
       ),

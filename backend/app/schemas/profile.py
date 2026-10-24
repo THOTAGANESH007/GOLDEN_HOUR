@@ -89,6 +89,7 @@ class MedicationItem(BaseModel):
 class ProfileUpdate(BaseModel):
     full_name: Optional[str] = None
     date_of_birth: Optional[date] = None
+    age: Optional[int] = None
     gender: Optional[str] = None
     blood_group: Optional[str] = None
     allergies: Optional[list[str]] = None
@@ -119,6 +120,7 @@ class ProfileResponse(BaseModel):
     qr_is_active: bool
     full_name: Optional[str] = None
     date_of_birth: Optional[date] = None
+    age: Optional[int] = None
     gender: Optional[str] = None
     photo_url: Optional[str] = None
     blood_group: Optional[str] = None

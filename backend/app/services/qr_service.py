@@ -151,8 +151,17 @@ async def get_safe_public_data(
     )
     contacts = result.scalars().all()
 
+    age = None
+    if getattr(profile, "show_dob", True) and profile.date_of_birth:
+        from datetime import date
+        today = date.today()
+        age = today.year - profile.date_of_birth.year - (
+            (today.month, today.day) < (profile.date_of_birth.month, profile.date_of_birth.day)
+        )
+
     return {
         "full_name": profile.full_name if profile.show_name else None,
+        "age": age,
         "blood_group": profile.blood_group,
         "allergies": profile.allergies or [],
         "chronic_conditions": profile.chronic_conditions or [],

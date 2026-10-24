@@ -330,7 +330,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         ),
                       ),
                       subtitle: const Text(
-                        'Customize whether responders see name, photo, DOB',
+                        'Customize whether responders see name, photo, Age',
                         style: TextStyle(fontSize: 12),
                       ),
                       trailing: const Icon(

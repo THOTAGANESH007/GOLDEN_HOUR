@@ -123,10 +123,10 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                     SwitchListTile(
                       secondary: const Icon(Icons.cake_rounded,
                           color: AppColors.secondary),
-                      title: const Text('Show Date of Birth & Age',
+                      title: const Text('Show Age',
                           style: TextStyle(fontWeight: FontWeight.w600)),
                       subtitle: const Text(
-                        'Helps paramedics calculate accurate pediatric or geriatric drug dosages.',
+                        'Helps paramedics know patient age for pediatric or geriatric drug dosages.',
                         style: TextStyle(fontSize: 12),
                       ),
                       value: _showDob,

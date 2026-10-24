@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../data/profile_models.dart';
@@ -18,7 +18,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _fullNameController = TextEditingController();
-  final TextEditingController _dobController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
   final TextEditingController _doctorNameController = TextEditingController();
   final TextEditingController _doctorPhoneController = TextEditingController();
   final TextEditingController _surgeryController = TextEditingController();
@@ -56,7 +56,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   void dispose() {
     _fullNameController.dispose();
-    _dobController.dispose();
+    _ageController.dispose();
     _doctorNameController.dispose();
     _doctorPhoneController.dispose();
     _surgeryController.dispose();
@@ -67,7 +67,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   void _initFromProfile(PatientProfile profile) {
     if (_initialized) return;
     _fullNameController.text = profile.fullName ?? '';
-    _dobController.text = profile.dateOfBirth ?? '';
+    _ageController.text = (profile.age != null) ? profile.age.toString() : '';
     _gender = profile.gender;
     _bloodGroup = profile.bloodGroup;
     _allergies = List.from(profile.allergies);
@@ -79,44 +79,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     _doctorNameController.text = profile.doctorName ?? '';
     _doctorPhoneController.text = profile.doctorPhone ?? '';
     _initialized = true;
-  }
-
-  Future<void> _pickDateOfBirth() async {
-    final now = DateTime.now();
-    DateTime initial = DateTime(1995, 1, 1);
-    if (_dobController.text.isNotEmpty) {
-      final parsed = DateTime.tryParse(_dobController.text);
-      if (parsed != null) initial = parsed;
-    }
-
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: initial,
-      firstDate: DateTime(1910),
-      lastDate: now,
-    );
-
-    if (picked != null) {
-      setState(() {
-        _dobController.text = DateFormat('yyyy-MM-dd').format(picked);
-      });
-    }
-  }
-
-  String? _calculateAgeString(String dobText) {
-    if (dobText.isEmpty) return null;
-    try {
-      final dob = DateTime.parse(dobText);
-      final today = DateTime.now();
-      int calculated = today.year - dob.year;
-      if (today.month < dob.month ||
-          (today.month == dob.month && today.day < dob.day)) {
-        calculated--;
-      }
-      return calculated >= 0 ? 'Age: $calculated years' : null;
-    } catch (_) {
-      return null;
-    }
   }
 
   void _addSurgery() {
@@ -142,11 +104,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final ageVal = int.tryParse(_ageController.text.trim());
     final updateData = <String, dynamic>{
       'full_name': _fullNameController.text.trim(),
-      'date_of_birth': _dobController.text.trim().isNotEmpty
-          ? _dobController.text.trim()
-          : null,
+      if (ageVal != null) 'age': ageVal,
       'gender': _gender,
       'blood_group': _bloodGroup,
       'allergies': _allergies,
@@ -238,20 +199,25 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                           children: [
                             Expanded(
                               child: TextFormField(
-                                controller: _dobController,
-                                readOnly: true,
-                                onTap: _pickDateOfBirth,
-                                decoration: InputDecoration(
-                                  labelText: 'Date of Birth & Age',
-                                  prefixIcon:
-                                      const Icon(Icons.calendar_today_outlined),
-                                  hintText: 'YYYY-MM-DD',
-                                  helperText: _calculateAgeString(_dobController.text),
-                                  helperStyle: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.info,
-                                  ),
+                                controller: _ageController,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
+                                decoration: const InputDecoration(
+                                  labelText: 'Age (Years)',
+                                  prefixIcon: Icon(Icons.cake_outlined),
+                                  hintText: 'e.g. 28',
                                 ),
+                                validator: (val) {
+                                  if (val != null && val.isNotEmpty) {
+                                    final n = int.tryParse(val);
+                                    if (n == null || n < 0 || n > 130) {
+                                      return 'Valid age 0-130';
+                                    }
+                                  }
+                                  return null;
+                                },
                               ),
                             ),
                             const SizedBox(width: 12),
