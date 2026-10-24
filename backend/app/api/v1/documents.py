@@ -131,23 +131,33 @@ async def get_raw_document(
         select(Document).where(Document.storage_path == storage_path)
     )
     doc = result.scalar_one_or_none()
-    if not doc:
-        raise HTTPException(status_code=404, detail="Document not found")
-
-    if doc.public_url and (
-        doc.public_url.startswith("https://") or doc.public_url.startswith("http://")
-    ) and "/api/v1/documents/raw/" not in doc.public_url:
-        return RedirectResponse(url=doc.public_url)
 
     storage = get_storage_service()
     file_path = storage.get_local_file_path(storage_path)
+
+    if not doc and not file_path:
+        raise HTTPException(status_code=404, detail="File not found")
+
+    if doc:
+        if doc.public_url and (
+            doc.public_url.startswith("https://") or doc.public_url.startswith("http://")
+        ) and "/api/v1/documents/raw/" not in doc.public_url:
+            return RedirectResponse(url=doc.public_url)
+        media_type = doc.mime_type
+        filename = doc.file_name
+    else:
+        import mimetypes
+        media_type, _ = mimetypes.guess_type(str(file_path))
+        media_type = media_type or "application/octet-stream"
+        filename = file_path.name if file_path else "file"
+
     if not file_path:
-        raise HTTPException(status_code=404, detail="Document file not found on disk")
+        raise HTTPException(status_code=404, detail="File not found on disk")
 
     return FileResponse(
         path=file_path,
-        media_type=doc.mime_type,
-        filename=doc.file_name,
+        media_type=media_type,
+        filename=filename,
     )
 
 

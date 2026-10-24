@@ -11,33 +11,65 @@ export default function LocationShareBtn({ scanEventId, onLocationCaptured }) {
   const [mapsUrl, setMapsUrl] = useState(null);
   const [synced, setSynced] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [loadingMsg, setLoadingMsg] = useState('Acquiring high-accuracy GPS coordinates…');
 
   const handleShare = () => {
     if (!navigator.geolocation) {
+      setErrorMsg('Geolocation is not supported by your browser.');
       setStatus('error');
       return;
     }
 
     setStatus('loading');
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const { latitude, longitude } = pos.coords;
-        const url = `https://www.google.com/maps?q=${latitude},${longitude}`;
-        setMapsUrl(url);
-        setStatus('done');
-        if (onLocationCaptured) onLocationCaptured({ latitude, longitude });
+    setErrorMsg('');
+    setLoadingMsg('Acquiring GPS fix…');
 
-        if (scanEventId) {
-          try {
-            await updateScanEvent(scanEventId, { latitude, longitude });
-            setSynced(true);
-          } catch (e) {
-            console.warn('GPS backend sync fallback:', e);
-          }
+    const handleSuccess = async (pos) => {
+      const { latitude, longitude } = pos.coords;
+      const url = `https://www.google.com/maps?q=${latitude},${longitude}`;
+      setMapsUrl(url);
+      setStatus('done');
+      if (onLocationCaptured) onLocationCaptured({ latitude, longitude });
+
+      if (scanEventId) {
+        try {
+          await updateScanEvent(scanEventId, { latitude, longitude });
+          setSynced(true);
+        } catch (e) {
+          console.warn('GPS backend sync fallback:', e);
+        }
+      }
+    };
+
+    // First attempt: High-accuracy with 20-second timeout to allow permission grant
+    navigator.geolocation.getCurrentPosition(
+      handleSuccess,
+      (err) => {
+        // If high accuracy times out or fails, fallback to coarse/network location
+        if (err.code === 3 || err.code === 2) {
+          setLoadingMsg('Refining with cellular / Wi-Fi network location…');
+          navigator.geolocation.getCurrentPosition(
+            handleSuccess,
+            (fallbackErr) => {
+              if (fallbackErr.code === 1) {
+                setErrorMsg('Location permission was denied. Please allow location in your browser address bar and try again.');
+              } else {
+                setErrorMsg('GPS signal timed out. Please ensure phone location is enabled in settings and try again.');
+              }
+              setStatus('error');
+            },
+            { timeout: 20000, enableHighAccuracy: false, maximumAge: 300000 }
+          );
+        } else if (err.code === 1) {
+          setErrorMsg('Location permission was denied. Please allow location in your browser address bar and try again.');
+          setStatus('error');
+        } else {
+          setErrorMsg('Location unavailable. Please check device location settings.');
+          setStatus('error');
         }
       },
-      () => setStatus('error'),
-      { timeout: 9000, enableHighAccuracy: true }
+      { timeout: 20000, enableHighAccuracy: true, maximumAge: 60000 }
     );
   };
 
@@ -71,7 +103,7 @@ export default function LocationShareBtn({ scanEventId, onLocationCaptured }) {
           <div style={{ textAlign: 'center', padding: '8px 0' }}>
             <div className="spinner" style={{ width: 28, height: 28, margin: '0 auto 8px', borderWidth: 3 }} />
             <p style={{ color: 'var(--gray-600)', fontSize: 14 }}>
-              Acquiring high-accuracy GPS coordinates…
+              {loadingMsg}
             </p>
           </div>
         )}
@@ -104,9 +136,9 @@ export default function LocationShareBtn({ scanEventId, onLocationCaptured }) {
           </div>
         )}
         {status === 'error' && (
-          <div style={{ textAlign: 'center' }}>
-            <p style={{ color: 'var(--red)', fontSize: 14, marginBottom: 8 }}>
-              Location access denied or unavailable.
+          <div style={{ textAlign: 'center', padding: '8px 4px' }}>
+            <p style={{ color: 'var(--red)', fontSize: 13, marginBottom: 10, lineHeight: 1.4 }}>
+              {errorMsg || 'Location access denied or unavailable.'}
             </p>
             <button className="btn btn-secondary" onClick={handleShare}>
               🔄 Try Again

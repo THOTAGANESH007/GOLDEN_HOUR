@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -28,6 +30,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   String? _gender;
   String? _bloodGroup;
   String? _photoUrl;
+  String? _localPhotoPath;
   bool _isUploadingPhoto = false;
   List<String> _allergies = [];
   List<String> _conditions = [];
@@ -90,16 +93,49 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       final picker = ImagePicker();
       final pickedFile = await picker.pickImage(
         source: source,
-        maxWidth: 1024,
-        maxHeight: 1024,
-        imageQuality: 85,
+        maxWidth: 1600,
+        maxHeight: 1600,
+        imageQuality: 90,
       );
       if (pickedFile == null) return;
 
-      setState(() => _isUploadingPhoto = true);
+      // Crop step
+      final croppedFile = await ImageCropper().cropImage(
+        sourcePath: pickedFile.path,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Crop Profile Photo',
+            toolbarColor: AppColors.primary,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: false,
+            aspectRatioPresets: [
+              CropAspectRatioPreset.square,
+              CropAspectRatioPreset.original,
+              CropAspectRatioPreset.ratio4x3,
+            ],
+          ),
+          IOSUiSettings(
+            title: 'Crop Profile Photo',
+            aspectRatioPresets: [
+              CropAspectRatioPreset.square,
+              CropAspectRatioPreset.original,
+              CropAspectRatioPreset.ratio4x3,
+            ],
+          ),
+        ],
+      );
+
+      if (croppedFile == null) return;
+
+      setState(() {
+        _localPhotoPath = croppedFile.path;
+        _isUploadingPhoto = true;
+      });
+
       final success = await ref
           .read(profileNotifierProvider.notifier)
-          .uploadPhoto(pickedFile.path);
+          .uploadPhoto(croppedFile.path);
 
       if (!mounted) return;
       setState(() {
@@ -383,17 +419,56 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         const SizedBox(height: 16),
 
                         // Organ Donor Toggle
-                        SwitchListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: const Text('Registered Organ Donor',
-                              style: TextStyle(fontWeight: FontWeight.w600)),
-                          subtitle: const Text(
-                            'Displays verified donor status on emergency scan',
-                            style: TextStyle(fontSize: 12),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.surfaceContainerHighest
+                                .withValues(alpha: 0.35),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: _isOrganDonor
+                                  ? AppColors.primary.withValues(alpha: 0.4)
+                                  : theme.colorScheme.outline
+                                      .withValues(alpha: 0.2),
+                            ),
                           ),
-                          value: _isOrganDonor,
-                          onChanged: (val) =>
-                              setState(() => _isOrganDonor = val),
+                          child: SwitchListTile(
+                            contentPadding: EdgeInsets.zero,
+                            secondary: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: _isOrganDonor
+                                    ? AppColors.primary.withValues(alpha: 0.15)
+                                    : Colors.grey.withValues(alpha: 0.1),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.volunteer_activism_rounded,
+                                color: _isOrganDonor
+                                    ? AppColors.primary
+                                    : Colors.grey,
+                                size: 22,
+                              ),
+                            ),
+                            title: const Text(
+                              'Registered Organ Donor',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                            subtitle: const Text(
+                              'Displays verified donor status on emergency scan',
+                              style: TextStyle(fontSize: 12),
+                            ),
+                            value: _isOrganDonor,
+                            activeThumbColor: AppColors.primary,
+                            activeTrackColor:
+                                AppColors.primary.withValues(alpha: 0.3),
+                            onChanged: (val) =>
+                                setState(() => _isOrganDonor = val),
+                          ),
                         ),
                       ],
                     ),
@@ -575,22 +650,28 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             child: CircularProgressIndicator(strokeWidth: 3),
                           ),
                         )
-                      : (_photoUrl != null && _photoUrl!.isNotEmpty)
-                          ? Image.network(
-                              _photoUrl!,
+                      : (_localPhotoPath != null &&
+                              File(_localPhotoPath!).existsSync())
+                          ? Image.file(
+                              File(_localPhotoPath!),
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  const Icon(
-                                Icons.person_rounded,
-                                size: 56,
-                                color: AppColors.textSecondary,
-                              ),
                             )
-                          : const Icon(
-                              Icons.person_rounded,
-                              size: 56,
-                              color: AppColors.textSecondary,
-                            ),
+                          : (_photoUrl != null && _photoUrl!.isNotEmpty)
+                              ? Image.network(
+                                  _photoUrl!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(
+                                    Icons.person_rounded,
+                                    size: 56,
+                                    color: AppColors.textSecondary,
+                                  ),
+                                )
+                              : const Icon(
+                                  Icons.person_rounded,
+                                  size: 56,
+                                  color: AppColors.textSecondary,
+                                ),
                 ),
               ),
               Positioned(

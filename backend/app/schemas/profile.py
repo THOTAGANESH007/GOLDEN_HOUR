@@ -154,6 +154,8 @@ class ProfileCompletionResponse(BaseModel):
 class PublicProfileResponse(BaseModel):
     """Safe subset of profile data shown on responder page."""
     full_name: Optional[str] = None       # only if show_name=True
+    photo_url: Optional[str] = None       # only if show_photo=True
+    age: Optional[int] = None             # only if show_dob=True
     blood_group: Optional[str] = None
     allergies: Optional[list[str]] = None
     chronic_conditions: Optional[list[str]] = None

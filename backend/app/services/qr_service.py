@@ -161,6 +161,7 @@ async def get_safe_public_data(
 
     return {
         "full_name": profile.full_name if profile.show_name else None,
+        "photo_url": profile.photo_url if getattr(profile, "show_photo", False) else None,
         "age": age,
         "blood_group": profile.blood_group,
         "allergies": profile.allergies or [],
