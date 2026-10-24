@@ -82,6 +82,11 @@ class ProfileHomeScreen extends ConsumerWidget {
         ),
         actions: [
           IconButton(
+            icon: const Icon(Icons.shield_outlined),
+            tooltip: 'Privacy Settings',
+            onPressed: () => context.push('/profile/privacy'),
+          ),
+          IconButton(
             icon: Icon(
               currentThemeMode == ThemeMode.dark
                   ? Icons.light_mode_rounded
@@ -321,17 +326,24 @@ class ProfileHomeScreen extends ConsumerWidget {
                 CircleAvatar(
                   radius: 30,
                   backgroundColor: AppColors.primary.withValues(alpha: 0.12),
-                  child: Text(
-                    (profile?.fullName != null &&
-                            profile!.fullName!.isNotEmpty)
-                        ? profile.fullName![0].toUpperCase()
-                        : 'P',
-                    style: const TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
-                    ),
-                  ),
+                  backgroundImage: (profile?.photoUrl != null &&
+                          profile!.photoUrl!.isNotEmpty)
+                      ? NetworkImage(profile.photoUrl!)
+                      : null,
+                  child: (profile?.photoUrl != null &&
+                          profile!.photoUrl!.isNotEmpty)
+                      ? null
+                      : Text(
+                          (profile?.fullName != null &&
+                                  profile!.fullName!.isNotEmpty)
+                              ? profile.fullName![0].toUpperCase()
+                              : 'P',
+                          style: const TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                          ),
+                        ),
                 ),
                 const SizedBox(width: 14),
                 Expanded(

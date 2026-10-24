@@ -118,26 +118,48 @@ class _Step2AllergiesState extends State<Step2Allergies> {
           const SizedBox(height: 16),
 
           // Quick button for No Known Allergies
-          OutlinedButton.icon(
-            onPressed: _setNoKnownAllergies,
-            icon: Icon(
-              hasNoAllergies
-                  ? Icons.check_circle_rounded
-                  : Icons.radio_button_unchecked,
-              color: hasNoAllergies ? AppColors.success : null,
-            ),
-            label: const Text('No Known Drug / Food Allergies (NKDA)'),
-            style: OutlinedButton.styleFrom(
-              minimumSize: const Size.fromHeight(46),
-              backgroundColor: hasNoAllergies
-                  ? AppColors.successLight
-                  : null,
-              side: BorderSide(
-                color: hasNoAllergies
-                    ? AppColors.success
-                    : theme.colorScheme.outline.withValues(alpha: 0.3),
-              ),
-            ),
+          Builder(
+            builder: (context) {
+              final isDark = theme.brightness == Brightness.dark;
+              final Color activeBg = isDark
+                  ? AppColors.success.withValues(alpha: 0.2)
+                  : AppColors.successLight;
+              final Color activeText = isDark
+                  ? const Color(0xFF4ADE80)
+                  : const Color(0xFF15803D);
+
+              return OutlinedButton.icon(
+                onPressed: _setNoKnownAllergies,
+                icon: Icon(
+                  hasNoAllergies
+                      ? Icons.check_circle_rounded
+                      : Icons.radio_button_unchecked,
+                  color: hasNoAllergies
+                      ? (isDark ? const Color(0xFF4ADE80) : AppColors.success)
+                      : null,
+                ),
+                label: Text(
+                  'No Known Drug / Food Allergies (NKDA)',
+                  style: TextStyle(
+                    color: hasNoAllergies ? activeText : null,
+                    fontWeight:
+                        hasNoAllergies ? FontWeight.bold : FontWeight.w500,
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(46),
+                  backgroundColor: hasNoAllergies ? activeBg : null,
+                  side: BorderSide(
+                    color: hasNoAllergies
+                        ? (isDark
+                            ? const Color(0xFF22C55E)
+                            : AppColors.success)
+                        : theme.colorScheme.outline.withValues(alpha: 0.3),
+                    width: hasNoAllergies ? 1.5 : 1.0,
+                  ),
+                ),
+              );
+            },
           ),
           const SizedBox(height: 20),
 
@@ -174,25 +196,37 @@ class _Step2AllergiesState extends State<Step2Allergies> {
           const SizedBox(height: 12),
 
           // Preset Chips Wrap
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: commonAllergies.map((allergy) {
-              final isSelected = widget.selectedAllergies.contains(allergy);
-              return FilterChip(
-                label: Text(allergy),
-                selected: isSelected,
-                selectedColor: AppColors.errorLight,
-                checkmarkColor: AppColors.error,
-                labelStyle: TextStyle(
-                  color: isSelected
-                      ? AppColors.error
-                      : theme.colorScheme.onSurface,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                ),
-                onSelected: (_) => _toggleAllergy(allergy),
+          Builder(
+            builder: (context) {
+              final isDark = theme.brightness == Brightness.dark;
+              final Color chipSelectedBg = isDark
+                  ? AppColors.error.withValues(alpha: 0.22)
+                  : AppColors.errorLight;
+              final Color chipSelectedColor =
+                  isDark ? const Color(0xFFFCA5A5) : AppColors.error;
+
+              return Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: commonAllergies.map((allergy) {
+                  final isSelected = widget.selectedAllergies.contains(allergy);
+                  return FilterChip(
+                    label: Text(allergy),
+                    selected: isSelected,
+                    selectedColor: chipSelectedBg,
+                    checkmarkColor: chipSelectedColor,
+                    labelStyle: TextStyle(
+                      color: isSelected
+                          ? chipSelectedColor
+                          : theme.colorScheme.onSurface,
+                      fontWeight:
+                          isSelected ? FontWeight.w600 : FontWeight.normal,
+                    ),
+                    onSelected: (_) => _toggleAllergy(allergy),
+                  );
+                }).toList(),
               );
-            }).toList(),
+            },
           ),
 
           if (widget.selectedAllergies.isNotEmpty && !hasNoAllergies) ...[
@@ -204,22 +238,33 @@ class _Step2AllergiesState extends State<Step2Allergies> {
               ),
             ),
             const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: widget.selectedAllergies.map((allergy) {
-                return Chip(
-                  label: Text(allergy),
-                  backgroundColor: AppColors.errorLight,
-                  labelStyle: const TextStyle(
-                    color: AppColors.error,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  deleteIcon: const Icon(Icons.close_rounded, size: 16),
-                  deleteIconColor: AppColors.error,
-                  onDeleted: () => _toggleAllergy(allergy),
+            Builder(
+              builder: (context) {
+                final isDark = theme.brightness == Brightness.dark;
+                final Color chipBg = isDark
+                    ? AppColors.error.withValues(alpha: 0.25)
+                    : AppColors.errorLight;
+                final Color chipTextColor =
+                    isDark ? const Color(0xFFFCA5A5) : AppColors.error;
+
+                return Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: widget.selectedAllergies.map((allergy) {
+                    return Chip(
+                      label: Text(allergy),
+                      backgroundColor: chipBg,
+                      labelStyle: TextStyle(
+                        color: chipTextColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      deleteIcon: const Icon(Icons.close_rounded, size: 16),
+                      deleteIconColor: chipTextColor,
+                      onDeleted: () => _toggleAllergy(allergy),
+                    );
+                  }).toList(),
                 );
-              }).toList(),
+              },
             ),
           ],
         ],

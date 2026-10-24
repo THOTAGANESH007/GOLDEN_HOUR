@@ -4,11 +4,12 @@ Profile endpoints: CRUD for patient profile, privacy, contacts, QR status.
 import uuid
 
 from datetime import date
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
+from app.services.storage_service import StorageService
 from app.middleware.auth_middleware import get_current_user
 from app.models.emergency_contact import EmergencyContact
 from app.models.profile import Profile
@@ -124,6 +125,55 @@ async def update_privacy(
     profile = await _get_profile(db, current_user)
     for field, value in body.model_dump(exclude_unset=True).items():
         setattr(profile, field, value)
+    db.add(profile)
+    await db.commit()
+    await db.refresh(profile)
+    _attach_computed_age(profile)
+    return profile
+
+
+# ── POST /profile/me/photo ─────────────────────────────────────────────────────
+
+ALLOWED_PHOTO_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp"}
+ALLOWED_PHOTO_MIMES = {"image/jpeg", "image/jpg", "image/png", "image/webp"}
+MAX_PHOTO_SIZE = 5 * 1024 * 1024  # 5 MB
+
+
+@router.post("/me/photo", response_model=ProfileResponse)
+async def upload_profile_photo(
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    import os
+    ext = os.path.splitext(file.filename or "")[1].lower()
+    if ext not in ALLOWED_PHOTO_EXTENSIONS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid image extension. Allowed: {', '.join(sorted(ALLOWED_PHOTO_EXTENSIONS))}",
+        )
+
+    content_type = (file.content_type or "").lower()
+    if content_type not in ALLOWED_PHOTO_MIMES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid MIME type. Allowed: {', '.join(sorted(ALLOWED_PHOTO_MIMES))}",
+        )
+
+    contents = await file.read()
+    if len(contents) > MAX_PHOTO_SIZE:
+        raise HTTPException(status_code=400, detail="Image exceeds maximum 5 MB limit")
+
+    profile = await _get_profile(db, current_user)
+    storage = StorageService()
+    storage_path, public_url = await storage.save_file(
+        user_id=current_user.id,
+        filename=file.filename or "avatar.jpg",
+        contents=contents,
+        mime_type=content_type,
+    )
+
+    profile.photo_url = public_url
     db.add(profile)
     await db.commit()
     await db.refresh(profile)

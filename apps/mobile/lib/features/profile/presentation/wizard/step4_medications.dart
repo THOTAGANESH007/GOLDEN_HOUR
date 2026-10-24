@@ -117,26 +117,48 @@ class _Step4MedicationsState extends State<Step4Medications> {
           const SizedBox(height: 16),
 
           // Quick button
-          OutlinedButton.icon(
-            onPressed: _setNoMedications,
-            icon: Icon(
-              widget.medications.isEmpty
-                  ? Icons.check_circle_rounded
-                  : Icons.radio_button_unchecked,
-              color: widget.medications.isEmpty ? AppColors.success : null,
-            ),
-            label: const Text('Not Taking Any Regular Medications'),
-            style: OutlinedButton.styleFrom(
-              minimumSize: const Size.fromHeight(46),
-              backgroundColor: widget.medications.isEmpty
-                  ? AppColors.successLight
-                  : null,
-              side: BorderSide(
-                color: widget.medications.isEmpty
-                    ? AppColors.success
-                    : theme.colorScheme.outline.withValues(alpha: 0.3),
-              ),
-            ),
+          Builder(
+            builder: (context) {
+              final isDark = theme.brightness == Brightness.dark;
+              final hasNoMeds = widget.medications.isEmpty;
+              final Color activeBg = isDark
+                  ? AppColors.success.withValues(alpha: 0.2)
+                  : AppColors.successLight;
+              final Color activeText = isDark
+                  ? const Color(0xFF4ADE80)
+                  : const Color(0xFF15803D);
+
+              return OutlinedButton.icon(
+                onPressed: _setNoMedications,
+                icon: Icon(
+                  hasNoMeds
+                      ? Icons.check_circle_rounded
+                      : Icons.radio_button_unchecked,
+                  color: hasNoMeds
+                      ? (isDark ? const Color(0xFF4ADE80) : AppColors.success)
+                      : null,
+                ),
+                label: Text(
+                  'Not Taking Any Regular Medications',
+                  style: TextStyle(
+                    color: hasNoMeds ? activeText : null,
+                    fontWeight: hasNoMeds ? FontWeight.bold : FontWeight.w500,
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(46),
+                  backgroundColor: hasNoMeds ? activeBg : null,
+                  side: BorderSide(
+                    color: hasNoMeds
+                        ? (isDark
+                            ? const Color(0xFF22C55E)
+                            : AppColors.success)
+                        : theme.colorScheme.outline.withValues(alpha: 0.3),
+                    width: hasNoMeds ? 1.5 : 1.0,
+                  ),
+                ),
+              );
+            },
           ),
           const SizedBox(height: 20),
 

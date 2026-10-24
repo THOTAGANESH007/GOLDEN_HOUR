@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/theme_provider.dart';
 import '../../auth/domain/auth_provider.dart';
 import '../../profile/domain/profile_provider.dart';
 
@@ -15,31 +14,7 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  bool _isTogglingQr = false;
   bool _isDeletingAccount = false;
-
-  Future<void> _handleQrToggle(bool newValue) async {
-    setState(() => _isTogglingQr = true);
-    final success = await ref
-        .read(profileNotifierProvider.notifier)
-        .toggleQrActive(newValue);
-    if (mounted) {
-      setState(() => _isTogglingQr = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success
-                ? (newValue
-                    ? 'Emergency QR Code is now ACTIVE'
-                    : 'Emergency QR Code has been DEACTIVATED')
-                : 'Failed to update QR status. Please try again.',
-          ),
-          backgroundColor:
-              success ? AppColors.success : AppColors.error,
-        ),
-      );
-    }
-  }
 
   Future<void> _confirmLogout() async {
     final confirmed = await showDialog<bool>(
@@ -237,10 +212,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final authState = ref.watch(authNotifierProvider);
     final profileState = ref.watch(profileNotifierProvider);
     final profile = profileState.profile;
-    final currentThemeMode = ref.watch(themeModeProvider);
     final theme = Theme.of(context);
-
-    final isQrActive = profile?.qrIsActive ?? true;
     final phone = authState.phone ?? profile?.bloodGroup ?? 'Registered Patient';
 
     return Scaffold(
@@ -261,210 +233,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               _buildAccountCard(phone, profile?.fullName),
               const SizedBox(height: 20),
 
-              // Section 1: Emergency QR Code Controls
-              _buildSectionHeader('EMERGENCY QR CONTROLS'),
-              const SizedBox(height: 8),
-              Card(
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  side: BorderSide(
-                    color: theme.colorScheme.outline.withValues(alpha: 0.25),
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    SwitchListTile(
-                      value: isQrActive,
-                      activeThumbColor: AppColors.primary,
-                      onChanged: _isTogglingQr ? null : _handleQrToggle,
-                      secondary: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: isQrActive
-                              ? AppColors.primary.withValues(alpha: 0.1)
-                              : Colors.grey.shade100,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          isQrActive
-                              ? Icons.qr_code_2_rounded
-                              : Icons.qr_code_scanner_rounded,
-                          color: isQrActive ? AppColors.primary : Colors.grey,
-                          size: 22,
-                        ),
-                      ),
-                      title: const Text(
-                        'Emergency QR Code Active',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      ),
-                      subtitle: Text(
-                        isQrActive
-                            ? 'Public responder portal will display critical medical trauma data.'
-                            : 'QR code deactivated. Scans will display deactivated status.',
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                    ),
-                    const Divider(height: 1, indent: 64),
-                    ListTile(
-                      leading: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(
-                          color: AppColors.infoLight,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.visibility_outlined,
-                          color: AppColors.info,
-                          size: 22,
-                        ),
-                      ),
-                      title: const Text(
-                        'Per-Field Privacy Toggles',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      ),
-                      subtitle: const Text(
-                        'Customize whether responders see name, photo, Age',
-                        style: TextStyle(fontSize: 12),
-                      ),
-                      trailing: const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 14,
-                        color: Colors.grey,
-                      ),
-                      onTap: () => context.push('/profile/privacy'),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Section 2: Alert Channels & Audit
-              _buildSectionHeader('ALERTS & INCIDENT AUDIT'),
-              const SizedBox(height: 8),
-              Card(
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  side: BorderSide(
-                    color: theme.colorScheme.outline.withValues(alpha: 0.25),
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    ListTile(
-                      leading: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: AppColors.secondary.withValues(alpha: 0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.history_toggle_off_rounded,
-                          color: AppColors.secondary,
-                          size: 22,
-                        ),
-                      ),
-                      title: const Text(
-                        'Scan History & GPS Audit',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      ),
-                      subtitle: const Text(
-                        'View timestamped scans, maps, and false alarm logs',
-                        style: TextStyle(fontSize: 12),
-                      ),
-                      trailing: const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 14,
-                        color: Colors.grey,
-                      ),
-                      onTap: () => context.push('/scan-history'),
-                    ),
-                    const Divider(height: 1, indent: 64),
-                    ListTile(
-                      leading: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.12),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.notifications_active_outlined,
-                          color: AppColors.primary,
-                          size: 22,
-                        ),
-                      ),
-                      title: const Text(
-                        'Emergency Alert Logs',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      ),
-                      subtitle: const Text(
-                        'View WhatsApp broadcasts & emergency push notifications',
-                        style: TextStyle(fontSize: 12),
-                      ),
-                      trailing: const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 14,
-                        color: Colors.grey,
-                      ),
-                      onTap: () => context.push('/notifications'),
-                    ),
-                    const Divider(height: 1, indent: 64),
-                    ListTile(
-                      leading: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: AppColors.info.withValues(alpha: 0.12),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.folder_shared_outlined,
-                          color: AppColors.info,
-                          size: 22,
-                        ),
-                      ),
-                      title: const Text(
-                        'Medical Records & Vault',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      ),
-                      subtitle: const Text(
-                        'Manage prescriptions, lab reports, discharge summaries',
-                        style: TextStyle(fontSize: 12),
-                      ),
-                      trailing: const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 14,
-                        color: Colors.grey,
-                      ),
-                      onTap: () => context.push('/documents'),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Section 3: Appearance & Theme
-              _buildSectionHeader('APPEARANCE & THEME'),
-              const SizedBox(height: 8),
-              _buildThemeSelector(currentThemeMode),
-              const SizedBox(height: 20),
-
-              // Section 3: Legal & Compliance
+              // Legal & Compliance
               _buildSectionHeader('LEGAL & COMPLIANCE (INDIA DPDPA)'),
               const SizedBox(height: 8),
               Card(
@@ -787,125 +556,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _buildThemeSelector(ThemeMode currentMode) {
-    final theme = Theme.of(context);
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(
-          color: theme.colorScheme.outline.withValues(alpha: 0.25),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: Column(
-          children: [
-            _buildThemeOptionTile(
-              title: 'Light Theme',
-              subtitle: 'Clean, high-visibility medical presentation',
-              icon: Icons.light_mode_rounded,
-              iconColor: const Color(0xFFE28743),
-              isSelected: currentMode == ThemeMode.light,
-              onTap: () {
-                ref
-                    .read(themeModeProvider.notifier)
-                    .setThemeMode(ThemeMode.light);
-              },
-            ),
-            const Divider(height: 1, indent: 64),
-            _buildThemeOptionTile(
-              title: 'Dark Theme',
-              subtitle: 'Midnight slate, comfortable in low-light emergencies',
-              icon: Icons.dark_mode_rounded,
-              iconColor: const Color(0xFF818CF8),
-              isSelected: currentMode == ThemeMode.dark,
-              onTap: () {
-                ref
-                    .read(themeModeProvider.notifier)
-                    .setThemeMode(ThemeMode.dark);
-              },
-            ),
-            const Divider(height: 1, indent: 64),
-            _buildThemeOptionTile(
-              title: 'System Default',
-              subtitle: 'Automatically syncs with device display setting',
-              icon: Icons.brightness_auto_rounded,
-              iconColor: AppColors.primary,
-              isSelected: currentMode == ThemeMode.system,
-              onTap: () {
-                ref
-                    .read(themeModeProvider.notifier)
-                    .setThemeMode(ThemeMode.system);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
-  Widget _buildThemeOptionTile({
-    required String title,
-    required String subtitle,
-    required IconData icon,
-    required Color iconColor,
-    required bool isSelected,
-    required VoidCallback onTap,
-  }) {
-    final theme = Theme.of(context);
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: iconColor.withValues(alpha: 0.12),
-          shape: BoxShape.circle,
-        ),
-        child: Icon(icon, color: iconColor, size: 22),
-      ),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-          fontSize: 14,
-          color: theme.colorScheme.onSurface,
-        ),
-      ),
-      subtitle: Text(
-        subtitle,
-        style: TextStyle(
-          fontSize: 12,
-          color: theme.colorScheme.onSurface.withValues(alpha: 0.65),
-        ),
-      ),
-      trailing: isSelected
-          ? Container(
-              padding: const EdgeInsets.all(4),
-              decoration: const BoxDecoration(
-                color: AppColors.primary,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.check_rounded,
-                color: Colors.white,
-                size: 16,
-              ),
-            )
-          : Container(
-              width: 24,
-              height: 24,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: theme.colorScheme.outline.withValues(alpha: 0.35),
-                  width: 1.5,
-                ),
-              ),
-            ),
-      onTap: onTap,
-    );
-  }
 
   Widget _buildSectionHeader(String title) {
     return Text(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../data/profile_models.dart';
@@ -26,6 +27,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   String? _gender;
   String? _bloodGroup;
+  String? _photoUrl;
+  bool _isUploadingPhoto = false;
   List<String> _allergies = [];
   List<String> _conditions = [];
   List<MedicationItem> _medications = [];
@@ -70,6 +73,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     _ageController.text = (profile.age != null) ? profile.age.toString() : '';
     _gender = profile.gender;
     _bloodGroup = profile.bloodGroup;
+    _photoUrl = profile.photoUrl;
     _allergies = List.from(profile.allergies);
     _conditions = List.from(profile.chronicConditions);
     _medications = List.from(profile.medications);
@@ -79,6 +83,111 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     _doctorNameController.text = profile.doctorName ?? '';
     _doctorPhoneController.text = profile.doctorPhone ?? '';
     _initialized = true;
+  }
+
+  Future<void> _pickAndUploadPhoto(ImageSource source) async {
+    try {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(
+        source: source,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 85,
+      );
+      if (pickedFile == null) return;
+
+      setState(() => _isUploadingPhoto = true);
+      final success = await ref
+          .read(profileNotifierProvider.notifier)
+          .uploadPhoto(pickedFile.path);
+
+      if (!mounted) return;
+      setState(() {
+        _isUploadingPhoto = false;
+        if (success) {
+          _photoUrl = ref.read(profileNotifierProvider).profile?.photoUrl;
+        }
+      });
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Profile photo updated successfully!'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      } else {
+        final err = ref.read(profileNotifierProvider).errorMessage;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(err ?? 'Failed to upload photo'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isUploadingPhoto = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error selecting image: $e'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    }
+  }
+
+  void _showPhotoOptions() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Profile Photo',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                const SizedBox(height: 16),
+                ListTile(
+                  leading: const CircleAvatar(
+                    backgroundColor: AppColors.primaryLight,
+                    child: Icon(Icons.camera_alt_rounded, color: AppColors.primary),
+                  ),
+                  title: const Text('Take a photo'),
+                  subtitle: const Text('Use device camera'),
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    _pickAndUploadPhoto(ImageSource.camera);
+                  },
+                ),
+                ListTile(
+                  leading: const CircleAvatar(
+                    backgroundColor: AppColors.primaryLight,
+                    child: Icon(Icons.photo_library_rounded, color: AppColors.primary),
+                  ),
+                  title: const Text('Choose from gallery'),
+                  subtitle: const Text('Select existing photo'),
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    _pickAndUploadPhoto(ImageSource.gallery);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void _addSurgery() {
@@ -179,6 +288,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Profile Photo Upload Avatar
+                _buildPhotoAvatar(),
+                const SizedBox(height: 20),
+
                 // Personal Details Card
                 _buildSectionHeader('Personal Information', Icons.person_rounded),
                 const SizedBox(height: 12),
@@ -427,6 +540,104 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildPhotoAvatar() {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Center(
+      child: Column(
+        children: [
+          Stack(
+            children: [
+              Container(
+                width: 104,
+                height: 104,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: 0.35),
+                    width: 3,
+                  ),
+                  color: isDark
+                      ? const Color(0xFF1E293B)
+                      : const Color(0xFFF1F5F9),
+                ),
+                child: ClipOval(
+                  child: _isUploadingPhoto
+                      ? const Center(
+                          child: SizedBox(
+                            width: 32,
+                            height: 32,
+                            child: CircularProgressIndicator(strokeWidth: 3),
+                          ),
+                        )
+                      : (_photoUrl != null && _photoUrl!.isNotEmpty)
+                          ? Image.network(
+                              _photoUrl!,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  const Icon(
+                                Icons.person_rounded,
+                                size: 56,
+                                color: AppColors.textSecondary,
+                              ),
+                            )
+                          : const Icon(
+                              Icons.person_rounded,
+                              size: 56,
+                              color: AppColors.textSecondary,
+                            ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: InkWell(
+                  onTap: _isUploadingPhoto ? null : _showPhotoOptions,
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: theme.scaffoldBackgroundColor,
+                        width: 2,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.camera_alt_rounded,
+                      size: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          TextButton.icon(
+            onPressed: _isUploadingPhoto ? null : _showPhotoOptions,
+            icon: const Icon(Icons.add_a_photo_outlined, size: 16),
+            label: Text(
+              _photoUrl != null && _photoUrl!.isNotEmpty
+                  ? 'Change Profile Photo'
+                  : 'Add Profile Photo',
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+            ),
+          ),
+        ],
       ),
     );
   }

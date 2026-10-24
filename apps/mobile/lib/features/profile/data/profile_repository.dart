@@ -33,6 +33,19 @@ class ProfileRepository {
     }
   }
 
+  Future<PatientProfile> uploadPhoto(String filePath) async {
+    try {
+      final fileName = filePath.split('/').last;
+      final formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(filePath, filename: fileName),
+      });
+      final response = await _dio.post('/profile/me/photo', data: formData);
+      return PatientProfile.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw _handleError(e);
+    }
+  }
+
   Future<PatientProfile> updatePrivacy({
     bool? showName,
     bool? showDob,

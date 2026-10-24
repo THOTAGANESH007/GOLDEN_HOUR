@@ -117,24 +117,47 @@ class _Step3ConditionsState extends State<Step3Conditions> {
           const SizedBox(height: 16),
 
           // Quick None button
-          OutlinedButton.icon(
-            onPressed: _setNone,
-            icon: Icon(
-              hasNone
-                  ? Icons.check_circle_rounded
-                  : Icons.radio_button_unchecked,
-              color: hasNone ? AppColors.success : null,
-            ),
-            label: const Text('No Pre-existing Chronic Conditions'),
-            style: OutlinedButton.styleFrom(
-              minimumSize: const Size.fromHeight(46),
-              backgroundColor: hasNone ? AppColors.successLight : null,
-              side: BorderSide(
-                color: hasNone
-                    ? AppColors.success
-                    : theme.colorScheme.outline.withValues(alpha: 0.3),
-              ),
-            ),
+          Builder(
+            builder: (context) {
+              final isDark = theme.brightness == Brightness.dark;
+              final Color activeBg = isDark
+                  ? AppColors.success.withValues(alpha: 0.2)
+                  : AppColors.successLight;
+              final Color activeText = isDark
+                  ? const Color(0xFF4ADE80)
+                  : const Color(0xFF15803D);
+
+              return OutlinedButton.icon(
+                onPressed: _setNone,
+                icon: Icon(
+                  hasNone
+                      ? Icons.check_circle_rounded
+                      : Icons.radio_button_unchecked,
+                  color: hasNone
+                      ? (isDark ? const Color(0xFF4ADE80) : AppColors.success)
+                      : null,
+                ),
+                label: Text(
+                  'No Pre-existing Chronic Conditions',
+                  style: TextStyle(
+                    color: hasNone ? activeText : null,
+                    fontWeight: hasNone ? FontWeight.bold : FontWeight.w500,
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(46),
+                  backgroundColor: hasNone ? activeBg : null,
+                  side: BorderSide(
+                    color: hasNone
+                        ? (isDark
+                            ? const Color(0xFF22C55E)
+                            : AppColors.success)
+                        : theme.colorScheme.outline.withValues(alpha: 0.3),
+                    width: hasNone ? 1.5 : 1.0,
+                  ),
+                ),
+              );
+            },
           ),
           const SizedBox(height: 20),
 

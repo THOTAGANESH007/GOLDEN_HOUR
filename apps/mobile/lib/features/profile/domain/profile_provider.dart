@@ -59,6 +59,24 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     }
   }
 
+  Future<bool> uploadPhoto(String filePath) async {
+    state = state.copyWith(isSaving: true, clearError: true);
+    try {
+      final updatedProfile = await _repo.uploadPhoto(filePath);
+      state = state.copyWith(
+        isSaving: false,
+        profile: updatedProfile,
+      );
+      return true;
+    } catch (e) {
+      state = state.copyWith(
+        isSaving: false,
+        errorMessage: e.toString().replaceAll('Exception: ', ''),
+      );
+      return false;
+    }
+  }
+
   Future<bool> updatePrivacy({
     bool? showName,
     bool? showDob,

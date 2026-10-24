@@ -100,6 +100,7 @@ class ProfileUpdate(BaseModel):
     is_organ_donor: Optional[bool] = None
     doctor_name: Optional[str] = None
     doctor_phone: Optional[str] = None
+    photo_url: Optional[str] = None
     wizard_completed: Optional[bool] = None
 
 
