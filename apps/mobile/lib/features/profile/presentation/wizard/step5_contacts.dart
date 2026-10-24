@@ -54,43 +54,59 @@ class _Step5ContactsState extends State<Step5Contacts> {
     }
 
     final name = _nameController.text.trim();
-    var phone = _phoneController.text.trim();
+    final rawPhone = _phoneController.text.trim();
 
-    if (name.isEmpty || phone.isEmpty) {
+    if (name.isEmpty || rawPhone.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter contact name and phone number')),
       );
       return;
     }
 
-    // Auto-prefix +91 if 10-digit number entered without country code
-    if (!phone.startsWith('+')) {
-      final digits = phone.replaceAll(RegExp(r'\D'), '');
-      if (digits.length == 10) {
-        phone = '+91$digits';
-      } else {
-        phone = '+$digits';
-      }
+    // Robust phone sanitization and E.164 normalization
+    var digits = rawPhone.replaceAll(RegExp(r'\D'), '');
+    if (digits.startsWith('00')) {
+      digits = digits.substring(2);
+    } else if (digits.startsWith('0') && digits.length == 11) {
+      digits = digits.substring(1);
+    }
+
+    String formattedPhone;
+    if (digits.length == 10) {
+      formattedPhone = '+91$digits';
+    } else if (digits.length > 10) {
+      formattedPhone = '+$digits';
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a valid 10-digit mobile number'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
     }
 
     final newContact = EmergencyContact(
       name: name,
       relation: _selectedRelation,
-      phone: phone,
+      phone: formattedPhone,
       whatsappEnabled: _whatsappEnabled,
       notifyOnScan: _notifyOnScan,
       sortOrder: widget.contacts.length,
     );
 
-    widget.onChanged([...widget.contacts, newContact]);
-
-    _nameController.clear();
-    _phoneController.clear();
+    setState(() {
+      widget.onChanged([...widget.contacts, newContact]);
+      _nameController.clear();
+      _phoneController.clear();
+    });
   }
 
   void _removeContact(int index) {
-    final updated = List<EmergencyContact>.from(widget.contacts)..removeAt(index);
-    widget.onChanged(updated);
+    setState(() {
+      final updated = List<EmergencyContact>.from(widget.contacts)..removeAt(index);
+      widget.onChanged(updated);
+    });
   }
 
   @override

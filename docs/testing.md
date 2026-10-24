@@ -121,6 +121,7 @@
 | **ISS-03** | Storage / Docker | Missing host volume mount for `./uploads` in container `golden-hour-api` | High | Recreated container with `-v /home/ubuntu/documents_data:/app/uploads`; verified uploads persist on host NVMe disk | 🟢 RESOLVED |
 | **ISS-04** | Legal / Compliance | Missing dedicated `/privacy` HTML route for Play Store & DPDPA compliance | Medium | Implemented `/privacy` endpoint in `backend/app/main.py`; verified live `HTTP 200` | 🟢 RESOLVED |
 | **ISS-05** | Cleanup | Unused empty `apps/mobile/lib/features/qr_code/` directory | Low | Removed folder to prevent confusion with active `features/qr/` | 🟢 RESOLVED |
+| **ISS-06** | Patient Profile / Mobile | Adding emergency contacts failed to save/display due to strict backend phone regex rejection of formatted numbers (`+91 XX` / `0XX`) and lack of direct addition UI on Home Screen | High | Added phone normalization in backend schemas (`profile.py`), auto-sanitization to E.164 in Flutter, and added direct "Add Emergency Contact" bottom sheet with instant save and delete actions to `ProfileHomeScreen` | 🟢 RESOLVED |
 
 ---
 

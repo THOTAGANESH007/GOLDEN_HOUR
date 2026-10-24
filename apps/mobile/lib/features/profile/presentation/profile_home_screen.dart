@@ -220,7 +220,7 @@ class ProfileHomeScreen extends ConsumerWidget {
                       const SizedBox(height: 16),
 
                       // Emergency Contacts Section
-                      _buildContactsSection(context, contacts),
+                      _buildContactsSection(context, ref, contacts),
                       const SizedBox(height: 16),
 
                       // Medical Documents Vault Card
@@ -691,7 +691,7 @@ class ProfileHomeScreen extends ConsumerWidget {
   }
 
   Widget _buildContactsSection(
-      BuildContext context, List<EmergencyContact> contacts) {
+      BuildContext context, WidgetRef ref, List<EmergencyContact> contacts) {
     final theme = Theme.of(context);
 
     return Column(
@@ -701,32 +701,69 @@ class ProfileHomeScreen extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Emergency Contacts (${contacts.length})',
+              'Emergency Contacts (${contacts.length}/5)',
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             TextButton.icon(
-              onPressed: () => context.push('/profile/wizard'),
-              icon: const Icon(Icons.add, size: 16),
-              label: const Text('Add / Manage'),
+              onPressed: contacts.length >= 5
+                  ? null
+                  : () => _showAddContactBottomSheet(context, ref),
+              icon: const Icon(Icons.person_add_alt_1_rounded, size: 18),
+              label: const Text('Add Contact'),
             ),
           ],
         ),
         const SizedBox(height: 8),
         if (contacts.isEmpty)
           Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(
+                color: theme.colorScheme.outline.withValues(alpha: 0.2),
+              ),
+            ),
             child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Center(
-                child: Text(
-                  'No emergency contacts added yet. Add loved ones to receive instant GPS alerts.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                    fontSize: 13,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.contact_emergency_rounded,
+                      color: AppColors.primary,
+                      size: 32,
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'No Emergency Contacts Added',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'When responders scan your QR, these contacts receive instant GPS location and hospital alerts.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                      fontSize: 13,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  FilledButton.icon(
+                    onPressed: () => _showAddContactBottomSheet(context, ref),
+                    icon: const Icon(Icons.add_rounded),
+                    label: const Text('Add Emergency Contact'),
+                  ),
+                ],
               ),
             ),
           )
@@ -735,53 +772,469 @@ class ProfileHomeScreen extends ConsumerWidget {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: contacts.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 8),
+            separatorBuilder: (_, __) => const SizedBox(height: 10),
             itemBuilder: (context, index) {
               final c = contacts[index];
               return Card(
                 margin: EdgeInsets.zero,
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: AppColors.primary.withValues(alpha: 0.12),
-                    child: Text(
-                      c.name.isNotEmpty ? c.name[0].toUpperCase() : '?',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
-                      ),
-                    ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  side: BorderSide(
+                    color: theme.colorScheme.outline.withValues(alpha: 0.15),
                   ),
-                  title: Row(
+                ),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  child: Row(
                     children: [
-                      Text(c.name,
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.surfaceContainerHighest,
-                          borderRadius: BorderRadius.circular(6),
+                      CircleAvatar(
+                        radius: 22,
+                        backgroundColor:
+                            AppColors.primary.withValues(alpha: 0.12),
+                        child: Text(
+                          c.name.isNotEmpty ? c.name[0].toUpperCase() : '?',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: AppColors.primary,
+                          ),
                         ),
-                        child: Text(c.relation,
-                            style: const TextStyle(fontSize: 11)),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    c.name,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: theme
+                                        .colorScheme.surfaceContainerHighest,
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Text(
+                                    c.relation,
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: theme.colorScheme.onSurface,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 3),
+                            Text(
+                              c.phone,
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                color: theme.colorScheme.onSurface
+                                    .withValues(alpha: 0.85),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                if (c.whatsappEnabled)
+                                  const Padding(
+                                    padding: EdgeInsets.only(right: 8),
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.chat_bubble_outline,
+                                            size: 13,
+                                            color: AppColors.success),
+                                        SizedBox(width: 3),
+                                        Text('WhatsApp',
+                                            style: TextStyle(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w500,
+                                                color: AppColors.success)),
+                                      ],
+                                    ),
+                                  ),
+                                if (c.notifyOnScan)
+                                  const Row(
+                                    children: [
+                                      Icon(Icons.notifications_active_outlined,
+                                          size: 13, color: AppColors.primary),
+                                      SizedBox(width: 3),
+                                      Text('Scan Alert',
+                                          style: TextStyle(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w500,
+                                              color: AppColors.primary)),
+                                    ],
+                                  ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.phone_rounded,
+                                color: AppColors.success),
+                            tooltip: 'Call Contact',
+                            onPressed: () {
+                              final uri = Uri.parse('tel:${c.phone}');
+                              launchUrl(uri);
+                            },
+                          ),
+                          if (c.id != null)
+                            IconButton(
+                              icon: const Icon(Icons.delete_outline_rounded,
+                                  color: AppColors.error),
+                              tooltip: 'Delete Contact',
+                              onPressed: () =>
+                                  _confirmDeleteContact(context, ref, c),
+                            ),
+                        ],
                       ),
                     ],
-                  ),
-                  subtitle: Text(c.phone),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.phone_rounded,
-                        color: AppColors.success),
-                    onPressed: () {
-                      final uri = Uri.parse('tel:${c.phone}');
-                      launchUrl(uri);
-                    },
                   ),
                 ),
               );
             },
           ),
       ],
+    );
+  }
+
+  void _confirmDeleteContact(
+      BuildContext context, WidgetRef ref, EmergencyContact contact) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Contact?'),
+        content: Text(
+            'Are you sure you want to remove ${contact.name} (${contact.phone}) from your emergency contacts?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: AppColors.error),
+            onPressed: () async {
+              Navigator.of(ctx).pop();
+              final success = await ref
+                  .read(profileNotifierProvider.notifier)
+                  .deleteEmergencyContact(contact.id!);
+              if (context.mounted) {
+                if (success) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Removed ${contact.name}'),
+                      backgroundColor: AppColors.success,
+                    ),
+                  );
+                } else {
+                  final err = ref.read(profileNotifierProvider).errorMessage;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(err ?? 'Failed to delete contact'),
+                      backgroundColor: AppColors.error,
+                    ),
+                  );
+                }
+              }
+            },
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAddContactBottomSheet(BuildContext context, WidgetRef ref) {
+    final nameController = TextEditingController();
+    final phoneController = TextEditingController();
+    String selectedRelation = 'Spouse';
+    bool whatsappEnabled = true;
+    bool notifyOnScan = true;
+    bool isSubmitting = false;
+
+    const relationOptions = [
+      'Spouse',
+      'Parent',
+      'Child',
+      'Sibling',
+      'Friend',
+      'Doctor',
+      'Guardian',
+      'Other',
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            final theme = Theme.of(context);
+            return Padding(
+              padding: EdgeInsets.only(
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.outline.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: 0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.person_add_rounded,
+                            color: AppColors.primary,
+                            size: 24,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Add Emergency Contact',
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'This contact will receive instant SMS & WhatsApp alerts with your live location when your QR code is scanned.',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+
+                    // Name
+                    TextField(
+                      controller: nameController,
+                      textCapitalization: TextCapitalization.words,
+                      decoration: const InputDecoration(
+                        labelText: 'Contact Full Name',
+                        hintText: 'e.g. Ramesh Thota',
+                        prefixIcon: Icon(Icons.person_outline),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+
+                    // Relationship & Phone
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: DropdownButtonFormField<String>(
+                            initialValue: selectedRelation,
+                            decoration: const InputDecoration(
+                              labelText: 'Relationship',
+                              prefixIcon: Icon(Icons.people_outline),
+                            ),
+                            items: relationOptions.map((r) {
+                              return DropdownMenuItem(value: r, child: Text(r));
+                            }).toList(),
+                            onChanged: (val) {
+                              if (val != null) {
+                                setModalState(() => selectedRelation = val);
+                              }
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          flex: 6,
+                          child: TextField(
+                            controller: phoneController,
+                            keyboardType: TextInputType.phone,
+                            decoration: const InputDecoration(
+                              labelText: 'Phone Number',
+                              hintText: '9876543210',
+                              prefixIcon: Icon(Icons.phone_outlined),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+
+                    // Toggles
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: const Text('WhatsApp Notifications',
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                      subtitle: const Text(
+                        'Send location & hospital alerts via WhatsApp',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      value: whatsappEnabled,
+                      onChanged: (val) =>
+                          setModalState(() => whatsappEnabled = val),
+                    ),
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: const Text('Instant Scan Alerts',
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                      subtitle: const Text(
+                        'Trigger SMS and WhatsApp alert when responder scans QR',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      value: notifyOnScan,
+                      onChanged: (val) =>
+                          setModalState(() => notifyOnScan = val),
+                    ),
+                    const SizedBox(height: 18),
+
+                    // Save Button
+                    FilledButton(
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size.fromHeight(50),
+                        backgroundColor: AppColors.primary,
+                      ),
+                      onPressed: isSubmitting
+                          ? null
+                          : () async {
+                              final name = nameController.text.trim();
+                              final rawPhone = phoneController.text.trim();
+
+                              if (name.isEmpty || rawPhone.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Please enter name and phone number'),
+                                    backgroundColor: AppColors.error,
+                                  ),
+                                );
+                                return;
+                              }
+
+                              // Sanitize phone input
+                              var digits = rawPhone.replaceAll(RegExp(r'\D'), '');
+                              if (digits.startsWith('00')) {
+                                digits = digits.substring(2);
+                              } else if (digits.startsWith('0') &&
+                                  digits.length == 11) {
+                                digits = digits.substring(1);
+                              }
+
+                              String formattedPhone;
+                              if (digits.length == 10) {
+                                formattedPhone = '+91$digits';
+                              } else if (digits.length > 10) {
+                                formattedPhone = '+$digits';
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'Please enter a valid 10-digit mobile number'),
+                                    backgroundColor: AppColors.error,
+                                  ),
+                                );
+                                return;
+                              }
+
+                              setModalState(() => isSubmitting = true);
+
+                              final newContact = EmergencyContact(
+                                name: name,
+                                relation: selectedRelation,
+                                phone: formattedPhone,
+                                whatsappEnabled: whatsappEnabled,
+                                notifyOnScan: notifyOnScan,
+                              );
+
+                              final success = await ref
+                                  .read(profileNotifierProvider.notifier)
+                                  .addEmergencyContact(newContact);
+
+                              if (!context.mounted) return;
+
+                              if (success) {
+                                Navigator.of(ctx).pop();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Added $name to emergency contacts!'),
+                                    backgroundColor: AppColors.success,
+                                  ),
+                                );
+                              } else {
+                                setModalState(() => isSubmitting = false);
+                                final err = ref
+                                    .read(profileNotifierProvider)
+                                    .errorMessage;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                        err ?? 'Failed to add emergency contact'),
+                                    backgroundColor: AppColors.error,
+                                  ),
+                                );
+                              }
+                            },
+                      child: isSubmitting
+                          ? const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Text(
+                              'Save Emergency Contact',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

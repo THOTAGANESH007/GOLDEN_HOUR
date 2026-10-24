@@ -180,6 +180,19 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
       payload['wizard_completed'] = true;
       final updatedProfile = await _repo.updateProfile(payload);
 
+      // Delete any contacts that were removed during the wizard
+      final remainingIds = newContacts
+          .map((c) => c.id)
+          .where((id) => id != null && id.isNotEmpty)
+          .toSet();
+      for (final existing in state.contacts) {
+        if (existing.id != null && !remainingIds.contains(existing.id)) {
+          try {
+            await _repo.deleteContact(existing.id!);
+          } catch (_) {}
+        }
+      }
+
       // Add contacts that don't have an ID yet
       for (final contact in newContacts) {
         if (contact.id == null || contact.id!.isEmpty) {

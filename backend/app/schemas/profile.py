@@ -19,9 +19,21 @@ class EmergencyContactBase(BaseModel):
     @field_validator("phone")
     @classmethod
     def validate_phone(cls, v: str) -> str:
-        if not re.match(r"^\+\d{10,15}$", v):
-            raise ValueError("Phone must be in E.164 format e.g. +91XXXXXXXXXX")
-        return v
+        if not v:
+            raise ValueError("Phone number cannot be empty")
+        cleaned = re.sub(r"[\s\-\(\)]", "", v.strip())
+        if cleaned.startswith("00"):
+            cleaned = "+" + cleaned[2:]
+        elif cleaned.startswith("0") and len(cleaned) == 11:
+            cleaned = "+91" + cleaned[1:]
+        elif not cleaned.startswith("+"):
+            if len(cleaned) == 10:
+                cleaned = "+91" + cleaned
+            else:
+                cleaned = "+" + cleaned
+        if not re.match(r"^\+\d{10,15}$", cleaned):
+            raise ValueError("Phone must be in E.164 format e.g. +91XXXXXXXXXX or a valid 10-digit number")
+        return cleaned
 
 
 class EmergencyContactCreate(EmergencyContactBase):
@@ -35,6 +47,25 @@ class EmergencyContactUpdate(BaseModel):
     whatsapp_enabled: Optional[bool] = None
     notify_on_scan: Optional[bool] = None
     sort_order: Optional[int] = None
+
+    @field_validator("phone")
+    @classmethod
+    def validate_phone(cls, v: Optional[str]) -> Optional[str]:
+        if v is None:
+            return v
+        cleaned = re.sub(r"[\s\-\(\)]", "", v.strip())
+        if cleaned.startswith("00"):
+            cleaned = "+" + cleaned[2:]
+        elif cleaned.startswith("0") and len(cleaned) == 11:
+            cleaned = "+91" + cleaned[1:]
+        elif not cleaned.startswith("+"):
+            if len(cleaned) == 10:
+                cleaned = "+91" + cleaned
+            else:
+                cleaned = "+" + cleaned
+        if not re.match(r"^\+\d{10,15}$", cleaned):
+            raise ValueError("Phone must be in E.164 format e.g. +91XXXXXXXXXX or a valid 10-digit number")
+        return cleaned
 
 
 class EmergencyContactResponse(EmergencyContactBase):
