@@ -8,7 +8,6 @@ import 'step1_blood_group.dart';
 import 'step2_allergies.dart';
 import 'step3_conditions.dart';
 import 'step4_medications.dart';
-import 'step5_contacts.dart';
 
 class ProfileWizardScreen extends ConsumerStatefulWidget {
   const ProfileWizardScreen({super.key});
@@ -25,7 +24,6 @@ class _ProfileWizardScreenState extends ConsumerState<ProfileWizardScreen> {
   List<String> _allergies = [];
   List<String> _conditions = [];
   List<MedicationItem> _medications = [];
-  List<EmergencyContact> _contacts = [];
 
   final PageController _pageController = PageController();
 
@@ -41,7 +39,6 @@ class _ProfileWizardScreenState extends ConsumerState<ProfileWizardScreen> {
           _allergies = List.from(state.profile!.allergies);
           _conditions = List.from(state.profile!.chronicConditions);
           _medications = List.from(state.profile!.medications);
-          _contacts = List.from(state.contacts);
         });
       }
     });
@@ -54,7 +51,7 @@ class _ProfileWizardScreenState extends ConsumerState<ProfileWizardScreen> {
   }
 
   void _goToStep(int step) {
-    if (step < 0 || step > 4) return;
+    if (step < 0 || step > 3) return;
     setState(() => _currentStep = step);
     _pageController.animateToPage(
       step,
@@ -78,7 +75,7 @@ class _ProfileWizardScreenState extends ConsumerState<ProfileWizardScreen> {
     final success =
         await ref.read(profileNotifierProvider.notifier).submitWizard(
               profileUpdates: updatedProfile,
-              newContacts: _contacts,
+              newContacts: ref.read(profileNotifierProvider).contacts,
             );
 
     if (!mounted) return;
@@ -107,7 +104,6 @@ class _ProfileWizardScreenState extends ConsumerState<ProfileWizardScreen> {
     'Allergies',
     'Conditions',
     'Medications',
-    'Emergency Contacts',
   ];
 
   @override
@@ -138,14 +134,14 @@ class _ProfileWizardScreenState extends ConsumerState<ProfileWizardScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Step ${_currentStep + 1} of 5: ${stepTitles[_currentStep]}',
+                        'Step ${_currentStep + 1} of 4: ${stepTitles[_currentStep]}',
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),
                       ),
                       Text(
-                        '${((_currentStep + 1) / 5 * 100).toInt()}%',
+                        '${((_currentStep + 1) / 4 * 100).toInt()}%',
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
@@ -158,7 +154,7 @@ class _ProfileWizardScreenState extends ConsumerState<ProfileWizardScreen> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(4),
                     child: LinearProgressIndicator(
-                      value: (_currentStep + 1) / 5,
+                      value: (_currentStep + 1) / 4,
                       minHeight: 6,
                       backgroundColor:
                           theme.colorScheme.outline.withValues(alpha: 0.15),
@@ -192,10 +188,6 @@ class _ProfileWizardScreenState extends ConsumerState<ProfileWizardScreen> {
                     medications: _medications,
                     onChanged: (list) => setState(() => _medications = list),
                   ),
-                  Step5Contacts(
-                    contacts: _contacts,
-                    onChanged: (list) => setState(() => _contacts = list),
-                  ),
                 ],
               ),
             ),
@@ -226,7 +218,7 @@ class _ProfileWizardScreenState extends ConsumerState<ProfileWizardScreen> {
                   else
                     const SizedBox(width: 80),
                   const Spacer(),
-                  if (_currentStep < 4)
+                  if (_currentStep < 3)
                     FilledButton.icon(
                       onPressed: () => _goToStep(_currentStep + 1),
                       icon: const Icon(Icons.arrow_forward_rounded, size: 18),

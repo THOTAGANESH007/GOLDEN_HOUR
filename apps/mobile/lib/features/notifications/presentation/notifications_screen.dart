@@ -82,7 +82,7 @@ class NotificationsScreen extends ConsumerWidget {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              'FCM Push, SMS, and WhatsApp channels are active for all emergency tag scans.',
+                              'FCM Push and WhatsApp channels are active for all emergency tag scans.',
                               style: TextStyle(
                                 fontSize: 12,
                                 color: theme.colorScheme.onSurface
@@ -96,93 +96,7 @@ class NotificationsScreen extends ConsumerWidget {
                   ),
                 ),
 
-                const SizedBox(height: 20),
-
-                // Test Notification Section
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Test Emergency Channels',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Dispatches a sample emergency alert to your phone number via Fast2SMS and Green-API WhatsApp to verify delivery.',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: theme.colorScheme.onSurface
-                                .withValues(alpha: 0.7),
-                          ),
-                        ),
-                        const SizedBox(height: 14),
-
-                        if (notifState.testSuccessMessage != null) ...[
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: AppColors.successLight,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color:
-                                    AppColors.success.withValues(alpha: 0.3),
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.check_circle_rounded,
-                                    color: AppColors.success, size: 20),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    notifState.testSuccessMessage!,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.success,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                        ],
-
-                        FilledButton.icon(
-                          onPressed: notifState.isSendingTest
-                              ? null
-                              : () => ref
-                                  .read(notificationNotifierProvider.notifier)
-                                  .sendTestNotification(),
-                          icon: notifState.isSendingTest
-                              ? const SizedBox(
-                                  width: 16,
-                                  height: 16,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : const Icon(Icons.send_rounded),
-                          label: Text(notifState.isSendingTest
-                              ? 'Dispatching Test...'
-                              : 'Send Test Notification'),
-                          style: FilledButton.styleFrom(
-                            minimumSize: const Size.fromHeight(46),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
 
                 // Scan & Alert Activity Log
                 Row(

@@ -103,6 +103,22 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     }
   }
 
+  String? _calculateAgeString(String dobText) {
+    if (dobText.isEmpty) return null;
+    try {
+      final dob = DateTime.parse(dobText);
+      final today = DateTime.now();
+      int calculated = today.year - dob.year;
+      if (today.month < dob.month ||
+          (today.month == dob.month && today.day < dob.day)) {
+        calculated--;
+      }
+      return calculated >= 0 ? 'Age: $calculated years' : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   void _addSurgery() {
     final text = _surgeryController.text.trim();
     if (text.isNotEmpty && !_pastSurgeries.contains(text)) {
@@ -225,11 +241,16 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                                 controller: _dobController,
                                 readOnly: true,
                                 onTap: _pickDateOfBirth,
-                                decoration: const InputDecoration(
-                                  labelText: 'Date of Birth',
+                                decoration: InputDecoration(
+                                  labelText: 'Date of Birth & Age',
                                   prefixIcon:
-                                      Icon(Icons.calendar_today_outlined),
+                                      const Icon(Icons.calendar_today_outlined),
                                   hintText: 'YYYY-MM-DD',
+                                  helperText: _calculateAgeString(_dobController.text),
+                                  helperStyle: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.info,
+                                  ),
                                 ),
                               ),
                             ),

@@ -427,6 +427,7 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
   }
 
   Widget _buildDispatchStatusCard(ScanHistoryItem event) {
+    final theme = Theme.of(context);
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -438,62 +439,57 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Row(
+            Row(
               children: [
-                Icon(Icons.cell_tower_rounded,
+                const Icon(Icons.cell_tower_rounded,
                     color: AppColors.info, size: 20),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
                   'Emergency Alert Broadcasts',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
             const Divider(height: 20),
             _buildChannelStatus(
-              channel: 'Fast2SMS Gateway',
-              sent: event.smsSent,
-              icon: Icons.sms_outlined,
-              description: 'Emergency contacts notified via SMS',
-            ),
-            const SizedBox(height: 12),
-            _buildChannelStatus(
+              context: context,
               channel: 'WhatsApp (Green-API)',
               sent: event.whatsappSent,
               icon: Icons.chat_bubble_outline_rounded,
-              description: 'Location map & alert sent to WhatsApp',
+              description: 'Live location map & trauma alert sent to contacts',
             ),
             const SizedBox(height: 12),
             _buildChannelStatus(
+              context: context,
               channel: 'FCM Push Notification',
               sent: event.fcmSent,
               icon: Icons.notifications_active_outlined,
-              description: 'Alert dispatched to patient device',
-            ),
-            const SizedBox(height: 12),
-            _buildChannelStatus(
-              channel: 'Email Fallback (Resend)',
-              sent: event.emailSent,
-              icon: Icons.email_outlined,
-              description: 'Escalation triggered if SMS fails 3 retries',
+              description: 'High-priority scan alert dispatched to device',
             ),
             if (event.notificationSuppressed) ...[
               const SizedBox(height: 14),
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.amber.shade50,
+                  color: AppColors.warning.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.amber.shade300),
+                  border: Border.all(
+                    color: AppColors.warning.withValues(alpha: 0.3),
+                  ),
                 ),
-                child: const Row(
+                child: Row(
                   children: [
-                    Icon(Icons.info_outline, size: 16, color: Colors.amber),
-                    SizedBox(width: 8),
+                    const Icon(Icons.info_outline, size: 16, color: AppColors.warning),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         'Repeated scan within 5 minutes: Notifications were suppressed to prevent duplicate alert spam.',
-                        style: TextStyle(fontSize: 11, color: Colors.black87),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.85),
+                        ),
                       ),
                     ),
                   ],
@@ -507,23 +503,29 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
   }
 
   Widget _buildChannelStatus({
+    required BuildContext context,
     required String channel,
     required bool sent,
     required IconData icon,
     required String description,
   }) {
+    final theme = Theme.of(context);
     return Row(
       children: [
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: sent ? AppColors.successLight : Colors.grey.shade100,
+            color: sent
+                ? AppColors.success.withValues(alpha: 0.12)
+                : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(
             icon,
             size: 18,
-            color: sent ? AppColors.success : Colors.grey.shade500,
+            color: sent
+                ? AppColors.success
+                : theme.colorScheme.onSurface.withValues(alpha: 0.5),
           ),
         ),
         const SizedBox(width: 12),
@@ -533,11 +535,18 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
             children: [
               Text(
                 channel,
-                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                  color: theme.colorScheme.onSurface,
+                ),
               ),
               Text(
                 description,
-                style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+                style: TextStyle(
+                  fontSize: 11,
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
               ),
             ],
           ),
@@ -545,12 +554,14 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
-            color: sent ? AppColors.successLight : Colors.grey.shade100,
+            color: sent
+                ? AppColors.success.withValues(alpha: 0.12)
+                : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(6),
             border: Border.all(
               color: sent
                   ? AppColors.success.withValues(alpha: 0.3)
-                  : Colors.grey.shade300,
+                  : theme.colorScheme.outline.withValues(alpha: 0.2),
             ),
           ),
           child: Text(
@@ -558,7 +569,9 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.bold,
-              color: sent ? AppColors.success : Colors.grey.shade600,
+              color: sent
+                  ? AppColors.success
+                  : theme.colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
         ),

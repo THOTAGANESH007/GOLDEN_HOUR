@@ -167,6 +167,22 @@ class PatientProfile {
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
+  int? get age {
+    if (dateOfBirth == null || dateOfBirth!.isEmpty) return null;
+    try {
+      final dob = DateTime.parse(dateOfBirth!);
+      final today = DateTime.now();
+      int calculated = today.year - dob.year;
+      if (today.month < dob.month ||
+          (today.month == dob.month && today.day < dob.day)) {
+        calculated--;
+      }
+      return calculated >= 0 ? calculated : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   const PatientProfile({
     required this.id,
     required this.userId,

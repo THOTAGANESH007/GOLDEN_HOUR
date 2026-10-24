@@ -72,7 +72,7 @@ class _ScanHistoryScreenState extends ConsumerState<ScanHistoryScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildSummaryCard(state),
+                      _buildSummaryCard(context, state),
                       const SizedBox(height: 16),
                       Row(
                         children: [
@@ -139,44 +139,49 @@ class _ScanHistoryScreenState extends ConsumerState<ScanHistoryScreen> {
     );
   }
 
-  Widget _buildSummaryCard(dynamic state) {
+  Widget _buildSummaryCard(BuildContext context, dynamic state) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.primary.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.2),
+          color: AppColors.primary.withValues(alpha: 0.25),
         ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(Icons.shield_outlined, color: AppColors.primary, size: 20),
-              SizedBox(width: 8),
+              const Icon(Icons.shield_outlined, color: AppColors.primary, size: 20),
+              const SizedBox(width: 8),
               Text(
                 'Responder Scan Audit',
-                style: TextStyle(
+                style: theme.textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                  color: AppColors.primaryDark,
+                  color: AppColors.primary,
                 ),
               ),
             ],
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'Every time a paramedic or good samaritan scans your Golden Hour QR code, '
             'the incident location, device, and contact alert records are logged here.',
-            style: TextStyle(fontSize: 12, color: Colors.black87),
+            style: TextStyle(
+              fontSize: 12,
+              height: 1.4,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.85),
+            ),
           ),
           const SizedBox(height: 16),
           Row(
             children: [
               Expanded(
                 child: _buildMetricTile(
+                  context: context,
                   label: 'Total Scans',
                   value: state.totalCount.toString(),
                   icon: Icons.qr_code_scanner_rounded,
@@ -186,6 +191,7 @@ class _ScanHistoryScreenState extends ConsumerState<ScanHistoryScreen> {
               const SizedBox(width: 8),
               Expanded(
                 child: _buildMetricTile(
+                  context: context,
                   label: 'Emergencies',
                   value: state.activeScanCount.toString(),
                   icon: Icons.emergency_rounded,
@@ -195,6 +201,7 @@ class _ScanHistoryScreenState extends ConsumerState<ScanHistoryScreen> {
               const SizedBox(width: 8),
               Expanded(
                 child: _buildMetricTile(
+                  context: context,
                   label: 'False Alarms',
                   value: state.falseAlarmCount.toString(),
                   icon: Icons.check_circle_outline_rounded,
@@ -209,17 +216,21 @@ class _ScanHistoryScreenState extends ConsumerState<ScanHistoryScreen> {
   }
 
   Widget _buildMetricTile({
+    required BuildContext context,
     required String label,
     required String value,
     required IconData icon,
     required Color color,
   }) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: 0.18),
+        ),
       ),
       child: Column(
         children: [
@@ -227,11 +238,19 @@ class _ScanHistoryScreenState extends ConsumerState<ScanHistoryScreen> {
           const SizedBox(height: 4),
           Text(
             value,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: theme.colorScheme.onSurface,
+            ),
           ),
           Text(
             label,
-            style: TextStyle(fontSize: 10, color: Colors.grey.shade600),
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -241,6 +260,7 @@ class _ScanHistoryScreenState extends ConsumerState<ScanHistoryScreen> {
   }
 
   Widget _buildScanCard(BuildContext context, ScanHistoryItem item) {
+    final theme = Theme.of(context);
     final isFalse = item.isFalseAlarm;
 
     return Card(
@@ -250,8 +270,8 @@ class _ScanHistoryScreenState extends ConsumerState<ScanHistoryScreen> {
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
           color: isFalse
-              ? AppColors.warning.withValues(alpha: 0.3)
-              : Colors.grey.shade200,
+              ? AppColors.warning.withValues(alpha: 0.4)
+              : theme.colorScheme.outline.withValues(alpha: 0.18),
         ),
       ),
       child: InkWell(
@@ -297,16 +317,17 @@ class _ScanHistoryScreenState extends ConsumerState<ScanHistoryScreen> {
                       children: [
                         Text(
                           item.formattedDate,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 13,
+                            color: theme.colorScheme.onSurface,
                           ),
                         ),
                         Text(
                           item.relativeTime,
                           style: TextStyle(
                             fontSize: 11,
-                            color: Colors.grey.shade600,
+                            color: theme.colorScheme.onSurface.withValues(alpha: 0.65),
                           ),
                         ),
                       ],
@@ -333,15 +354,18 @@ class _ScanHistoryScreenState extends ConsumerState<ScanHistoryScreen> {
                       ),
                     )
                   else
-                    const Icon(
+                    Icon(
                       Icons.arrow_forward_ios_rounded,
                       size: 14,
-                      color: Colors.grey,
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
                     ),
                 ],
               ),
               const SizedBox(height: 12),
-              const Divider(height: 1),
+              Divider(
+                height: 1,
+                color: theme.colorScheme.outline.withValues(alpha: 0.15),
+              ),
               const SizedBox(height: 12),
 
               // Location Row
@@ -353,9 +377,10 @@ class _ScanHistoryScreenState extends ConsumerState<ScanHistoryScreen> {
                   Expanded(
                     child: Text(
                       item.displayLocation,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.9),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -368,15 +393,18 @@ class _ScanHistoryScreenState extends ConsumerState<ScanHistoryScreen> {
               // Responder & Device
               Row(
                 children: [
-                  Icon(Icons.person_outline_rounded,
-                      size: 16, color: Colors.grey.shade600),
+                  Icon(
+                    Icons.person_outline_rounded,
+                    size: 16,
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
                       item.displayResponder,
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.grey.shade700,
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.75),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -390,18 +418,14 @@ class _ScanHistoryScreenState extends ConsumerState<ScanHistoryScreen> {
               Row(
                 children: [
                   _buildChannelBadge(
-                    icon: Icons.sms_outlined,
-                    label: 'SMS',
-                    sent: item.smsSent,
-                  ),
-                  const SizedBox(width: 6),
-                  _buildChannelBadge(
+                    context: context,
                     icon: Icons.chat_bubble_outline_rounded,
                     label: 'WhatsApp',
                     sent: item.whatsappSent,
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: 8),
                   _buildChannelBadge(
+                    context: context,
                     icon: Icons.notifications_none_rounded,
                     label: 'FCM Push',
                     sent: item.fcmSent,
@@ -425,19 +449,23 @@ class _ScanHistoryScreenState extends ConsumerState<ScanHistoryScreen> {
   }
 
   Widget _buildChannelBadge({
+    required BuildContext context,
     required IconData icon,
     required String label,
     required bool sent,
   }) {
+    final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: sent ? AppColors.successLight : Colors.transparent,
-        borderRadius: BorderRadius.circular(4),
+        color: sent
+            ? AppColors.success.withValues(alpha: 0.12)
+            : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(6),
         border: Border.all(
           color: sent
               ? AppColors.success.withValues(alpha: 0.3)
-              : Colors.grey.shade300,
+              : theme.colorScheme.outline.withValues(alpha: 0.15),
         ),
       ),
       child: Row(
@@ -445,16 +473,20 @@ class _ScanHistoryScreenState extends ConsumerState<ScanHistoryScreen> {
         children: [
           Icon(
             icon,
-            size: 12,
-            color: sent ? AppColors.success : Colors.grey,
+            size: 13,
+            color: sent
+                ? AppColors.success
+                : theme.colorScheme.onSurface.withValues(alpha: 0.5),
           ),
           const SizedBox(width: 4),
           Text(
             label,
             style: TextStyle(
-              fontSize: 10,
+              fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: sent ? AppColors.success : Colors.grey,
+              color: sent
+                  ? AppColors.success
+                  : theme.colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
         ],

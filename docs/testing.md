@@ -1,6 +1,6 @@
 # 🧪 Golden Hour — Comprehensive Module Testing & Verification Log
 
-**Document Version:** 1.1.0  
+**Document Version:** 1.2.0  
 **Last Updated:** 2026-10-24  
 **Scope:** Complete module-by-module audit, functional testing, bug fixing, and status tracking for Golden Hour (Mobile Flutter App + FastAPI Backend + Responder Web).
 
@@ -122,9 +122,17 @@
 | **ISS-04** | Legal / Compliance | Missing dedicated `/privacy` HTML route for Play Store & DPDPA compliance | Medium | Implemented `/privacy` endpoint in `backend/app/main.py`; verified live `HTTP 200` | 🟢 RESOLVED |
 | **ISS-05** | Cleanup | Unused empty `apps/mobile/lib/features/qr_code/` directory | Low | Removed folder to prevent confusion with active `features/qr/` | 🟢 RESOLVED |
 | **ISS-06** | Patient Profile / Mobile | Adding emergency contacts failed to save/display due to strict backend phone regex rejection of formatted numbers (`+91 XX` / `0XX`) and lack of direct addition UI on Home Screen | High | Added phone normalization in backend schemas (`profile.py`), auto-sanitization to E.164 in Flutter, and added direct "Add Emergency Contact" bottom sheet with instant save and delete actions to `ProfileHomeScreen` | 🟢 RESOLVED |
+| **ISS-07** | Profile Wizard / Mobile | Wizard included redundant Step 5 (Emergency Contacts) that was already fully managed on the Profile Home screen | Medium | Streamlined Profile Wizard from 5 to 4 focused clinical steps (`Blood Group`, `Allergies`, `Conditions`, `Medications`); Step 4 concludes with "Complete & Save" at 100% progress | 🟢 RESOLVED |
+| **ISS-08** | Patient Profile / UI | Profile only displayed raw Date of Birth (DOB) rather than immediate triage Age for emergency responders and paramedics | Medium | Added dynamic `int? get age` calculation on `PatientProfile` model; rendered prominent "Age: X yrs" pill badge in Profile Home header and added live calculated age preview in Profile Edit | 🟢 RESOLVED |
+| **ISS-09** | Scan History & Detail / Mobile | Scan History and Detail cards suffered from low contrast in Dark Mode (`Colors.black87` / `grey.shade600`), and detail modal displayed obsolete notification channels (Fast2SMS, Resend Email fallback) | High | Replaced hardcoded text/card colors with dynamic `Theme.of(context).colorScheme` tokens; removed obsolete delivery channels and retained active channels (`WhatsApp Green-API` and `FCM Push Notification`) | 🟢 RESOLVED |
+| **ISS-10** | Medical Documents / Security | Document upload allowed client-side extensions without server-side MIME type and extension enforcement | High | Added strict whitelist (`ALLOWED_EXTENSIONS` and `ALLOWED_MIME_TYPES` for PDF, PNG, JPG, JPEG, WEBP) in `backend/app/api/v1/documents.py`, rejecting disallowed files with HTTP 400; deployed to Oracle VM | 🟢 RESOLVED |
+| **ISS-11** | Notifications / UI | Notifications screen displayed developer "Test Emergency Channels" trigger buttons in production view | Low | Removed developer test card and direct simulation buttons from `notifications_screen.dart`, providing a clean, production-ready Emergency Alert Log | 🟢 RESOLVED |
+| **ISS-12** | Settings & Legal / Mobile | Legal & Compliance modal bottom sheet (DPDPA Privacy Policy, Medical Disclaimer, Terms of Service) used hardcoded dark text (`#1A202C`), making text unreadable in Dark Mode | High | Replaced hardcoded dark colors in `_showInfoModal` with `theme.colorScheme.onSurface` and adapted section headers to theme tokens for crisp readability across both Dark and Light themes | 🟢 RESOLVED |
 
 ---
 
 ## 🏁 Verification Log & Sign-Off
-- **Backend Deployment:** Live on Oracle Cloud VM (`129.225.91.215` / `https://goldenhour-backend.duckdns.org`).
+- **Backend Deployment:** Live on Oracle Cloud VM (`129.225.91.215` / `https://goldenhour-backend.duckdns.org`), container `golden-hour-api` updated with document validation whitelist.
+- **Mobile Codebase Quality:** Passed `flutter analyze` with **0 errors and 0 warnings**.
 - **All 7 Core Modules:** Audited, verified end-to-end, and confirmed 100% working as expected.
+

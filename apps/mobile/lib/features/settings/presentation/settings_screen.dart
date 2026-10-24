@@ -155,9 +155,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     required String body,
     IconData icon = Icons.info_outline_rounded,
   }) {
+    final theme = Theme.of(context);
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: theme.colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -175,7 +177,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
+                    color: theme.colorScheme.outline.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -188,25 +190,27 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   Expanded(
                     child: Text(
                       title,
-                      style: const TextStyle(
-                        fontSize: 18,
+                      style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ],
               ),
-              const Divider(height: 24),
+              Divider(
+                height: 24,
+                color: theme.colorScheme.outline.withValues(alpha: 0.15),
+              ),
               Expanded(
                 child: ListView(
                   controller: scrollController,
                   children: [
                     Text(
                       body,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         height: 1.6,
-                        color: AppColors.textPrimary,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                   ],
@@ -454,22 +458,37 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
-                  side: BorderSide(color: Colors.grey.shade200),
+                  side: BorderSide(
+                    color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.18),
+                  ),
                 ),
                 child: Column(
                   children: [
                     ListTile(
-                      leading: const Icon(Icons.shield_outlined,
-                          color: AppColors.success, size: 22),
+                      leading: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: AppColors.success.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(Icons.shield_outlined,
+                            color: AppColors.success, size: 20),
+                      ),
                       title: const Text(
                         'DPDPA 2023 Privacy Policy',
                         style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                       ),
-                      subtitle: const Text(
+                      subtitle: Text(
                         'Purpose limitation, data minimization, consent records',
-                        style: TextStyle(fontSize: 12),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                        ),
                       ),
-                      trailing: const Icon(Icons.chevron_right_rounded, color: Colors.grey),
+                      trailing: Icon(
+                        Icons.chevron_right_rounded,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                      ),
                       onTap: () => _showInfoModal(
                         title: 'DPDPA 2023 Privacy Policy',
                         icon: Icons.shield_rounded,
@@ -481,19 +500,36 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             '4. Data Localization & Security: Sensitive health records are stored encrypted at rest with strict Row Level Security (RLS).',
                       ),
                     ),
-                    const Divider(height: 1, indent: 56),
+                    Divider(
+                      height: 1,
+                      indent: 56,
+                      color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.15),
+                    ),
                     ListTile(
-                      leading: const Icon(Icons.medical_services_outlined,
-                          color: AppColors.primary, size: 22),
+                      leading: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(Icons.medical_services_outlined,
+                            color: AppColors.primary, size: 20),
+                      ),
                       title: const Text(
                         'Medical Responder Disclaimer',
                         style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                       ),
-                      subtitle: const Text(
+                      subtitle: Text(
                         'Good Samaritan protection and emergency triage rules',
-                        style: TextStyle(fontSize: 12),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                        ),
                       ),
-                      trailing: const Icon(Icons.chevron_right_rounded, color: Colors.grey),
+                      trailing: Icon(
+                        Icons.chevron_right_rounded,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                      ),
                       onTap: () => _showInfoModal(
                         title: 'Medical Responder Disclaimer',
                         icon: Icons.medical_services_rounded,
@@ -504,19 +540,36 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             '• Responders and Good Samaritans assisting the patient are protected under the Supreme Court of India Good Samaritan Guidelines and Motor Vehicles (Amendment) Act 2019 Section 134A.',
                       ),
                     ),
-                    const Divider(height: 1, indent: 56),
+                    Divider(
+                      height: 1,
+                      indent: 56,
+                      color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.15),
+                    ),
                     ListTile(
-                      leading: const Icon(Icons.description_outlined,
-                          color: AppColors.info, size: 22),
+                      leading: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: AppColors.info.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(Icons.description_outlined,
+                            color: AppColors.info, size: 20),
+                      ),
                       title: const Text(
                         'Terms of Service',
                         style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                       ),
-                      subtitle: const Text(
+                      subtitle: Text(
                         'Golden Hour platform terms and limitations',
-                        style: TextStyle(fontSize: 12),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                        ),
                       ),
-                      trailing: const Icon(Icons.chevron_right_rounded, color: Colors.grey),
+                      trailing: Icon(
+                        Icons.chevron_right_rounded,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                      ),
                       onTap: () => _showInfoModal(
                         title: 'Terms of Service',
                         icon: Icons.description_rounded,
@@ -682,7 +735,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   phone,
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade700,
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withValues(alpha: 0.7),
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -719,7 +775,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       style: TextStyle(
         fontSize: 11,
         fontWeight: FontWeight.bold,
-        color: Colors.grey.shade600,
+        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
         letterSpacing: 0.8,
       ),
     );

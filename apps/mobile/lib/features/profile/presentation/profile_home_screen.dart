@@ -440,6 +440,28 @@ class ProfileHomeScreen extends ConsumerWidget {
                               ),
                             ),
                           ],
+                          if (profile?.age != null) ...[
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: AppColors.infoLight,
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(
+                                  color: AppColors.info.withValues(alpha: 0.3),
+                                ),
+                              ),
+                              child: Text(
+                                '${profile!.age} yrs',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.info,
+                                ),
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ],

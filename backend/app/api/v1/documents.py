@@ -24,6 +24,14 @@ ALLOWED_TYPES = {
     "insurance_card",
     "other",
 }
+ALLOWED_EXTENSIONS = {".pdf", ".png", ".jpg", ".jpeg", ".webp"}
+ALLOWED_MIME_TYPES = {
+    "application/pdf",
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/webp",
+}
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
 
@@ -51,6 +59,15 @@ async def upload_document(
         raise HTTPException(
             status_code=400,
             detail=f"file_type must be one of: {', '.join(ALLOWED_TYPES)}",
+        )
+
+    import os
+    ext = os.path.splitext(file.filename or "")[1].lower()
+    content_type = (file.content_type or "").lower()
+    if ext not in ALLOWED_EXTENSIONS and content_type not in ALLOWED_MIME_TYPES:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid file format. Only PDF documents and images (PNG, JPG, WEBP) are allowed.",
         )
 
     contents = await file.read()
