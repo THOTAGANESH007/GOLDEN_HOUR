@@ -5,6 +5,10 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/services/secure_storage_service.dart';
+import '../../documents/domain/document_provider.dart';
+import '../../profile/domain/profile_provider.dart';
+import '../../qr/domain/qr_provider.dart';
+import '../../scan_history/domain/scan_history_provider.dart';
 import '../data/auth_remote_source.dart';
 import '../data/auth_repository.dart';
 import 'auth_state.dart';
@@ -24,16 +28,17 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 });
 
 final authNotifierProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
-  return AuthNotifier(ref.watch(authRepositoryProvider));
+  return AuthNotifier(ref.watch(authRepositoryProvider), ref);
 });
 
 // ── Notifier ───────────────────────────────────────────────────────────────────
 
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository _repository;
+  final Ref _ref;
   Timer? _countdownTimer;
 
-  AuthNotifier(this._repository) : super(const AuthState());
+  AuthNotifier(this._repository, this._ref) : super(const AuthState());
 
   @override
   void dispose() {
@@ -125,6 +130,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
 
       _countdownTimer?.cancel();
+      _invalidateUserCaches();
 
       state = state.copyWith(
         status: AuthStatus.authenticated,
@@ -180,6 +186,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
       // Authenticate with Golden Hour Backend
       final data = await _repository.signInWithGoogle(idToken: idToken);
+      _invalidateUserCaches();
 
       state = state.copyWith(
         status: AuthStatus.authenticated,
@@ -214,6 +221,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         await FirebaseAuth.instance.signOut();
       } catch (_) {}
     } finally {
+      _invalidateUserCaches();
       state = const AuthState(status: AuthStatus.unauthenticated);
     }
   }
@@ -224,6 +232,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(status: AuthStatus.loading);
     try {
       await _repository.deleteAccount();
+      _invalidateUserCaches();
       state = const AuthState(status: AuthStatus.unauthenticated);
       return true;
     } catch (e) {
@@ -233,6 +242,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
       return false;
     }
+  }
+
+  void _invalidateUserCaches() {
+    _ref.invalidate(profileNotifierProvider);
+    _ref.invalidate(qrNotifierProvider);
+    _ref.invalidate(documentNotifierProvider);
+    _ref.invalidate(scanHistoryNotifierProvider);
   }
 
   void clearError() {

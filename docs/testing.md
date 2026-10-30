@@ -131,6 +131,52 @@
 | **ISS-14** | Patient Profile & Readiness / Mobile & Backend | 1. Profile readiness score treated emergency contacts as always missing and marked empty medications (`[]`) as missing even when user selected "not taking regular medications". 2. Date of Birth was still requested instead of clean Age. 3. Scan Event Details displayed "Green-API" branding and suffered theme contrast issues. | High | Fixed backend readiness calculation: `contact_count >= 1` satisfies emergency contacts; `medications is not None` satisfies medication requirement; replaced DOB field with direct numeric Age (Years) across edit and privacy screens; updated `scan_detail_screen.dart` to display "WhatsApp" without "Green-API" and adapted all cards, badges, and text to dynamic theme colors | 🟢 RESOLVED |
 | **ISS-16** | Medical Setup Checklist, Settings Cleanup & Profile Photo Upload / Mobile & Backend | 1. In Medical Setup Checklist, "No/None" quick-selection options were unreadable in Dark Mode due to pastel green styling without explicit high-contrast foreground color. 2. Settings screen contained redundant "Alerts & Incident Audit", "Appearance & Theme", and "Emergency QR Controls" sections. 3. Per-field privacy toggles were buried. 4. No option to upload profile photo in Edit Profile. | High | 1. Implemented dynamic WCAG AAA contrast styling in `step2_allergies.dart`, `step3_conditions.dart`, and `step4_medications.dart` for all "No/None" buttons and chips (using emerald green `#4ADE80` on 20% alpha background in dark mode, `#15803D` in light mode). 2. Removed redundant "Alerts & Incident Audit", "Appearance & Theme", and "Emergency QR Controls" from `settings_screen.dart`. 3. Added dedicated Privacy Shield button (`Icons.shield_outlined`) to Homepage AppBar for instant 1-tap access to per-field privacy toggles (`/profile/privacy`). 4. Added backend `POST /profile/me/photo` endpoint supporting multi-format image uploads with StorageService; added mobile camera/gallery picker and circular avatar in `edit_profile_screen.dart` and reflected photo in `ProfileHomeScreen` avatar. | 🟢 RESOLVED |
 | **ISS-17** | Profile Photo Streaming, Image Cropper, Organ Donor Toggle & Responder GPS / Full-Stack | 1. Profile photo uploaded successfully to disk but returned 404 because `GET /documents/raw/{path}` only queried the `documents` table. 2. No image cropping before upload. 3. Organ Donor toggle button under Emergency Medical Info clipped against card edges without theme styling. 4. Responder GPS location threw an error upon tapping "Allow" due to strict 9s timeout, lack of coarse fallback, and missing Android location permissions in WebView. | High | 1. Updated `get_raw_document` in `backend/app/api/v1/documents.py` to stream any verified disk file with automatic MIME detection (`HTTP 200`). 2. Integrated `image_cropper` in `edit_profile_screen.dart` with square/original aspect ratios and immediate local file preview. 3. Redesigned Organ Donor toggle into a modern container with `volunteer_activism_rounded` icon badge and explicit primary active colors. 4. In `LocationShareBtn.jsx`, increased GPS timeout to 25s, added progressive fallback to Wi-Fi/cellular network location, provided descriptive status/error messages; added `ACCESS_FINE_LOCATION` and `ACCESS_COARSE_LOCATION` to `AndroidManifest.xml`. | 🟢 RESOLVED |
+| **ISS-18** | Google OAuth / Auth Platform | "Continue with Google" worked only for project owner and blocked external testers with "Access blocked / unverified" | High | Switched OAuth Consent Screen status from "Testing" to "In production" (User Type: External) under Google Auth Platform > Audience in Google Cloud Console (`goldenhour-7d0ed`) | 🟢 RESOLVED |
+| **ISS-19** | Google Play App Signing & Firebase Auth | When testers downloaded app from Google Play Closed Testing, Google Sign-In failed with `ApiException: 10: DEVELOPER_ERROR` | High | Retrieved Google Play App Signing key certificate SHA-1 and SHA-256 fingerprints from Play Console (App Integrity) and registered them in Firebase Console project settings under Android app `com.goldenhr.golden_hour` | 🟢 RESOLVED |
+| **ISS-20** | State Management / Riverpod | After logging out of a phone-number account and signing into a Google account, the app displayed the older user's profile and medical details | High | Injected `Ref` into `AuthNotifier` in `auth_provider.dart`; implemented `_invalidateUserCaches()` to wipe `profileNotifierProvider`, `qrNotifierProvider`, `documentNotifierProvider`, and `scanHistoryNotifierProvider` on `verifyOtp`, `signInWithGoogle`, `logout`, and `deleteAccount` | 🟢 RESOLVED |
+| **ISS-21** | Play Store Listing / Assets | Raw phone screenshots (20:9 ratio, ~475x1024) were rejected by Google Play Console due to 2:1 maximum dimension ratio constraint | Medium | Formatted and regenerated all 4 official screenshots to compliant 1080x2160 (exact 2:1 ratio, 24-bit PNG, zero alpha) and stored in `play_store_assets/new_screenshots/` | 🟢 RESOLVED |
+
+---
+
+## 🚀 Google Play Store Release & Update Tracking
+
+### App Metadata & Track Status
+* **Application Package Name:** `com.goldenhr.golden_hour`
+* **Google Play Console App ID:** `4975165422053062620`
+* **Developer Account ID:** `7677494556264516250`
+* **Active Track:** Closed Testing
+* **Testers Google Group:** `golden-hour-testers@googlegroups.com`
+* **Direct Closed Test Link:** [https://play.google.com/apps/testing/com.goldenhr.golden_hour](https://play.google.com/apps/testing/com.goldenhr.golden_hour)
+* **Direct Store Listing Link:** [https://play.google.com/store/apps/details?id=com.goldenhr.golden_hour](https://play.google.com/store/apps/details?id=com.goldenhr.golden_hour)
+
+---
+
+### Release Version History
+
+| Release Version | Version Code | Date | Key Changes & Changelog | Status |
+|---|---|---|---|---|
+| **v1.0.0** | `1` | 2026-10-24 | Initial production AAB bundle for Google Play review & Closed Testing rollout | 📦 Deployed |
+| **v1.0.1** | `2` | 2026-10-25 | • Fixed NDK 27 native library stripping in `build.gradle.kts`<br>• Integrated OpenStreetMap Nominatim reverse geocoding for GPS scan events<br>• Added Google Reviewer demo bypass credentials (`+919999988888` / `123456`)<br>• Resolved personal developer Medical app policy restriction by shifting category to Tools | 🟢 Approved & Live |
+| **v1.0.2** | `3` | 2026-10-30 | • Fixed account switching cache issue: real-time in-memory cache invalidation on logout & login<br>• Added Google Play App Signing SHA-1 & SHA-256 fingerprints to Firebase Console<br>• Updated Play Store phone screenshots to compliant 1080x2160 format<br>• Compiled release bundle `release_builds/golden-hour-v1.0.2.aab` | 🚀 Ready for Upload |
+
+---
+
+### Store Assets Inventory (`play_store_assets/`)
+* **App Icon:** `app_icon_512x512.png` (512×512 32-bit PNG)
+* **Feature Graphic:** `feature_graphic_1024x500.jpg` (1024×500 JPG)
+* **Phone Screenshots (2:1 Ratio Compliant):**
+  1. `01_home_screen.png` — Emergency QR Code, Blood Group, Age, and Critical Summary
+  2. `02_privacy_controls.png` — DPDPA 2023 Compliant Per-Field Visibility Toggles
+  3. `03_settings_privacy.png` — Good Samaritan & Medical Responder Legal Disclaimers
+  4. `04_welcome_login.png` — One-Tap Google and Phone OTP Sign-In
+
+---
+
+### Google Policy & Compliance Sign-Off
+- **Developer Account Type:** Personal Account (Complies with Aug 31, 2024 policy by declaring Tools category)
+- **Data Safety:** Compliant with India DPDPA 2023 regulations with explicit consent checkboxes, Right to Erasure cascade delete, and zero third-party telemetry sharing.
+- **Backend Deployment:** Live on Oracle Cloud VM (`129.225.91.215`), HTTPS secured via DuckDNS and Let's Encrypt SSL.
+- **Mobile Quality:** Clean Flutter release build with 0 analyzer errors and verified release signature.
 
 ---
 

@@ -40,3 +40,9 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+
+# Release Builds
+release_builds/
+*.aab
+*.apk
+play_store_assets/debug_crop.png
