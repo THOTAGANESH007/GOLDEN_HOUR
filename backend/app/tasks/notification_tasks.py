@@ -39,6 +39,7 @@ def notify_emergency_contacts(
     maps_url: str | None,
     location_area: str | None,
     responder_name: str | None,
+    contact_fcm_tokens: dict[str, str] | None = None,
 ) -> dict:
     """
     Dispatch all notification channels for a QR scan event.
@@ -56,6 +57,7 @@ def notify_emergency_contacts(
                 maps_url=maps_url,
                 location_area=location_area,
                 responder_name=responder_name,
+                contact_fcm_tokens=contact_fcm_tokens,
             )
         )
     except Exception as exc:
@@ -74,6 +76,7 @@ async def _async_notify(
     maps_url: str | None,
     location_area: str | None,
     responder_name: str | None,
+    contact_fcm_tokens: dict[str, str] | None = None,
 ) -> dict:
     from app.services.notification_service import (
         send_whatsapp,
@@ -81,10 +84,12 @@ async def _async_notify(
         send_emergency_contact_fcm,
         send_email_fallback,
     )
-    from app.database import AsyncSessionLocal
     from app.models.scan_event import ScanEvent
     from app.models.user import User
     from sqlalchemy import select, update
+    from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
+    from sqlalchemy.pool import NullPool
+    from app.config import get_settings
 
     results = {
         "sms_sent": False,
@@ -95,11 +100,15 @@ async def _async_notify(
     }
 
     # ── Check if any emergency contacts have Golden Hour app installed ────
+    resolved_fcm_tokens: dict[str, str] = dict(contact_fcm_tokens or {})
     contact_phones = [c["phone"] for c in contacts if c.get("phone")]
-    contact_fcm_tokens: dict[str, str] = {}
-    if contact_phones:
+
+    if not resolved_fcm_tokens and contact_phones:
         try:
-            async with AsyncSessionLocal() as db:
+            settings = get_settings()
+            temp_engine = create_async_engine(settings.database_url, poolclass=NullPool)
+            temp_session = async_sessionmaker(bind=temp_engine, class_=AsyncSession, expire_on_commit=False)
+            async with temp_session() as db:
                 rows = (
                     await db.execute(
                         select(User.phone, User.fcm_token).where(
@@ -108,7 +117,8 @@ async def _async_notify(
                         )
                     )
                 ).all()
-                contact_fcm_tokens = {r[0]: r[1] for r in rows if r[1]}
+                resolved_fcm_tokens = {r[0]: r[1] for r in rows if r[1]}
+            await temp_engine.dispose()
         except Exception as exc:
             logger.warning("Could not query emergency contacts FCM tokens: %s", exc)
 
@@ -118,7 +128,7 @@ async def _async_notify(
         whatsapp_enabled = contact.get("whatsapp_enabled", False)
 
         # 1. High-Priority FCM Push Notification (Instant Siren to App Users)
-        contact_fcm = contact_fcm_tokens.get(phone)
+        contact_fcm = resolved_fcm_tokens.get(phone)
         if contact_fcm:
             fcm_contact_ok = await send_emergency_contact_fcm(
                 fcm_token=contact_fcm,
@@ -148,7 +158,6 @@ async def _async_notify(
                 if not contact_fcm:
                     results["contacts_notified"] += 1
 
-
     # ── FCM push to patient device ──────────────────────────────────────────
     if fcm_token:
         fcm_ok = await send_fcm_push(
@@ -161,9 +170,12 @@ async def _async_notify(
         if fcm_ok:
             results["fcm_sent"] = True
 
-    # ── Update scan_event record with delivery status ───────────────────────
-    async with AsyncSessionLocal() as db:
-        try:
+    # ── Update scan_event record with delivery status (isolated connection) ──
+    try:
+        settings = get_settings()
+        update_engine = create_async_engine(settings.database_url, poolclass=NullPool)
+        update_session = async_sessionmaker(bind=update_engine, class_=AsyncSession, expire_on_commit=False)
+        async with update_session() as db:
             await db.execute(
                 update(ScanEvent)
                 .where(ScanEvent.id == uuid.UUID(scan_event_id))
@@ -175,9 +187,9 @@ async def _async_notify(
                 )
             )
             await db.commit()
-        except Exception as exc:
-            logger.error("Failed to update scan_event %s: %s", scan_event_id, exc)
-            await db.rollback()
+        await update_engine.dispose()
+    except Exception as exc:
+        logger.error("Failed to update scan_event %s: %s", scan_event_id, exc)
 
     logger.info(
         "Notification dispatch complete for scan %s: %s",

@@ -51,3 +51,14 @@ class FCMTokenUpdate(BaseModel):
 class GoogleAuthRequest(BaseModel):
     id_token: str
     fcm_token: str | None = None
+
+
+class UserPhoneUpdate(BaseModel):
+    phone: str
+
+    @field_validator("phone")
+    @classmethod
+    def validate_phone(cls, v: str) -> str:
+        if not re.match(r"^\+\d{10,15}$", v):
+            raise ValueError("Phone must be in E.164 format e.g. +91XXXXXXXXXX")
+        return v

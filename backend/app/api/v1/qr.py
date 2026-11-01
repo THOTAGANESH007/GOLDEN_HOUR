@@ -134,6 +134,20 @@ async def public_scan(
         patient_display_name = profile.full_name if profile.show_name else "A Patient"
         maps_url = scan_event.google_maps_url
 
+        # Check if any emergency contacts have Golden Hour app installed
+        contact_phones = [c["phone"] for c in contact_data if c.get("phone")]
+        contact_fcm_tokens = {}
+        if contact_phones:
+            contact_fcm_rows = (
+                await db.execute(
+                    sa_select(UserModel.phone, UserModel.fcm_token).where(
+                        UserModel.phone.in_(contact_phones),
+                        UserModel.fcm_token.isnot(None),
+                    )
+                )
+            ).all()
+            contact_fcm_tokens = {r[0]: r[1] for r in contact_fcm_rows if r[1]}
+
         try:
             notify_emergency_contacts.delay(
                 scan_event_id=str(scan_event.id),
@@ -146,6 +160,7 @@ async def public_scan(
                 maps_url=maps_url,
                 location_area=scan_event.location_area,
                 responder_name=responder_name,
+                contact_fcm_tokens=contact_fcm_tokens,
             )
             logger.info("Notification task enqueued to Celery for scan %s", scan_event.id)
         except Exception as queue_exc:
@@ -164,6 +179,7 @@ async def public_scan(
                 maps_url=maps_url,
                 location_area=scan_event.location_area,
                 responder_name=responder_name,
+                contact_fcm_tokens=contact_fcm_tokens,
             )
 
     # 5. Build and return safe public data

@@ -23,8 +23,9 @@ class ProfileHomeScreen extends ConsumerWidget {
     final currentThemeMode = ref.watch(themeModeProvider);
 
     // Initialize FCM and synchronize token with backend on home entry
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(fcmServiceProvider).initialize(
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final fcm = ref.read(fcmServiceProvider);
+      await fcm.initialize(
         onForegroundMessage: (message) {
           final title = message.notification?.title ?? 'Emergency Alert';
           final body = message.notification?.body ?? 'Your QR was scanned.';
@@ -60,7 +61,7 @@ class ProfileHomeScreen extends ConsumerWidget {
           context.push('/scan-history');
         },
       );
-      ref.read(fcmServiceProvider).syncTokenWithBackend();
+      await fcm.syncTokenWithBackend();
     });
 
     return Scaffold(

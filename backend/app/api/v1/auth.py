@@ -20,6 +20,7 @@ from app.schemas.auth import (
     RefreshRequest,
     SendOTPRequest,
     TokenResponse,
+    UserPhoneUpdate,
     VerifyOTPRequest,
 )
 from app.services import auth_service
@@ -200,3 +201,17 @@ async def update_fcm_token(
     current_user.fcm_token = body.fcm_token
     db.add(current_user)
     return {"message": "FCM token updated"}
+
+
+# ── PATCH /auth/phone ──────────────────────────────────────────────────────────
+
+@router.patch("/phone", status_code=status.HTTP_200_OK)
+async def update_phone(
+    body: UserPhoneUpdate,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Link or update the user phone number (e.g. for Google users)."""
+    current_user.phone = body.phone
+    db.add(current_user)
+    return {"message": "Phone number updated", "phone": current_user.phone}

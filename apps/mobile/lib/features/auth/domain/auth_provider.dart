@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -184,8 +185,17 @@ class AuthNotifier extends StateNotifier<AuthState> {
         // Continue if local firebase auth client encounters non-critical issue
       }
 
+      // Retrieve device FCM token if available
+      String? fcmToken;
+      try {
+        fcmToken = await FirebaseMessaging.instance.getToken();
+      } catch (_) {}
+
       // Authenticate with Golden Hour Backend
-      final data = await _repository.signInWithGoogle(idToken: idToken);
+      final data = await _repository.signInWithGoogle(
+        idToken: idToken,
+        fcmToken: fcmToken,
+      );
       _invalidateUserCaches();
 
       state = state.copyWith(
