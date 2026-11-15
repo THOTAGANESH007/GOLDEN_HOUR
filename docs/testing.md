@@ -1,7 +1,7 @@
 # 🧪 Golden Hour — Comprehensive Module Testing & Verification Log
 
-**Document Version:** 1.3.0  
-**Last Updated:** 2026-10-24  
+**Document Version:** 1.4.0  
+**Last Updated:** 2026-11-15  
 **Scope:** Complete module-by-module audit, functional testing, bug fixing, and status tracking for Golden Hour (Mobile Flutter App + FastAPI Backend + Responder Web).
 
 ---
@@ -157,7 +157,8 @@
 |---|---|---|---|---|
 | **v1.0.0** | `1` | 2026-10-24 | Initial production AAB bundle for Google Play review & Closed Testing rollout | 📦 Deployed |
 | **v1.0.1** | `2` | 2026-10-25 | • Fixed NDK 27 native library stripping in `build.gradle.kts`<br>• Integrated OpenStreetMap Nominatim reverse geocoding for GPS scan events<br>• Added Google Reviewer demo bypass credentials (`+919999988888` / `123456`)<br>• Resolved personal developer Medical app policy restriction by shifting category to Tools | 🟢 Approved & Live |
-| **v1.0.2** | `3` | 2026-10-30 | • Fixed account switching cache issue: real-time in-memory cache invalidation on logout & login<br>• Added Google Play App Signing SHA-1 & SHA-256 fingerprints to Firebase Console<br>• Updated Play Store phone screenshots to compliant 1080x2160 format<br>• Compiled release bundle `release_builds/golden-hour-v1.0.2.aab` | 🚀 Ready for Upload |
+| **v1.0.2** | `3` | 2026-10-30 | • Fixed account switching cache issue: real-time in-memory cache invalidation on logout & login<br>• Added Google Play App Signing SHA-1 & SHA-256 fingerprints to Firebase Console<br>• Updated Play Store phone screenshots to compliant 1080x2160 format<br>• Compiled release bundle `release_builds/golden-hour-v1.0.2.aab` | 🟢 Approved & Live |
+| **v1.0.3** | `4` | 2026-11-01 | • Fixed FCM token registration failing on fresh installs due to async event loop conflict in Celery worker<br>• Resolved Celery async loop conflict preventing emergency push alert delivery<br>• Production release bundle `release_builds/golden-hour-v1.0.3.aab` | 🟢 Approved & Live |
 
 ---
 
