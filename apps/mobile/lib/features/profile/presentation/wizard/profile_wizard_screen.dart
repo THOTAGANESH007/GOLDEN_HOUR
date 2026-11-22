@@ -114,7 +114,7 @@ class _ProfileWizardScreenState extends ConsumerState<ProfileWizardScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Medical Setup Checklist'),
+        title: const Text('Emergency Setup Checklist'),
         leading: IconButton(
           icon: const Icon(Icons.close_rounded),
           onPressed: () => context.go('/home'),

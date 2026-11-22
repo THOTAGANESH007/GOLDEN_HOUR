@@ -1,7 +1,7 @@
 name: golden_hour
-description: "Golden Hour — Universal Medical Emergency QR Code System"
+description: "Golden Hour — Universal Emergency Safety QR Code System"
 publish_to: 'none'
-version: 1.0.3+4
+version: 1.0.4+5
 
 environment:
   sdk: ^3.5.0

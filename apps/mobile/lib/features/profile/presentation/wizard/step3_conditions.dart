@@ -26,7 +26,7 @@ class _Step3ConditionsState extends State<Step3Conditions> {
     'Asthma / COPD',
     'Epilepsy / Seizures',
     'Coronary Artery Disease',
-    'Chronic Kidney Disease',
+    'Kidney Disease',
     'Bleeding Disorder',
     'Pacemaker / ICD Implant',
     'Thyroid Disorder',
@@ -97,14 +97,14 @@ class _Step3ConditionsState extends State<Step3Conditions> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Chronic Conditions',
+                      'Health Conditions',
                       style: theme.textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Helps emergency doctors rule out hypoglycemic or cardiac shock',
+                      'Helps responders understand health conditions in emergencies',
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                       ),
@@ -138,7 +138,7 @@ class _Step3ConditionsState extends State<Step3Conditions> {
                       : null,
                 ),
                 label: Text(
-                  'No Pre-existing Chronic Conditions',
+                  'No Pre-existing Health Conditions',
                   style: TextStyle(
                     color: hasNone ? activeText : null,
                     fontWeight: hasNone ? FontWeight.bold : FontWeight.w500,
@@ -186,7 +186,7 @@ class _Step3ConditionsState extends State<Step3Conditions> {
           const SizedBox(height: 24),
 
           Text(
-            'Common Chronic Medical Conditions:',
+            'Common Health Conditions:',
             style: theme.textTheme.labelLarge?.copyWith(
               fontWeight: FontWeight.w600,
             ),

@@ -80,7 +80,7 @@ export default function EmergencyProfile() {
     return (
       <div className="loading-wrap">
         <div className="spinner" role="status" aria-label="Loading" />
-        <p style={{ color: 'var(--gray-600)' }}>Accessing secure emergency medical record…</p>
+        <p style={{ color: 'var(--gray-600)' }}>Accessing secure emergency safety profile…</p>
       </div>
     );
   }
@@ -91,7 +91,7 @@ export default function EmergencyProfile() {
         <div className="error-icon">🔒</div>
         <h2 className="error-title">QR Deactivated</h2>
         <p className="error-desc">
-          This QR code has been deactivated by the patient.
+          This QR code has been deactivated by the user.
           Please contact emergency services directly.
         </p>
         <a href="tel:108" className="btn btn-call" style={{ marginTop: 24 }}>
@@ -123,7 +123,7 @@ export default function EmergencyProfile() {
         <div className="error-icon">⚠️</div>
         <h2 className="error-title">Unable to Load</h2>
         <p className="error-desc">
-          Could not load patient data. Check your mobile connection.
+          Could not load emergency profile. Check your mobile connection.
         </p>
         <button className="btn btn-secondary" style={{ marginTop: 24 }} onClick={load}>
           🔄 Retry Connection
@@ -137,7 +137,7 @@ export default function EmergencyProfile() {
       {/* Emergency Header */}
       <header className="emergency-header" role="banner">
         <div className="header-top">
-          <div className="logo">GOLDEN HOUR MEDICAL ID</div>
+          <div className="logo">GOLDEN HOUR EMERGENCY ID</div>
           <button
             className="theme-toggle-btn"
             onClick={() => setDarkMode((prev) => !prev)}
@@ -146,7 +146,7 @@ export default function EmergencyProfile() {
             {darkMode ? '☀️ Light' : '🌙 Dark'}
           </button>
         </div>
-        <h1>Emergency Medical Record</h1>
+        <h1>Emergency Safety Profile</h1>
         <div className="active-pulse-badge">
           <span className="pulse-dot" />
           ACTIVE EMERGENCY RESPONSE SESSION
@@ -313,8 +313,8 @@ export default function EmergencyProfile() {
 
         {/* Medical Disclaimer */}
         <footer className="disclaimer" role="note">
-          ⚠️ <strong>Medical Disclaimer:</strong> Information is self-reported by the patient or their guardian.
-          Verify clinically before administering emergency pharmacological treatment.
+          ⚠️ <strong>Emergency Disclaimer:</strong> Information is self-reported by the user or their contact.
+          Always verify with emergency professionals before administering care.
           Secured by <strong>Golden Hour Platform</strong>.
         </footer>
       </main>

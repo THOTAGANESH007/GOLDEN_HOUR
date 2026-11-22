@@ -130,7 +130,7 @@ class ProfileHomeScreen extends ConsumerWidget {
                         const SizedBox(height: 16),
                       ],
 
-                      // Patient Summary Card
+                      // Emergency Profile Summary Card
                       _buildPatientSummaryCard(
                           context, ref, profile, authState.phone),
                       const SizedBox(height: 16),
@@ -202,7 +202,7 @@ class ProfileHomeScreen extends ConsumerWidget {
                       _buildContactsSection(context, ref, contacts),
                       const SizedBox(height: 16),
 
-                      // Medical Documents Vault Card
+                      // Emergency Documents Vault Card
                       Card(
                         child: ListTile(
                           leading: const CircleAvatar(
@@ -210,11 +210,11 @@ class ProfileHomeScreen extends ConsumerWidget {
                             child: Icon(Icons.folder_shared_rounded,
                                 color: AppColors.info),
                           ),
-                          title: const Text('Medical Records & Vault',
+                          title: const Text('Emergency Records & Vault',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 14)),
                           subtitle: const Text(
-                              'Prescriptions, Lab Reports, Insurance Cards',
+                              'Emergency Cards, ID Files, Insurance Documents',
                               style: TextStyle(fontSize: 12)),
                           trailing: const Icon(Icons.arrow_forward_ios_rounded,
                               size: 14),
@@ -271,7 +271,7 @@ class ProfileHomeScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Medical Setup Incomplete',
+                  'Emergency Setup Incomplete',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
@@ -280,7 +280,7 @@ class ProfileHomeScreen extends ConsumerWidget {
                 ),
                 SizedBox(height: 2),
                 Text(
-                  'Complete the emergency medical checklist so first responders have your lifesaving data.',
+                  'Complete the emergency safety checklist so first responders have your lifesaving data.',
                   style: TextStyle(fontSize: 12),
                 ),
               ],
@@ -347,14 +347,14 @@ class ProfileHomeScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        profile?.fullName ?? 'Patient Profile',
+                        profile?.fullName ?? 'Emergency Profile',
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        phone ?? 'Registered Patient',
+                        phone ?? 'Registered User',
                         style: TextStyle(
                           fontSize: 13,
                           color: theme.colorScheme.onSurface
@@ -459,7 +459,7 @@ class ProfileHomeScreen extends ConsumerWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      isQrActive ? 'QR Medical Tag Active' : 'QR Tag Deactivated',
+                      isQrActive ? 'QR Safety Tag Active' : 'QR Tag Deactivated',
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
@@ -556,8 +556,8 @@ class ProfileHomeScreen extends ConsumerWidget {
                 icon: const Icon(Icons.checklist_rounded, size: 18),
                 label: Text(
                   score >= 100
-                      ? 'Review Medical Setup Checklist'
-                      : 'Complete Medical Setup Checklist',
+                      ? 'Review Emergency Setup Checklist'
+                      : 'Complete Emergency Setup Checklist',
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                 ),
               ),
@@ -581,7 +581,7 @@ class ProfileHomeScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Critical Medical Summary',
+              'Critical Emergency Summary',
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -628,7 +628,7 @@ class ProfileHomeScreen extends ConsumerWidget {
 
             // Conditions
             Text(
-              'Chronic Conditions:',
+              'Health Conditions:',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 13,
@@ -761,7 +761,7 @@ class ProfileHomeScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'When responders scan your QR, these contacts receive instant GPS location and hospital alerts.',
+                    'When responders scan your QR, these contacts receive instant GPS location and emergency alerts.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
@@ -1118,7 +1118,7 @@ class ProfileHomeScreen extends ConsumerWidget {
                       title: const Text('WhatsApp Notifications',
                           style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                       subtitle: const Text(
-                        'Send location & hospital alerts via WhatsApp',
+                        'Send location & emergency alerts via WhatsApp',
                         style: TextStyle(fontSize: 12),
                       ),
                       value: whatsappEnabled,

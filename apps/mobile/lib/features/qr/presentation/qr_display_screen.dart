@@ -17,7 +17,7 @@ class QRDisplayScreen extends ConsumerWidget {
     final profileState = ref.watch(profileNotifierProvider);
     final profile = profileState.profile;
     final bloodGroup = profile?.bloodGroup ?? 'Unknown';
-    final fullName = profile?.fullName ?? 'Patient';
+    final fullName = profile?.fullName ?? 'User';
     final isQrActive = profile?.qrIsActive ?? true;
 
     return Scaffold(

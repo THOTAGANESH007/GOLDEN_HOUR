@@ -100,7 +100,7 @@ class _QRShareScreenState extends ConsumerState<QRShareScreen> {
       await Share.shareXFiles(
         [XFile(file.path)],
         text:
-            'Here is my Golden Hour Emergency Medical QR Code. In an emergency, first responders can scan this to view my critical medical profile: $qrUrl',
+            'Here is my Golden Hour Emergency Safety QR Code. In an emergency, first responders can scan this to view my critical emergency profile: $qrUrl',
         subject: 'My Golden Hour Emergency QR Code',
       );
     } catch (e) {
@@ -120,8 +120,8 @@ class _QRShareScreenState extends ConsumerState<QRShareScreen> {
     final qrUrl = ref.read(qrNotifierProvider).qrUrl;
     if (qrUrl != null && qrUrl.isNotEmpty) {
       await Share.share(
-        'Here is my Golden Hour Emergency Medical Link: $qrUrl',
-        subject: 'Emergency Medical Profile',
+        'Here is my Golden Hour Emergency Safety Link: $qrUrl',
+        subject: 'Emergency Safety Profile',
       );
     }
   }
@@ -132,7 +132,7 @@ class _QRShareScreenState extends ConsumerState<QRShareScreen> {
     final qrState = ref.watch(qrNotifierProvider);
     final profile = ref.watch(profileNotifierProvider).profile;
     final bloodGroup = profile?.bloodGroup ?? 'Unknown';
-    final fullName = profile?.fullName ?? 'Patient';
+    final fullName = profile?.fullName ?? 'User';
 
     return Scaffold(
       appBar: AppBar(
@@ -190,7 +190,7 @@ class _QRShareScreenState extends ConsumerState<QRShareScreen> {
                         ),
                         const SizedBox(height: 4),
                         const Text(
-                          'EMERGENCY MEDICAL ID',
+                          'EMERGENCY SAFETY ID',
                           style: TextStyle(
                             fontSize: 10,
                             letterSpacing: 1.5,
@@ -306,7 +306,7 @@ class _QRShareScreenState extends ConsumerState<QRShareScreen> {
                       OutlinedButton.icon(
                         onPressed: _isExporting ? null : _shareQrImage,
                         icon: const Icon(Icons.share_rounded),
-                        label: const Text('Share QR Image to Family / Doctor'),
+                        label: const Text('Share QR Image to Family / Emergency Contact'),
                         style: OutlinedButton.styleFrom(
                           minimumSize: const Size.fromHeight(48),
                         ),

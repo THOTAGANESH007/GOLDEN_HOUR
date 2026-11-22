@@ -122,7 +122,7 @@ class HomePlaceholderScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                'Next: Module 2 — Patient Profile Setup Wizard (Blood group, allergies, medications, emergency contacts).',
+                'Next: Module 2 — Emergency Profile Setup Wizard (Blood group, allergies, medications, emergency contacts).',
                 style: TextStyle(
                   fontSize: 14,
                   color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),

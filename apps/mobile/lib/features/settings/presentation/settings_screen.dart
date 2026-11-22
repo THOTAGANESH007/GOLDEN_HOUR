@@ -68,8 +68,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
             ),
             SizedBox(height: 8),
-            Text('• Your entire medical profile and emergency contacts'),
-            Text('• All encrypted medical records & uploaded documents'),
+            Text('• Your entire emergency profile and contacts'),
+            Text('• All encrypted emergency records & uploaded documents'),
             Text('• Your emergency QR code (scanners will show invalid)'),
             Text('• All emergency scan history and responder logs'),
             SizedBox(height: 12),
@@ -213,7 +213,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final profileState = ref.watch(profileNotifierProvider);
     final profile = profileState.profile;
     final theme = Theme.of(context);
-    final phone = authState.phone ?? profile?.bloodGroup ?? 'Registered Patient';
+    final phone = authState.phone ?? profile?.bloodGroup ?? 'Registered User';
 
     return Scaffold(
       appBar: AppBar(
@@ -276,10 +276,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         icon: Icons.shield_rounded,
                         body:
                             'Golden Hour complies with the Digital Personal Data Protection Act, 2023 (DPDPA):\n\n'
-                            '1. Purpose Limitation: Personal and medical data is collected strictly for emergency triage and trauma response identification.\n\n'
+                            '1. Purpose Limitation: Personal data is collected strictly for emergency safety and response identification.\n\n'
                             '2. Lawful Consent: All data processing is rooted in explicit, unbundled affirmative consent captured during onboarding.\n\n'
-                            '3. Right to Erasure: Patients have an absolute right to wipe their entire data record at any time via the Delete Account button.\n\n'
-                            '4. Data Localization & Security: Sensitive health records are stored encrypted at rest with strict Row Level Security (RLS).',
+                            '3. Right to Erasure: Users have an absolute right to wipe their entire data record at any time via the Delete Account button.\n\n'
+                            '4. Data Localization & Security: Sensitive emergency records are stored encrypted at rest with strict Row Level Security (RLS).',
                       ),
                     ),
                     Divider(
@@ -294,15 +294,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           color: AppColors.primary.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Icon(Icons.medical_services_outlined,
+                        child: const Icon(Icons.health_and_safety_outlined,
                             color: AppColors.primary, size: 20),
                       ),
                       title: const Text(
-                        'Medical Responder Disclaimer',
+                        'Emergency Responder Disclaimer',
                         style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                       ),
                       subtitle: Text(
-                        'Good Samaritan protection and emergency triage rules',
+                        'Good Samaritan protection and emergency response rules',
                         style: TextStyle(
                           fontSize: 12,
                           color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
@@ -313,13 +313,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
                       ),
                       onTap: () => _showInfoModal(
-                        title: 'Medical Responder Disclaimer',
-                        icon: Icons.medical_services_rounded,
+                        title: 'Emergency Responder Disclaimer',
+                        icon: Icons.shield_rounded,
                         body:
-                            'IMPORTANT MEDICAL TRIAGE ADVISORY:\n\n'
-                            '• Golden Hour is an emergency identification and first-aid advisory platform, not a substitute for clinical diagnostics.\n\n'
-                            '• Paramedics and responders must exercise independent clinical discretion.\n\n'
-                            '• Responders and Good Samaritans assisting the patient are protected under the Supreme Court of India Good Samaritan Guidelines and Motor Vehicles (Amendment) Act 2019 Section 134A.',
+                            'IMPORTANT EMERGENCY ADVISORY:\n\n'
+                            '• Golden Hour is an emergency identification and safety advisory platform, not a substitute for professional diagnostics.\n\n'
+                            '• Responders must exercise independent professional discretion.\n\n'
+                            '• Responders and Good Samaritans assisting an individual are protected under the Supreme Court of India Good Samaritan Guidelines and Motor Vehicles (Amendment) Act 2019 Section 134A.',
                       ),
                     ),
                     Divider(
@@ -357,7 +357,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         icon: Icons.description_rounded,
                         body:
                             'Golden Hour Terms of Service:\n\n'
-                            '1. Accuracy of Information: The patient is responsible for keeping their blood group, allergies, medications, and emergency contacts accurate and updated.\n\n'
+                            '1. Accuracy of Information: The user is responsible for keeping their blood group, allergies, medications, and emergency contacts accurate and updated.\n\n'
                             '2. Availability: While Golden Hour strives for 99.9% uptime, network dispatches depend on cellular carrier gateways (SMS/WhatsApp) and device internet connectivity.\n\n'
                             '3. Emergency Services: Always dial 112 or 108 in India immediately in life-threatening trauma situations.',
                       ),
@@ -419,7 +419,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         ),
                       ),
                       subtitle: const Text(
-                        'DPDPA Right to Erasure: Permanently delete all profile and medical data',
+                        'DPDPA Right to Erasure: Permanently delete all profile and emergency data',
                         style: TextStyle(fontSize: 12),
                       ),
                       onTap: _isDeletingAccount ? null : _confirmDeleteAccount,
@@ -511,7 +511,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  fullName ?? 'Patient Account',
+                  fullName ?? 'My Account',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,

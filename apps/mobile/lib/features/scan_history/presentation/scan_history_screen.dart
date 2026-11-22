@@ -168,7 +168,7 @@ class _ScanHistoryScreenState extends ConsumerState<ScanHistoryScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Every time a paramedic or good samaritan scans your Golden Hour QR code, '
+            'Every time a responder or good samaritan scans your Golden Hour QR code, '
             'the incident location, device, and contact alert records are logged here.',
             style: TextStyle(
               fontSize: 12,
@@ -499,7 +499,7 @@ class _ScanHistoryScreenState extends ConsumerState<ScanHistoryScreen> {
       icon: Icons.qr_code_2_rounded,
       title: 'No Emergency Scans Yet',
       description:
-          'Your emergency QR code has not been scanned yet. When paramedics or first responders scan your code, their GPS location and emergency notification logs will appear here.',
+          'Your emergency QR code has not been scanned yet. When first responders scan your code, their GPS location and emergency notification logs will appear here.',
       buttonLabel: 'View My Emergency QR',
       buttonIcon: Icons.qr_code_rounded,
       onButtonPressed: () => context.push('/qr'),

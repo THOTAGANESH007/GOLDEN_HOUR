@@ -76,7 +76,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Control exactly what information is visible to emergency first responders when they scan your physical QR code or medical tag.',
+                            'Control exactly what information is visible to emergency first responders when they scan your physical QR code or safety tag.',
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: theme.colorScheme.onSurface
                                   .withValues(alpha: 0.75),
@@ -108,7 +108,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                       title: const Text('Show Full Legal Name',
                           style: TextStyle(fontWeight: FontWeight.w600)),
                       subtitle: const Text(
-                        'Allows responders to address you by name and verify identity at the hospital.',
+                        'Allows responders to address you by name and verify identity in emergencies.',
                         style: TextStyle(fontSize: 12),
                       ),
                       value: _showName,
@@ -126,7 +126,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                       title: const Text('Show Age',
                           style: TextStyle(fontWeight: FontWeight.w600)),
                       subtitle: const Text(
-                        'Helps paramedics know patient age for pediatric or geriatric drug dosages.',
+                        'Helps responders know your age for pediatric or geriatric drug dosages.',
                         style: TextStyle(fontSize: 12),
                       ),
                       value: _showDob,
@@ -144,7 +144,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                       title: const Text('Show Profile Photo',
                           style: TextStyle(fontWeight: FontWeight.w600)),
                       subtitle: const Text(
-                        'Provides visual photo verification for unresponsive trauma patients.',
+                        'Provides visual photo verification for unresponsive individuals.',
                         style: TextStyle(fontSize: 12),
                       ),
                       value: _showPhoto,
