@@ -3,7 +3,7 @@ import { updateScanEvent } from '../services/api';
 
 /**
  * ClinicalActionsBar.jsx
- * Hands-free Voice Readout, Copy Medical Summary, Print Chart,
+ * Hands-free Voice Readout, Copy Emergency Summary, Print Chart,
  * and False Alarm / Test Scan reporting.
  */
 export default function ClinicalActionsBar({ profile }) {
@@ -34,9 +34,9 @@ export default function ClinicalActionsBar({ profile }) {
     }
 
     const parts = ['Attention emergency responder.'];
-    if (profile.full_name) parts.push(`Patient name: ${profile.full_name}.`);
+    if (profile.full_name) parts.push(`Name: ${profile.full_name}.`);
     if (profile.blood_group) parts.push(`Blood group is: ${profile.blood_group}.`);
-    if (profile.is_organ_donor) parts.push('Patient is a registered organ donor.');
+    if (profile.is_organ_donor) parts.push('Registered organ donor.');
 
     if (profile.allergies && profile.allergies.length > 0) {
       parts.push(`Critical allergies: ${profile.allergies.join(', ')}.`);
@@ -72,9 +72,9 @@ export default function ClinicalActionsBar({ profile }) {
   const handleCopySummary = () => {
     const lines = [
       '========================================',
-      '   GOLDEN HOUR — EMERGENCY MEDICAL ID   ',
+      '   GOLDEN HOUR — EMERGENCY SAFETY ID   ',
       '========================================',
-      `Patient Name:     ${profile.full_name || 'Not specified'}`,
+      `Full Name:     ${profile.full_name || 'Not specified'}`,
       `Blood Group:      ${profile.blood_group || 'Unknown'}`,
       `Organ Donor:      ${profile.is_organ_donor ? 'YES (Registered)' : 'No'}`,
       `Allergies:        ${profile.allergies?.length ? profile.allergies.join(', ') : 'None recorded'}`,
@@ -101,7 +101,7 @@ export default function ClinicalActionsBar({ profile }) {
     setTimeout(() => setCopied(false), 2500);
   };
 
-  // ── 3. Print Clinical Chart ────────────────────────────────────────────────
+  // ── 3. Print Emergency Card ────────────────────────────────────────────────
   const handlePrint = () => {
     window.print();
   };
@@ -110,7 +110,7 @@ export default function ClinicalActionsBar({ profile }) {
   const handleFalseAlarm = async () => {
     if (!profile.scan_event_id) return;
     const confirm = window.confirm(
-      'Mark this scan as a Test or False Alarm? This informs the patient and prevents unnecessary emergency dispatch.'
+      'Mark this scan as a Test or False Alarm? This informs the user and prevents unnecessary emergency dispatch.'
     );
     if (!confirm) return;
 
@@ -146,7 +146,7 @@ export default function ClinicalActionsBar({ profile }) {
             id="copy-summary-btn"
             className="btn btn-secondary"
             onClick={handleCopySummary}
-            aria-label="Copy medical summary"
+            aria-label="Copy emergency summary"
           >
             {copied ? '✓ Summary Copied!' : '📋 Copy Summary'}
           </button>
@@ -155,7 +155,7 @@ export default function ClinicalActionsBar({ profile }) {
             id="print-chart-btn"
             className="btn btn-secondary"
             onClick={handlePrint}
-            aria-label="Print clinical chart"
+            aria-label="Print emergency card"
           >
             🖨️ Print / Save PDF
           </button>

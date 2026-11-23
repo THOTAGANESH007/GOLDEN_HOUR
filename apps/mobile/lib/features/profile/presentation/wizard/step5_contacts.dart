@@ -228,7 +228,7 @@ class _Step5ContactsState extends State<Step5Contacts> {
                       title: const Text('WhatsApp Notifications',
                           style: TextStyle(fontSize: 14)),
                       subtitle: const Text(
-                        'Send location & hospital alerts via WhatsApp',
+                        'Send location & emergency alerts via WhatsApp',
                         style: TextStyle(fontSize: 12),
                       ),
                       value: _whatsappEnabled,

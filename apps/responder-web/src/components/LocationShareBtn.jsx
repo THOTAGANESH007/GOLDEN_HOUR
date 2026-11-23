@@ -115,7 +115,7 @@ export default function LocationShareBtn({ scanEventId, onLocationCaptured }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {synced && (
               <div className="synced-badge">
-                ✓ Location {locationArea ? `near ${locationArea} ` : ''}securely logged to patient record
+                ✓ Location {locationArea ? `near ${locationArea} ` : ''}securely logged to emergency record
               </div>
             )}
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>

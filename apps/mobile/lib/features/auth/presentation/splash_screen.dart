@@ -112,7 +112,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                             fit: BoxFit.cover,
                             errorBuilder: (_, __, ___) => const Center(
                               child: Icon(
-                                Icons.medical_services_rounded,
+                                Icons.shield_rounded,
                                 size: 48,
                                 color: AppColors.primary,
                               ),
@@ -135,7 +135,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Universal Emergency Medical ID',
+                  'Universal Emergency Safety ID',
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.9),
                     fontSize: 14,

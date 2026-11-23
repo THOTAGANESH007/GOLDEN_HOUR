@@ -106,7 +106,7 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
         title: const Text('Mark as False Alarm?'),
         content: const Text(
           'This will flag the scan event as accidental or non-emergency. '
-          'Your emergency contacts and audit log will record that no medical trauma response was required.',
+          'Your emergency contacts and audit log will record that no emergency response was required.',
         ),
         actions: [
           TextButton(
@@ -709,7 +709,7 @@ class _ScanDetailScreenState extends ConsumerState<ScanDetailScreen> {
         const SizedBox(height: 6),
         Text(
           isCooldownActive
-              ? 'Security Cooldown: False alarm button unlocks 60s after scan to protect ongoing trauma triage.'
+              ? 'Security Cooldown: False alarm button unlocks 60s after scan to protect ongoing emergency response.'
               : 'Tap to mark this scan as accidental or non-emergency.',
           style: TextStyle(
             fontSize: 11,

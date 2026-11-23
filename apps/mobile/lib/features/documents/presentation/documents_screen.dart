@@ -21,7 +21,7 @@ class DocumentsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Medical Documents'),
+        title: const Text('Emergency Documents'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => context.pop(),
@@ -142,7 +142,7 @@ class DocumentsScreen extends ConsumerWidget {
                     icon: Icons.folder_open_rounded,
                     title: 'No Documents Found',
                     description:
-                        'Keep your prescriptions, blood tests, and health insurance cards readily accessible in one secure vault.',
+                        'Keep your emergency cards, ID documents, and insurance files readily accessible in one secure vault.',
                     buttonLabel: 'Upload Your First Document',
                     buttonIcon: Icons.add_rounded,
                     onButtonPressed: () =>

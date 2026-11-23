@@ -36,10 +36,10 @@ final authNotifierProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref
 
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository _repository;
-  final Ref _ref;
+  final Ref? _ref;
   Timer? _countdownTimer;
 
-  AuthNotifier(this._repository, this._ref) : super(const AuthState());
+  AuthNotifier(this._repository, [this._ref]) : super(const AuthState());
 
   @override
   void dispose() {
@@ -255,10 +255,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   void _invalidateUserCaches() {
-    _ref.invalidate(profileNotifierProvider);
-    _ref.invalidate(qrNotifierProvider);
-    _ref.invalidate(documentNotifierProvider);
-    _ref.invalidate(scanHistoryNotifierProvider);
+    _ref?.invalidate(profileNotifierProvider);
+    _ref?.invalidate(qrNotifierProvider);
+    _ref?.invalidate(documentNotifierProvider);
+    _ref?.invalidate(scanHistoryNotifierProvider);
   }
 
   void clearError() {

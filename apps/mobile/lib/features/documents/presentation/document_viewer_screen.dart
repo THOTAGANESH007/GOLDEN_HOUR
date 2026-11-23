@@ -50,7 +50,7 @@ class _DocumentViewerScreenState extends State<DocumentViewerScreen> {
     final url = widget.document.publicUrl;
     if (url != null && url.isNotEmpty) {
       await Share.share(
-        'Medical Document: ${widget.document.fileName}\n$url',
+        'Emergency Document: ${widget.document.fileName}\n$url',
         subject: widget.document.fileName,
       );
     }

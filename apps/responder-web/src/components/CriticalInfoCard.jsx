@@ -9,14 +9,14 @@ export default function CriticalInfoCard({ profile }) {
     <div className="card critical-card">
       <div className="card-header">
         <span className="icon">🩸</span>
-        Critical Medical Info
+        Critical Safety Info
       </div>
       <div className="card-body">
         {photo_url && (
           <div style={{ textAlign: 'center', marginBottom: 16 }}>
             <img
               src={photo_url}
-              alt="Patient Identification"
+              alt="User Identification"
               style={{
                 width: 88,
                 height: 88,
@@ -45,7 +45,7 @@ export default function CriticalInfoCard({ profile }) {
 
         {full_name && (
           <div className="info-row">
-            <span className="info-label">Patient Name</span>
+            <span className="info-label">Full Name</span>
             <span className="info-value">{full_name}</span>
           </div>
         )}

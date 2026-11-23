@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 
 enum DocumentType {
-  prescription('prescription', 'Prescription', Icons.medication_outlined, AppColors.info),
+  prescription('prescription', 'Emergency Note', Icons.medication_outlined, AppColors.info),
   labReport('lab_report', 'Lab Report', Icons.science_outlined, AppColors.secondary),
-  dischargeSummary('discharge_summary', 'Discharge Summary', Icons.local_hospital_outlined, AppColors.primary),
+  dischargeSummary('discharge_summary', 'Safety Summary', Icons.local_hospital_outlined, AppColors.primary),
   insuranceCard('insurance_card', 'Insurance Card', Icons.health_and_safety_outlined, AppColors.success),
   other('other', 'Other Document', Icons.description_outlined, Colors.grey);
 

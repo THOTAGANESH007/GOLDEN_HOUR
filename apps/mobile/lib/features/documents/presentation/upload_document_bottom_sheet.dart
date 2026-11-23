@@ -143,7 +143,7 @@ class _UploadDocumentBottomSheetState
 
     final fileName = _nameController.text.trim().isNotEmpty
         ? _nameController.text.trim()
-        : 'Medical_Document';
+        : 'Emergency_Document';
 
     final success =
         await ref.read(documentNotifierProvider.notifier).uploadDocument(
@@ -194,7 +194,7 @@ class _UploadDocumentBottomSheetState
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Upload Medical Document',
+                'Upload Emergency Document',
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -306,7 +306,7 @@ class _UploadDocumentBottomSheetState
             controller: _nameController,
             decoration: const InputDecoration(
               labelText: 'Document Name',
-              hintText: 'e.g. Cardiologist Prescription - Oct 2026',
+              hintText: 'e.g. Emergency ID Card - Oct 2026',
               prefixIcon: Icon(Icons.drive_file_rename_outline),
             ),
           ),

@@ -301,7 +301,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Patient Profile'),
+        title: const Text('Edit Emergency Profile'),
         actions: [
           TextButton(
             onPressed: isSaving ? null : _saveProfile,
@@ -396,7 +396,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
                 // Critical Medical Data
                 _buildSectionHeader(
-                    'Emergency Medical Info', Icons.medical_services_rounded),
+                    'Emergency Safety Info', Icons.shield_rounded),
                 const SizedBox(height: 12),
                 Card(
                   child: Padding(
@@ -526,7 +526,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         const SizedBox(height: 16),
                         const Divider(),
                         const SizedBox(height: 8),
-                        Text('Medical Implants / Devices',
+                        Text('Implants / Devices',
                             style: theme.textTheme.labelLarge),
                         const SizedBox(height: 8),
                         Row(

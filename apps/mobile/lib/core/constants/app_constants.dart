@@ -24,5 +24,5 @@ class AppConstants {
 
   // DPDPA Consent Text
   static const String dpdpaConsentText =
-      'I consent to Golden Hour storing and securely processing my emergency medical data and emergency contact information in accordance with India’s Digital Personal Data Protection Act (DPDPA 2023).';
+      'I consent to Golden Hour storing and securely processing my emergency safety data and emergency contact information in accordance with India’s Digital Personal Data Protection Act (DPDPA 2023).';
 }

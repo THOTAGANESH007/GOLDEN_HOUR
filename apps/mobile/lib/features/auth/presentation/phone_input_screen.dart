@@ -361,7 +361,7 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        'End-to-end encrypted medical profile',
+                        'End-to-end encrypted emergency profile',
                         style: TextStyle(
                           fontSize: 12,
                           color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
