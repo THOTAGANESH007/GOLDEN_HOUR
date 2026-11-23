@@ -7,6 +7,8 @@ import '../../features/auth/presentation/phone_input_screen.dart';
 import '../../features/auth/presentation/splash_screen.dart';
 import '../../features/documents/presentation/documents_screen.dart';
 import '../../features/notifications/presentation/notifications_screen.dart';
+import '../../features/offline_guides/presentation/guide_detail_screen.dart';
+import '../../features/offline_guides/presentation/guides_screen.dart';
 import '../../features/profile/presentation/edit_profile_screen.dart';
 import '../../features/profile/presentation/privacy_settings_screen.dart';
 import '../../features/profile/presentation/profile_home_screen.dart';
@@ -157,6 +159,23 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           state: state,
           child: const SettingsScreen(),
         ),
+      ),
+      GoRoute(
+        path: '/guides',
+        pageBuilder: (context, state) => _buildSmoothTransition(
+          state: state,
+          child: const GuidesScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/guides/:id',
+        pageBuilder: (context, state) {
+          final guideId = state.pathParameters['id'] ?? '';
+          return _buildSmoothTransition(
+            state: state,
+            child: GuideDetailScreen(guideId: guideId),
+          );
+        },
       ),
     ],
   );

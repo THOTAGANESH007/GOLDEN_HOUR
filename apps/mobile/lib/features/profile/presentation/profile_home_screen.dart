@@ -242,6 +242,27 @@ class ProfileHomeScreen extends ConsumerWidget {
                           onTap: () => context.push('/scan-history'),
                         ),
                       ),
+                      const SizedBox(height: 12),
+
+                      // Offline Emergency Safety Guides Card
+                      Card(
+                        child: ListTile(
+                          leading: const CircleAvatar(
+                            backgroundColor: AppColors.secondaryLight,
+                            child: Icon(Icons.menu_book_rounded,
+                                color: AppColors.secondary),
+                          ),
+                          title: const Text('Offline Emergency Safety Guides',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 14)),
+                          subtitle: const Text(
+                              'CPR, severe bleeding, burns & bystander safety',
+                              style: TextStyle(fontSize: 12)),
+                          trailing: const Icon(Icons.arrow_forward_ios_rounded,
+                              size: 14),
+                          onTap: () => context.push('/guides'),
+                        ),
+                      ),
                       const SizedBox(height: 20),
 
                       const SizedBox(height: 24),

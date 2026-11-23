@@ -217,11 +217,11 @@ void main() {
 
       expect(find.text('Share Emergency QR'), findsOneWidget);
       expect(find.text('GOLDEN HOUR'), findsOneWidget);
-      expect(find.text('EMERGENCY MEDICAL ID'), findsOneWidget);
+      expect(find.text('EMERGENCY SAFETY ID'), findsOneWidget);
       expect(find.text('O-'), findsOneWidget);
       expect(find.text('Ananya Roy'), findsOneWidget);
       expect(find.text('Save QR Card to Gallery (PNG)'), findsOneWidget);
-      expect(find.text('Share QR Image to Family / Doctor'), findsOneWidget);
+      expect(find.text('Share QR Image to Family / Emergency Contact'), findsOneWidget);
       expect(find.text('Copy & Share Public Link'), findsOneWidget);
     });
   });

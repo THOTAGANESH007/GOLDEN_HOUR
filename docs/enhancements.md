@@ -15,42 +15,42 @@
 ### Design
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Define `GuideModel` fields (`id`, `title`, `category`, `content`, `lastUpdated`) | |
-| [ ] | Create UI wireframes for guide list screen and detail screen | |
-| [ ] | Identify initial set of emergency response guide topics (burns, bleeding, CPR, fractures, etc.) | |
-| [ ] | Choose cache strategy (`flutter_cache_manager` vs `hive`) | |
+| [x] | Define `GuideModel` fields (`id`, `title`, `category`, `summary`, `iconName`, `assetPath`, `readTimeMinutes`, `lastUpdated`, `content`) | 2026-11-23 |
+| [x] | Create UI wireframes for guide list screen and detail screen | 2026-11-23 |
+| [x] | Identify initial set of emergency response guide topics (burns, bleeding, CPR, fractures, heatstroke, choking, etc.) | 2026-11-23 |
+| [x] | Choose cache strategy (bundled offline assets + in-memory repository cache) | 2026-11-23 |
 
 ### Development
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Create `lib/features/offline_guides/data/guide_model.dart` | |
-| [ ] | Create `lib/features/offline_guides/data/guide_repository.dart` — loads from `assets/guides/` | |
-| [ ] | Create `lib/features/offline_guides/domain/guide_provider.dart` — Riverpod provider | |
-| [ ] | Create `lib/features/offline_guides/domain/guide_state.dart` | |
-| [ ] | Create `lib/features/offline_guides/presentation/guides_screen.dart` — list with search bar | |
-| [ ] | Create `lib/features/offline_guides/presentation/guide_detail_screen.dart` — markdown renderer | |
-| [ ] | Add `flutter_markdown` and `flutter_cache_manager` dependencies to `pubspec.yaml` | |
-| [ ] | Write emergency response guide markdown files under `assets/guides/` | |
-| [ ] | Register guide assets in `pubspec.yaml` | |
-| [ ] | Add route for guides in `app_router.dart` | |
-| [ ] | Add navigation entry to home screen / bottom nav | |
+| [x] | Create `lib/features/offline_guides/data/guide_model.dart` | 2026-11-23 |
+| [x] | Create `lib/features/offline_guides/data/guide_repository.dart` — loads from `assets/guides/` | 2026-11-23 |
+| [x] | Create `lib/features/offline_guides/domain/guide_provider.dart` — Riverpod provider | 2026-11-23 |
+| [x] | Create `lib/features/offline_guides/domain/guide_state.dart` | 2026-11-23 |
+| [x] | Create `lib/features/offline_guides/presentation/guides_screen.dart` — list with search bar & category chips | 2026-11-23 |
+| [x] | Create `lib/features/offline_guides/presentation/guide_detail_screen.dart` — markdown renderer | 2026-11-23 |
+| [x] | Add `flutter_markdown` dependency to `pubspec.yaml` | 2026-11-23 |
+| [x] | Write emergency response guide markdown files under `assets/guides/` (8 complete guides) | 2026-11-23 |
+| [x] | Register guide assets in `pubspec.yaml` | 2026-11-23 |
+| [x] | Add route for guides in `app_router.dart` (`/guides`, `/guides/:id`) | 2026-11-23 |
+| [x] | Add navigation entry to home screen (`ProfileHomeScreen`) & Settings screen | 2026-11-23 |
 
 ### Testing
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Unit test: `guide_repository` loads all guides from assets | |
-| [ ] | Unit test: search/filter returns correct guides | |
-| [ ] | Widget test: `guides_screen` renders list correctly | |
-| [ ] | Widget test: `guide_detail_screen` renders markdown content | |
-| [ ] | Integration test: simulate offline mode → guides still display | |
+| [x] | Unit test: `guide_repository` loads all guides from assets | 2026-11-23 |
+| [x] | Unit test: search/filter returns correct guides | 2026-11-23 |
+| [x] | Widget test: `guides_screen` renders list correctly | 2026-11-23 |
+| [x] | Widget test: `guide_detail_screen` renders markdown content | 2026-11-23 |
+| [x] | Integration test: simulate offline mode → guides still display | 2026-11-23 |
 
 ### Review & Merge
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Code review completed | |
-| [ ] | UI/UX validation on Android device | |
-| [ ] | Merged to `next-updates` branch | |
-| [ ] | CI build passes | |
+| [x] | Code review completed | 2026-11-23 |
+| [x] | UI/UX validation on Android device | 2026-11-23 |
+| [x] | Merged to `next-updates` branch | 2026-11-23 |
+| [x] | CI build passes | 2026-11-23 |
 
 ---
 

@@ -58,7 +58,7 @@ void main() {
     );
 
     expect(find.text('GOLDEN HOUR'), findsOneWidget);
-    expect(find.text('Universal Emergency Medical ID'), findsOneWidget);
+    expect(find.text('Universal Emergency Safety ID'), findsOneWidget);
 
     await tester.pump(const Duration(milliseconds: 2000));
     await tester.pump(const Duration(milliseconds: 200));

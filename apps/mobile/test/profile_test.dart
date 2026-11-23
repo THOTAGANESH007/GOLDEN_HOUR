@@ -171,7 +171,7 @@ void main() {
         ),
       );
 
-      expect(find.text('Chronic Conditions'), findsOneWidget);
+      expect(find.text('Health Conditions'), findsOneWidget);
       expect(find.text('Hypertension'), findsOneWidget);
 
       await tester.tap(find.text('Hypertension'));
@@ -331,8 +331,8 @@ void main() {
       expect(find.text('B+'), findsOneWidget);
       expect(find.text('Profile Readiness Score'), findsOneWidget);
       expect(find.text('90%'), findsOneWidget);
-      expect(find.text('Edit Profile'), findsOneWidget);
-      expect(find.text('Profile Wizard'), findsOneWidget);
+      expect(find.text('Edit'), findsOneWidget);
+      expect(find.text('Offline Emergency Safety Guides'), findsOneWidget);
       expect(find.text('Sunita Rao'), findsOneWidget);
     });
   });
