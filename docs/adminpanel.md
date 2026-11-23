@@ -298,7 +298,7 @@
 ### Design
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Define configurable settings: `MAINTENANCE_MODE`, `MAX_CONTACTS`, `ENABLE_AI_TRIAGE`, `ENABLE_LOCATION_SHARING` | |
+| [ ] | Define configurable settings: `MAINTENANCE_MODE`, `MAX_CONTACTS`, `ENABLE_AI_ASSIST`, `ENABLE_LOCATION_SHARING` | |
 | [ ] | Design settings panel UI (toggles, text inputs, save button) | |
 | [ ] | Restrict access to `SUPER_ADMIN` only | |
 

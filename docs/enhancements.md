@@ -10,14 +10,14 @@
 
 ---
 
-## 🏗️ Phase 1 — Offline First‑Aid Guides
+## 🏗️ Phase 1 — Offline Emergency Response Guides
 
 ### Design
 | Status | Task | Completed On |
 |--------|------|--------------|
 | [ ] | Define `GuideModel` fields (`id`, `title`, `category`, `content`, `lastUpdated`) | |
 | [ ] | Create UI wireframes for guide list screen and detail screen | |
-| [ ] | Identify initial set of first‑aid guide topics (burns, bleeding, CPR, fractures, etc.) | |
+| [ ] | Identify initial set of emergency response guide topics (burns, bleeding, CPR, fractures, etc.) | |
 | [ ] | Choose cache strategy (`flutter_cache_manager` vs `hive`) | |
 
 ### Development
@@ -30,7 +30,7 @@
 | [ ] | Create `lib/features/offline_guides/presentation/guides_screen.dart` — list with search bar | |
 | [ ] | Create `lib/features/offline_guides/presentation/guide_detail_screen.dart` — markdown renderer | |
 | [ ] | Add `flutter_markdown` and `flutter_cache_manager` dependencies to `pubspec.yaml` | |
-| [ ] | Write first‑aid guide markdown files under `assets/guides/` | |
+| [ ] | Write emergency response guide markdown files under `assets/guides/` | |
 | [ ] | Register guide assets in `pubspec.yaml` | |
 | [ ] | Add route for guides in `app_router.dart` | |
 | [ ] | Add navigation entry to home screen / bottom nav | |
@@ -492,7 +492,7 @@
 
 | Phase | Total | Done | Remaining |
 |-------|-------|------|-----------|
-| Phase 1 — Offline First‑Aid Guides | 20 | 0 | 20 |
+| Phase 1 — Offline Emergency Response Guides | 20 | 0 | 20 |
 | Phase 2 — Emergency Contact Management | 16 | 0 | 16 |
 | Phase 3 — Real‑time Location Sharing | 21 | 0 | 21 |
 | Phase 4 — Push Notifications (FCM) | 14 | 0 | 14 |

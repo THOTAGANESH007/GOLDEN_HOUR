@@ -26,7 +26,7 @@
 | [ ] | Create `backend/app/api/v1/wearable.py` — router file | |
 | [ ] | Add `POST /api/v1/wearable/register` — stores device token linked to user | |
 | [ ] | Add `POST /api/v1/wearable/sos` — triggers SOS from watch (same flow as QR scan) | |
-| [ ] | Add `GET /api/v1/wearable/profile-summary` — minimal medical info for watch display | |
+| [ ] | Add `GET /api/v1/wearable/profile-summary` — minimal emergency safety info for watch display | |
 | [ ] | Extend FCM service to send data‑only messages to Wear OS devices | |
 | [ ] | Create `backend/app/models/wearable_device.py` — device model (`id`, `user_id`, `token`, `platform`, `registered_at`) | |
 | [ ] | Create Alembic migration for `wearable_devices` table | |
@@ -59,53 +59,53 @@
 
 ---
 
-## 🏗️ Phase 2 — AI‑Powered Triage
+## 🏗️ Phase 2 — AI‑Powered Emergency Guidance
 
 ### Design
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Design prompt template for Gemini API (symptom → first-aid suggestions) | |
-| [ ] | Design triage screen UI mockup (text input, loading state, result cards) | |
-| [ ] | Define safety requirements (medical disclaimer, rate limits, usage logging) | |
+| [ ] | Design prompt template for Gemini API (incident situation → emergency safety suggestions) | |
+| [ ] | Design emergency guidance UI mockup (text input, loading state, result cards) | |
+| [ ] | Define safety requirements (safety disclaimer, rate limits, usage logging) | |
 | [ ] | Define fallback behaviour when API is unavailable | |
 
 ### Backend Development
 | Status | Task | Completed On |
 |--------|------|--------------|
 | [ ] | Create `backend/app/api/v1/ai.py` — router file | |
-| [ ] | Add `POST /api/v1/ai/triage` — accepts symptom text, forwards to Gemini, returns suggestions | |
+| [ ] | Add `POST /api/v1/ai/guidance` — accepts situation text, forwards to Gemini, returns safety suggestions | |
 | [ ] | Create `backend/app/services/gemini_service.py` — Gemini API wrapper with prompt template | |
 | [ ] | Add rate limiting: 10 requests per user per hour | |
-| [ ] | Log all triage requests in DB for auditing (`ai_triage_log` table) | |
-| [ ] | Create Alembic migration for `ai_triage_log` table | |
+| [ ] | Log all guidance requests in DB for auditing (`ai_guidance_log` table) | |
+| [ ] | Create Alembic migration for `ai_guidance_log` table | |
 | [ ] | Add `GEMINI_API_KEY` to config and `.env.example` | |
 
 ### Flutter Development
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Create `lib/features/ai_triage/data/triage_models.dart` — request/response models | |
-| [ ] | Create `lib/features/ai_triage/data/triage_repository.dart` — API integration | |
-| [ ] | Create `lib/features/ai_triage/domain/triage_provider.dart` — Riverpod provider | |
-| [ ] | Create `lib/features/ai_triage/domain/triage_state.dart` | |
-| [ ] | Create `lib/features/ai_triage/presentation/ai_triage_screen.dart` — text input, loading, results | |
-| [ ] | Add medical disclaimer banner at top of screen | |
-| [ ] | Add route for AI triage in `app_router.dart` | |
+| [ ] | Create `lib/features/ai_guidance/data/guidance_models.dart` — request/response models | |
+| [ ] | Create `lib/features/ai_guidance/data/guidance_repository.dart` — API integration | |
+| [ ] | Create `lib/features/ai_guidance/domain/guidance_provider.dart` — Riverpod provider | |
+| [ ] | Create `lib/features/ai_guidance/domain/guidance_state.dart` | |
+| [ ] | Create `lib/features/ai_guidance/presentation/ai_guidance_screen.dart` — text input, loading, results | |
+| [ ] | Add emergency safety disclaimer banner at top of screen | |
+| [ ] | Add route for AI guidance in `app_router.dart` | |
 | [ ] | Add navigation entry to home screen | |
 
 ### Testing
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Backend unit test: triage endpoint validates input (non‑empty symptom text) | |
+| [ ] | Backend unit test: guidance endpoint validates input (non‑empty situation text) | |
 | [ ] | Backend unit test: Gemini service returns structured suggestions (mock API) | |
 | [ ] | Backend unit test: rate limiter blocks excess requests | |
-| [ ] | Backend unit test: triage log records request in DB | |
-| [ ] | Widget test: `ai_triage_screen` renders input, loading, and result states | |
+| [ ] | Backend unit test: guidance log records request in DB | |
+| [ ] | Widget test: `ai_guidance_screen` renders input, loading, and result states | |
 | [ ] | Widget test: disclaimer is always visible | |
 
 ### Review & Merge
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Medical disclaimer reviewed and approved | |
+| [ ] | Emergency safety disclaimer reviewed and approved | |
 | [ ] | Usage logging verified in audit table | |
 | [ ] | Code review completed | |
 | [ ] | Merged to `next-updates` branch | |
@@ -229,7 +229,7 @@
 |--------|------|--------------|
 | [ ] | Define PDF report layout (header with logo, sections for blood group, allergies, conditions, medications, contacts) | |
 | [ ] | Define sharing options (save to device, share via intent, email) | |
-| [ ] | Review legal requirements for medical data PDF export | |
+| [ ] | Review legal requirements for emergency profile PDF export | |
 
 ### Development
 | Status | Task | Completed On |
@@ -256,7 +256,7 @@
 ### Review & Merge
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Legal compliance review for medical data export | |
+| [ ] | Legal compliance review for emergency profile export | |
 | [ ] | PDF visual review (formatting, readability) | |
 | [ ] | Code review completed | |
 | [ ] | Merged to `next-updates` branch | |
@@ -272,7 +272,7 @@
 | [ ] | Define tenant isolation model (shared DB with `tenant_id` column) | |
 | [ ] | Define tenant onboarding flow (admin creates tenant → assigns admin user) | |
 | [ ] | Design tenant admin management UI wireframe | |
-| [ ] | Choose routing strategy: sub‑domain (`hospital1.goldenhour.com`) or path (`/tenant/hospital1`) | |
+| [ ] | Choose routing strategy: sub‑domain (`tenant1.goldenhour.com`) or path (`/tenant/tenant1`) | |
 
 ### Backend Development
 | Status | Task | Completed On |
@@ -466,7 +466,7 @@
 
 ---
 
-## 🏗️ Phase 10 — NFC Medical Tag Support
+## 🏗️ Phase 10 — NFC Emergency Safety Tag Support
 
 ### Design
 | Status | Task | Completed On |
@@ -564,21 +564,21 @@
 ### Design
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Define sharing model: patient invites family member via phone/email → member sees read‑only profile + scan alerts | |
+| [ ] | Define sharing model: user invites family member via phone/email → member sees read‑only safety profile + scan alerts | |
 | [ ] | Design invitation flow UI (share link / QR invite, accept/decline) | |
-| [ ] | Design family dashboard UI (patient's vitals, recent scans, location if shared) | |
+| [ ] | Design family dashboard UI (user's emergency profile, recent scans, location if shared) | |
 | [ ] | Define permission levels: `viewer` (see profile), `guardian` (see profile + scan history + get SOS alerts) | |
 
 ### Backend Development
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Create `backend/app/models/family_link.py` — model (`id`, `patient_id`, `member_id`, `role`, `status`, `invited_at`, `accepted_at`) | |
+| [ ] | Create `backend/app/models/family_link.py` — model (`id`, `user_id`, `member_id`, `role`, `status`, `invited_at`, `accepted_at`) | |
 | [ ] | Create Alembic migration for `family_links` table | |
-| [ ] | Add `POST /api/v1/family/invite` — patient sends invite | |
+| [ ] | Add `POST /api/v1/family/invite` — user sends invite | |
 | [ ] | Add `POST /api/v1/family/accept/{invite_id}` — member accepts | |
-| [ ] | Add `GET /api/v1/family/members` — list linked family members (for patient) | |
-| [ ] | Add `GET /api/v1/family/patients` — list patients I'm linked to (for family member) | |
-| [ ] | Add `GET /api/v1/family/patient/{patient_id}/profile` — read‑only profile view | |
+| [ ] | Add `GET /api/v1/family/members` — list linked family members (for user) | |
+| [ ] | Add `GET /api/v1/family/profiles` — list profiles I'm linked to (for family member) | |
+| [ ] | Add `GET /api/v1/family/member/{user_id}/profile` — read‑only profile view | |
 | [ ] | Add `DELETE /api/v1/family/link/{id}` — revoke access | |
 | [ ] | Extend notification pipeline: on QR scan, also notify `guardian` role family members | |
 
@@ -590,7 +590,7 @@
 | [ ] | Create `lib/features/family/domain/family_provider.dart` | |
 | [ ] | Create `lib/features/family/presentation/family_members_screen.dart` — manage linked members | |
 | [ ] | Create `lib/features/family/presentation/invite_screen.dart` — send invitation | |
-| [ ] | Create `lib/features/family/presentation/family_dashboard_screen.dart` — view linked patient's data | |
+| [ ] | Create `lib/features/family/presentation/family_dashboard_screen.dart` — view linked member's data | |
 | [ ] | Add route for family screens in `app_router.dart` | |
 | [ ] | Add "Family" entry to bottom navigation | |
 
@@ -599,29 +599,29 @@
 |--------|------|--------------|
 | [ ] | Backend unit test: invite creates pending family link | |
 | [ ] | Backend unit test: accept changes status and grants read access | |
-| [ ] | Backend unit test: family member can read patient profile but not modify | |
+| [ ] | Backend unit test: family member can read emergency profile but not modify | |
 | [ ] | Backend unit test: revoke removes access | |
 | [ ] | Backend unit test: guardian receives notification on QR scan | |
 | [ ] | Widget test: family members screen lists linked members | |
-| [ ] | Widget test: family dashboard displays patient info read‑only | |
+| [ ] | Widget test: family dashboard displays emergency profile info read‑only | |
 | [ ] | Integration test: invite → accept → view profile → revoke | |
 
 ### Review & Merge
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Privacy review: family access respects patient's privacy toggle settings | |
+| [ ] | Privacy review: family access respects user's privacy toggle settings | |
 | [ ] | Code review completed | |
 | [ ] | Merged to `next-updates` branch | |
 | [ ] | CI build passes | |
 
 ---
 
-## 🏗️ Phase 13 — Nearby Hospitals & Blood Banks Finder
+## 🏗️ Phase 13 — Nearby Emergency Services & Blood Banks Finder
 
 ### Design
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Define data source: Google Places API (`hospital`, `pharmacy`, `blood_bank` types) | |
+| [ ] | Define data source: Google Places API (`emergency_service`, `pharmacy`, `blood_bank` types) | |
 | [ ] | Design nearby screen UI: map view + list view toggle, distance sorting | |
 | [ ] | Design detail card: name, address, phone, directions button, open hours | |
 | [ ] | Define search radius (default 5 km, adjustable) | |
@@ -630,7 +630,7 @@
 | Status | Task | Completed On |
 |--------|------|--------------|
 | [ ] | Create `backend/app/api/v1/nearby.py` — router file | |
-| [ ] | Add `GET /api/v1/nearby/hospitals?lat=&lon=&radius=` — proxies Google Places API, caches results in Redis (TTL: 1 hour) | |
+| [ ] | Add `GET /api/v1/nearby/emergency-centers?lat=&lon=&radius=` — proxies Google Places API, caches results in Redis (TTL: 1 hour) | |
 | [ ] | Add `GET /api/v1/nearby/blood-banks?lat=&lon=&radius=` | |
 | [ ] | Add `GET /api/v1/nearby/pharmacies?lat=&lon=&radius=` | |
 | [ ] | Add `GOOGLE_PLACES_API_KEY` to config and `.env.example` | |
@@ -644,7 +644,7 @@
 | [ ] | Create `lib/features/nearby/domain/nearby_provider.dart` | |
 | [ ] | Create `lib/features/nearby/presentation/nearby_screen.dart` — map with markers + bottom sheet list | |
 | [ ] | Create `lib/features/nearby/presentation/place_detail_card.dart` — name, distance, call, directions | |
-| [ ] | Add category tabs: Hospitals, Blood Banks, Pharmacies | |
+| [ ] | Add category tabs: Emergency Centers, Blood Banks, Pharmacies | |
 | [ ] | Integrate "Get Directions" button using `url_launcher` to open Google Maps | |
 | [ ] | Add "Nearby" entry to bottom navigation | |
 
@@ -655,7 +655,7 @@
 | [ ] | Backend unit test: Redis cache returns cached results within TTL | |
 | [ ] | Widget test: nearby screen renders map and list | |
 | [ ] | Widget test: category tabs filter results correctly | |
-| [ ] | Integration test: fetch nearby hospitals → display on map → tap for directions | |
+| [ ] | Integration test: fetch nearby emergency centers → display on map → tap for directions | |
 
 ### Review & Merge
 | Status | Task | Completed On |
@@ -667,7 +667,7 @@
 
 ---
 
-## 🏗️ Phase 14 — Medical History Timeline
+## 🏗️ Phase 14 — Incident & Safety History Timeline
 
 ### Design
 | Status | Task | Completed On |
@@ -730,7 +730,7 @@
 | [ ] | Extend `backend/app/models/profile.py` — add `insurance_info` JSON column | |
 | [ ] | Create Alembic migration for insurance field | |
 | [ ] | Update `PUT /profile/me` to accept insurance data | |
-| [ ] | Update `GET /qr/public/{uid}` — include insurance info if patient has `show_insurance` privacy toggle enabled | |
+| [ ] | Update `GET /qr/public/{uid}` — include insurance info if user has `show_insurance` privacy toggle enabled | |
 | [ ] | Add `show_insurance` privacy toggle to profile model | |
 
 ### Flutter Development
@@ -756,7 +756,7 @@
 ### Review & Merge
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Privacy review: insurance data visibility controlled by patient | |
+| [ ] | Privacy review: insurance data visibility controlled by user | |
 | [ ] | Code review completed | |
 | [ ] | Merged to `next-updates` branch | |
 | [ ] | CI build passes | |
@@ -770,7 +770,7 @@
 |--------|------|--------------|
 | [ ] | Define image constraints: max 2 MB, JPEG/PNG, 512×512 crop | |
 | [ ] | Design photo upload UX: camera / gallery picker, crop circle, preview | |
-| [ ] | Design personalized QR card: patient photo + name + blood group around QR code | |
+| [ ] | Design personalized QR card: user photo + name + blood group around QR code | |
 
 ### Backend Development
 | Status | Task | Completed On |
@@ -910,7 +910,7 @@
 | Phase | Total | Done | Remaining |
 |-------|-------|------|-----------|
 | Phase 1 — Wearable Integration | 22 | 0 | 22 |
-| Phase 2 — AI‑Powered Triage | 26 | 0 | 26 |
+| Phase 2 — AI‑Powered Emergency Guidance | 26 | 0 | 26 |
 | Phase 3 — Community Forum | 33 | 0 | 33 |
 | Phase 4 — Offline Sync Mechanism | 18 | 0 | 18 |
 | Phase 5 — Exportable Health Report (PDF) | 19 | 0 | 19 |
@@ -918,11 +918,11 @@
 | Phase 7 — Advanced Reporting & Export | 21 | 0 | 21 |
 | Phase 8 — Continuous Improvement | 19 | 0 | 19 |
 | Phase 9 — Emergency SOS Panic Button | 26 | 0 | 26 |
-| Phase 10 — NFC Medical Tag Support | 16 | 0 | 16 |
+| Phase 10 — NFC Emergency Safety Tag Support | 16 | 0 | 16 |
 | Phase 11 — Medication Reminders | 27 | 0 | 27 |
 | Phase 12 — Family Dashboard (Shared Access) | 30 | 0 | 30 |
-| Phase 13 — Nearby Hospitals & Blood Banks | 22 | 0 | 22 |
-| Phase 14 — Medical History Timeline | 17 | 0 | 17 |
+| Phase 13 — Nearby Emergency Services & Blood Banks | 22 | 0 | 22 |
+| Phase 14 — Incident & Safety History Timeline | 17 | 0 | 17 |
 | Phase 15 — Insurance & Emergency ID Card | 18 | 0 | 18 |
 | Phase 16 — Profile Photo & QR Personalization | 16 | 0 | 16 |
 | Phase 17 — In‑App Notification Centre | 18 | 0 | 18 |
