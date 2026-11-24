@@ -1,6 +1,7 @@
 # Environment files — NEVER commit these
 .env
 .env.*
+!.env.example
 *.env
 firebase-service-account.json
 google-services.json
@@ -23,6 +24,8 @@ apps/mobile/android/key.properties
 # React Web
 apps/responder-web/node_modules/
 apps/responder-web/dist/
+apps/admin-web/node_modules/
+apps/admin-web/dist/
 
 # Python / Backend
 backend/__pycache__/

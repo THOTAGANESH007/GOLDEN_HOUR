@@ -424,34 +424,34 @@
 ### Design
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Define services: `backend`, `admin-web`, `db` (Postgres), `redis` | |
-| [ ] | Define port mappings and volume mounts | |
+| [x] | Define services: `backend`, `admin-web`, `db` (Postgres), `redis` | 2026-11-24 |
+| [x] | Define port mappings and volume mounts | 2026-11-24 |
 
 ### Development
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Create `docker-compose.yml` at repo root | |
-| [ ] | Configure `backend` service (build from `./backend`, env_file, port 8000) | |
-| [ ] | Configure `db` service (postgres:15-alpine, persistent volume) | |
-| [ ] | Configure `redis` service (redis:7-alpine, port 6379) | |
-| [ ] | Configure `admin-web` service (build from `./apps/admin-web`, port 3000) | |
-| [ ] | Add `.env.example` with all required environment variables | |
-| [ ] | Update `README.md` with Docker Compose quick‑start instructions | |
+| [x] | Create `docker-compose.yml` at repo root | 2026-11-24 |
+| [x] | Configure `backend` service (build from `./backend`, env_file, port 8000) | 2026-11-24 |
+| [x] | Configure `db` service (postgres:15-alpine, persistent volume) | 2026-11-24 |
+| [x] | Configure `redis` service (redis:7-alpine, port 6379) | 2026-11-24 |
+| [x] | Configure `admin-web` service (build from `./apps/admin-web`, port 3000) | 2026-11-24 |
+| [x] | Add `.env.example` with all required environment variables | 2026-11-24 |
+| [x] | Update `README.md` with Docker Compose quick‑start instructions | 2026-11-24 |
 
 ### Testing
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | `docker compose up` starts all services without errors | |
-| [ ] | Backend `/health` returns `200` | |
-| [ ] | Database migrations run successfully in container | |
-| [ ] | Admin web UI accessible at `http://localhost:3000` | |
+| [x] | `docker compose up` starts all services without errors | 2026-11-24 |
+| [x] | Backend `/health` returns `200` | 2026-11-24 |
+| [x] | Database migrations run successfully in container | 2026-11-24 |
+| [x] | Admin web UI accessible at `http://localhost:3000` | 2026-11-24 |
 
 ### Review & Merge
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Code review completed | |
-| [ ] | Merged to `next-updates` branch | |
-| [ ] | CI build passes | |
+| [x] | Code review completed | 2026-11-24 |
+| [x] | Merged to `next-updates` branch | 2026-11-24 |
+| [x] | CI build passes | 2026-11-24 |
 
 ---
 

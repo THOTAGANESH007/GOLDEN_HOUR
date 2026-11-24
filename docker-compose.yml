@@ -1,0 +1,107 @@
+services:
+  # ── PostgreSQL Database ──────────────────────────────────────────────────────
+  db:
+    image: postgres:15-alpine
+    container_name: goldenhour-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-goldenhour}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-goldenhour_dev_secret_password}
+      POSTGRES_DB: ${POSTGRES_DB:-goldenhour}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-goldenhour} -d $${POSTGRES_DB:-goldenhour}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - goldenhour-network
+
+  # ── Redis Cache & Task Broker ────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: goldenhour-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - goldenhour-network
+
+  # ── FastAPI Backend API ──────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: goldenhour-backend
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-goldenhour}:${POSTGRES_PASSWORD:-goldenhour_dev_secret_password}@db:5432/${POSTGRES_DB:-goldenhour}
+      REDIS_URL: redis://redis:6379/0
+      ENVIRONMENT: development
+      APP_ENV: development
+      PORT: 8000
+      SECRET_KEY: ${SECRET_KEY:-change-me-to-a-secure-random-32-byte-hex-string-for-production}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-change-me-to-a-secure-random-32-byte-hex-string-for-production}
+      API_PUBLIC_BASE_URL: http://localhost:8000
+      APP_BASE_URL: http://localhost:3000
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - backend_uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    networks:
+      - goldenhour-network
+
+  # ── Admin Web Portal (React/Vite on Nginx) ───────────────────────────────────
+  admin-web:
+    build:
+      context: ./apps/admin-web
+      dockerfile: Dockerfile
+    container_name: goldenhour-admin-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      VITE_API_URL: http://localhost:8000/api/v1
+    depends_on:
+      - backend
+    networks:
+      - goldenhour-network
+
+volumes:
+  pgdata:
+    name: goldenhour_pgdata
+  redisdata:
+    name: goldenhour_redisdata
+  backend_uploads:
+    name: goldenhour_backend_uploads
+
+networks:
+  goldenhour-network:
+    name: goldenhour_network
+    driver: bridge
+

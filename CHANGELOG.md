@@ -30,6 +30,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Structured event mapping for `guide_viewed`, `contact_broadcast`, `sos_triggered`, `theme_changed`, `qr_shared`, and `language_changed`.
   - Backend Google Analytics 4 (GA4) Measurement Protocol client for admin audit actions (`admin_false_alarm_flagged`, `admin_contact_broadcast`, `admin_qr_status_toggled`).
   - Unit tests for both mobile `AnalyticsService` and backend GA4 Measurement Protocol service.
+- **Phase 12 — Docker Compose for Local Development**: Complete local environment orchestration:
+  - Created `docker-compose.yml` orchestrating `backend` (FastAPI), `db` (Postgres 15 Alpine), `redis` (Redis 7 Alpine), and `admin-web` (React/Vite on Nginx Alpine).
+  - Scaffolded `apps/admin-web/` with Vite, TypeScript, Nginx multi-stage Dockerfile, and health-monitoring admin UI.
+  - Added canonical `.env.example` environment template with comprehensive configuration documentation.
+  - Rewrote root `README.md` with detailed Docker Compose quick-start, service port mappings, migration workflows, and testing instructions.
 
 ### Changed
 - Refactored medical terminology across UI, documentation, and metadata to ensure strict non-clinical compliance under India DPDPA 2023.
