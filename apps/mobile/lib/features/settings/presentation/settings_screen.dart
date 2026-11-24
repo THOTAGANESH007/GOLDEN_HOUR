@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/localization/locale_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/theme_customizer.dart';
 import '../../../core/theme/theme_provider.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../auth/domain/auth_provider.dart';
 import '../../profile/domain/profile_provider.dart';
 
@@ -690,6 +692,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final activeAccent = ref.watch(accentColorProvider);
     final accentOptions = ref.watch(accentOptionsProvider);
     final activeOption = ThemeCustomizer.fromColor(activeAccent);
+    final currentLocale = ref.watch(localeProvider);
+    final supportedLanguages = ref.watch(supportedLanguagesProvider);
+    final activeLanguage = AppLocales.fromCode(currentLocale.languageCode);
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
     return Column(
@@ -868,6 +874,101 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         ),
                       );
                     },
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Divider(
+                  height: 1,
+                  color: theme.colorScheme.outline.withValues(alpha: 0.15),
+                ),
+                const SizedBox(height: 16),
+                // Language Selector
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.translate_rounded,
+                          size: 18,
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          l10n?.language ?? 'Language',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      activeLanguage.nativeName,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: activeAccent,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceContainerHigh,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.all(4),
+                  child: Row(
+                    children: supportedLanguages.map((lang) {
+                      final isSelected = lang.code == currentLocale.languageCode;
+                      return Expanded(
+                        child: GestureDetector(
+                          key: ValueKey('language_${lang.code}'),
+                          onTap: () => ref
+                              .read(localeProvider.notifier)
+                              .setLocale(lang.code),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 180),
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? theme.colorScheme.surface
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: isSelected
+                                  ? [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(alpha: 0.05),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ]
+                                  : null,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(lang.flag, style: const TextStyle(fontSize: 14)),
+                                const SizedBox(width: 6),
+                                Text(
+                                  lang.nativeName,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                                    color: isSelected
+                                        ? activeAccent
+                                        : theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
                   ),
                 ),
               ],

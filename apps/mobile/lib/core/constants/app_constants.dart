@@ -12,6 +12,7 @@ class AppConstants {
   static const String keyCachedQrUid = 'cached_qr_uid';
   static const String keyThemeMode = 'app_theme_mode';
   static const String keyAccentColor = 'app_accent_color';
+  static const String keyAppLocale = 'app_locale';
 
   // Network Defaults
   static const Duration connectTimeout = Duration(seconds: 15);

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app/routes/app_router.dart';
+import 'core/localization/locale_provider.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_customizer.dart';
 import 'core/theme/theme_provider.dart';
 import 'features/notifications/services/fcm_service.dart';
+import 'l10n/app_localizations.dart';
 
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -62,6 +65,7 @@ class GoldenHourApp extends ConsumerWidget {
     final router = ref.watch(appRouterProvider);
     final themeMode = ref.watch(themeModeProvider);
     final accentColor = ref.watch(accentColorProvider);
+    final locale = ref.watch(localeProvider);
 
     return MaterialApp.router(
       title: 'Golden Hour',
@@ -69,6 +73,14 @@ class GoldenHourApp extends ConsumerWidget {
       theme: AppTheme.buildLightTheme(accentColor),
       darkTheme: AppTheme.buildDarkTheme(accentColor),
       themeMode: themeMode,
+      locale: locale,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: router,
     );
   }

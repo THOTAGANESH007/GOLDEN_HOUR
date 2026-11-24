@@ -216,37 +216,37 @@
 ### Design
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Identify all user‑visible strings across all screens | |
-| [ ] | Choose initial locales: English (`en`), Hindi (`hi`), Spanish (`es`) | |
-| [ ] | Define translation workflow (ARB files) | |
+| [x] | Identify all user‑visible strings across all screens | 2026-11-24 |
+| [x] | Choose initial locales: English (`en`), Hindi (`hi`), Spanish (`es`) | 2026-11-24 |
+| [x] | Define translation workflow (ARB files) | 2026-11-24 |
 
 ### Development
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Add `flutter_localizations` and `intl` dependencies to `pubspec.yaml` | |
-| [ ] | Configure `l10n.yaml` for ARB file generation | |
-| [ ] | Create `lib/l10n/app_en.arb` — English strings | |
-| [ ] | Create `lib/l10n/app_hi.arb` — Hindi strings | |
-| [ ] | Create `lib/l10n/app_es.arb` — Spanish strings | |
-| [ ] | Replace all hardcoded strings with `AppLocalizations.of(context)!.keyName` | |
-| [ ] | Add language selector dropdown in `settings_screen.dart` | |
-| [ ] | Persist selected locale via `secure_storage_service` | |
-| [ ] | Update `MaterialApp.router` with `localizationsDelegates` and `supportedLocales` | |
+| [x] | Add `flutter_localizations` and `intl` dependencies to `pubspec.yaml` | 2026-11-24 |
+| [x] | Configure `l10n.yaml` for ARB file generation | 2026-11-24 |
+| [x] | Create `lib/l10n/app_en.arb` — English strings | 2026-11-24 |
+| [x] | Create `lib/l10n/app_hi.arb` — Hindi strings | 2026-11-24 |
+| [x] | Create `lib/l10n/app_es.arb` — Spanish strings | 2026-11-24 |
+| [x] | Replace all hardcoded strings with `AppLocalizations.of(context)!.keyName` | 2026-11-24 |
+| [x] | Add language selector dropdown in `settings_screen.dart` | 2026-11-24 |
+| [x] | Persist selected locale via `secure_storage_service` | 2026-11-24 |
+| [x] | Update `MaterialApp.router` with `localizationsDelegates` and `supportedLocales` | 2026-11-24 |
 
 ### Testing
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Unit test: switching locale changes displayed text | |
-| [ ] | Widget test: settings language selector updates app locale | |
-| [ ] | CI step: verify all ARB files have matching keys | |
+| [x] | Unit test: switching locale changes displayed text | 2026-11-24 |
+| [x] | Widget test: settings language selector updates app locale | 2026-11-24 |
+| [x] | CI step: verify all ARB files have matching keys | 2026-11-24 |
 
 ### Review & Merge
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Linguistic quality check for Hindi and Spanish translations | |
-| [ ] | Code review completed | |
-| [ ] | Merged to `next-updates` branch | |
-| [ ] | CI build passes | |
+| [x] | Linguistic quality check for Hindi and Spanish translations | 2026-11-24 |
+| [x] | Code review completed | 2026-11-24 |
+| [x] | Merged to `next-updates` branch | 2026-11-24 |
+| [x] | CI build passes | 2026-11-24 |
 
 ---
 

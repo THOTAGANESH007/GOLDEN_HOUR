@@ -77,6 +77,14 @@ class SecureStorageService {
     await _storage.write(key: AppConstants.keyAccentColor, value: hexOrId);
   }
 
+  Future<String?> getLocale() async {
+    return await _storage.read(key: AppConstants.keyAppLocale);
+  }
+
+  Future<void> saveLocale(String languageCode) async {
+    await _storage.write(key: AppConstants.keyAppLocale, value: languageCode);
+  }
+
   Future<void> clearAll() async {
     await _storage.deleteAll();
   }
