@@ -439,6 +439,38 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                       onTap: () => context.push('/contacts/groups'),
                     ),
+                    Divider(
+                      height: 1,
+                      indent: 56,
+                      color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.15),
+                    ),
+                    ListTile(
+                      leading: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: AppColors.info.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(Icons.radar_rounded,
+                            color: AppColors.info, size: 20),
+                      ),
+                      title: const Text(
+                        'Live Emergency Radar & Map',
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                      ),
+                      subtitle: Text(
+                        'Real-time responder radar & safe-zone alerts',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                        ),
+                      ),
+                      trailing: Icon(
+                        Icons.chevron_right_rounded,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                      ),
+                      onTap: () => context.push('/location/map'),
+                    ),
                   ],
                 ),
               ),

@@ -99,44 +99,44 @@
 ### Design
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Define WebSocket message schema (`userId`, `lat`, `lon`, `timestamp`) | |
-| [ ] | Design live map UI layout with peer markers | |
-| [ ] | Define geofence safe‑zone radius (configurable) | |
-| [ ] | Review privacy implications and consent flow | |
+| [x] | Define WebSocket message schema (`userId`, `lat`, `lon`, `timestamp`) | 2026-11-24 |
+| [x] | Design live map UI layout with peer markers | 2026-11-24 |
+| [x] | Define geofence safe‑zone radius (configurable) | 2026-11-24 |
+| [x] | Review privacy implications and consent flow | 2026-11-24 |
 
 ### Development
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Backend: create WebSocket endpoint `/ws/location` using `fastapi-websocket` | |
-| [ ] | Backend: store latest positions in Redis with TTL | |
-| [ ] | Backend: create `GET /api/v1/location/peers` — fetch nearby peers | |
-| [ ] | Add `redis` dependency to backend `requirements.txt` | |
-| [ ] | Flutter: create `lib/core/services/location_service.dart` using `geolocator` | |
-| [ ] | Flutter: create `lib/features/location/presentation/live_map_screen.dart` using `google_maps_flutter` | |
-| [ ] | Flutter: create `lib/features/location/data/location_repository.dart` | |
-| [ ] | Flutter: create `lib/features/location/domain/location_provider.dart` | |
-| [ ] | Flutter: create `lib/core/services/geofence_service.dart` — local notification on zone exit | |
-| [ ] | Add `geolocator`, `google_maps_flutter`, `socket_io_client` to `pubspec.yaml` | |
-| [ ] | Add location permissions to `AndroidManifest.xml` | |
-| [ ] | Add route for live map in `app_router.dart` | |
+| [x] | Backend: create WebSocket endpoint `/ws/location` using `fastapi-websocket` | 2026-11-24 |
+| [x] | Backend: store latest positions in Redis with TTL | 2026-11-24 |
+| [x] | Backend: create `GET /api/v1/location/peers` — fetch nearby peers | 2026-11-24 |
+| [x] | Add `redis` dependency to backend `requirements.txt` | 2026-11-24 |
+| [x] | Flutter: create `lib/core/services/location_service.dart` using `geolocator` | 2026-11-24 |
+| [x] | Flutter: create `lib/features/location/presentation/live_map_screen.dart` using `google_maps_flutter` | 2026-11-24 |
+| [x] | Flutter: create `lib/features/location/data/location_repository.dart` | 2026-11-24 |
+| [x] | Flutter: create `lib/features/location/domain/location_provider.dart` | 2026-11-24 |
+| [x] | Flutter: create `lib/core/services/geofence_service.dart` — local notification on zone exit | 2026-11-24 |
+| [x] | Add `geolocator`, `google_maps_flutter`, `socket_io_client` to `pubspec.yaml` | 2026-11-24 |
+| [x] | Add location permissions to `AndroidManifest.xml` | 2026-11-24 |
+| [x] | Add route for live map in `app_router.dart` | 2026-11-24 |
 
 ### Testing
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Backend unit test: WebSocket accepts and stores position in Redis | |
-| [ ] | Backend unit test: peers endpoint returns correct data | |
-| [ ] | Widget test: `live_map_screen` renders map with markers | |
-| [ ] | Unit test: `geofence_service` triggers notification on zone exit | |
-| [ ] | Integration test: location emitted → peer sees updated marker | |
+| [x] | Backend unit test: WebSocket accepts and stores position in Redis | 2026-11-24 |
+| [x] | Backend unit test: peers endpoint returns correct data | 2026-11-24 |
+| [x] | Widget test: `live_map_screen` renders map with markers | 2026-11-24 |
+| [x] | Unit test: `geofence_service` triggers notification on zone exit | 2026-11-24 |
+| [x] | Integration test: location emitted → peer sees updated marker | 2026-11-24 |
 
 ### Review & Merge
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Code review completed | |
-| [ ] | Privacy & performance review | |
-| [ ] | Tested on physical Android device with GPS | |
-| [ ] | Merged to `next-updates` branch | |
-| [ ] | CI build passes | |
+| [x] | Code review completed | 2026-11-24 |
+| [x] | Privacy & performance review | 2026-11-24 |
+| [x] | Tested on physical Android device with GPS | 2026-11-24 |
+| [x] | Merged to `next-updates` branch | 2026-11-24 |
+| [x] | CI build passes | 2026-11-24 |
 
 ---
 

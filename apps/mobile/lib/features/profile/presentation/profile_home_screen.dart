@@ -264,6 +264,27 @@ class ProfileHomeScreen extends ConsumerWidget {
                           onTap: () => context.push('/guides'),
                         ),
                       ),
+                      const SizedBox(height: 12),
+
+                      // Live Emergency Radar & Geofence Card
+                      Card(
+                        child: ListTile(
+                          leading: const CircleAvatar(
+                            backgroundColor: AppColors.infoLight,
+                            child: Icon(Icons.radar_rounded,
+                                color: AppColors.info),
+                          ),
+                          title: const Text('Live Emergency Radar & Safe Zone',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 14)),
+                          subtitle: const Text(
+                              'Real-time peer tracking, GPS streaming & perimeter alerts',
+                              style: TextStyle(fontSize: 12)),
+                          trailing: const Icon(Icons.arrow_forward_ios_rounded,
+                              size: 14),
+                          onTap: () => context.push('/location/map'),
+                        ),
+                      ),
                       const SizedBox(height: 20),
 
                       const SizedBox(height: 24),

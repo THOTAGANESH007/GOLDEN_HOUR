@@ -6,6 +6,7 @@ import '../../features/auth/presentation/otp_verify_screen.dart';
 import '../../features/auth/presentation/phone_input_screen.dart';
 import '../../features/auth/presentation/splash_screen.dart';
 import '../../features/documents/presentation/documents_screen.dart';
+import '../../features/location/presentation/live_map_screen.dart';
 import '../../features/notifications/presentation/notifications_screen.dart';
 import '../../features/offline_guides/presentation/guide_detail_screen.dart';
 import '../../features/offline_guides/presentation/guides_screen.dart';
@@ -183,6 +184,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         pageBuilder: (context, state) => _buildSmoothTransition(
           state: state,
           child: const ContactGroupScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/location/map',
+        pageBuilder: (context, state) => _buildSmoothTransition(
+          state: state,
+          child: const LiveMapScreen(),
         ),
       ),
     ],
