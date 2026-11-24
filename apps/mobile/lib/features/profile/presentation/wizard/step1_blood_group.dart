@@ -60,7 +60,7 @@ class Step1BloodGroup extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Crucial for first responders during trauma transfusions',
+                      'Crucial for emergency responders and critical care identification',
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                       ),

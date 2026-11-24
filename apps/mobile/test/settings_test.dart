@@ -98,6 +98,7 @@ void main() {
       // Emergency Safety Protocols
       expect(find.text('EMERGENCY SAFETY PROTOCOLS'), findsOneWidget);
       expect(find.text('Offline Emergency Safety Guides'), findsOneWidget);
+      expect(find.text('Safety Contact Groups'), findsOneWidget);
 
       // Danger Zone
       expect(find.text('ACCOUNT ACTIONS'), findsOneWidget);

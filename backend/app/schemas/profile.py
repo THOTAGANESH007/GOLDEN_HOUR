@@ -15,6 +15,7 @@ class EmergencyContactBase(BaseModel):
     whatsapp_enabled: bool = True
     notify_on_scan: bool = True
     sort_order: int = 0
+    group_id: Optional[uuid.UUID] = None
 
     @field_validator("phone")
     @classmethod
@@ -47,6 +48,7 @@ class EmergencyContactUpdate(BaseModel):
     whatsapp_enabled: Optional[bool] = None
     notify_on_scan: Optional[bool] = None
     sort_order: Optional[int] = None
+    group_id: Optional[uuid.UUID] = None
 
     @field_validator("phone")
     @classmethod

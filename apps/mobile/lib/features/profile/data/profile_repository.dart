@@ -126,6 +126,99 @@ class ProfileRepository {
     }
   }
 
+  // ── Contact Groups ──────────────────────────────────────────────────────────
+
+  Future<List<ContactGroup>> getContactGroups() async {
+    try {
+      final response = await _dio.get('/contacts/groups');
+      final list = response.data as List<dynamic>;
+      return list
+          .map((item) => ContactGroup.fromJson(item as Map<String, dynamic>))
+          .toList();
+    } on DioException catch (e) {
+      throw _handleError(e);
+    }
+  }
+
+  Future<ContactGroup> createContactGroup(String name, {String? description}) async {
+    try {
+      final response = await _dio.post(
+        '/contacts/groups',
+        data: {
+          'name': name,
+          if (description != null) 'description': description,
+        },
+      );
+      return ContactGroup.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw _handleError(e);
+    }
+  }
+
+  Future<ContactGroup> updateContactGroup(
+    String groupId, {
+    String? name,
+    String? description,
+  }) async {
+    try {
+      final payload = <String, dynamic>{};
+      if (name != null) payload['name'] = name;
+      if (description != null) payload['description'] = description;
+      final response = await _dio.put('/contacts/groups/$groupId', data: payload);
+      return ContactGroup.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw _handleError(e);
+    }
+  }
+
+  Future<void> deleteContactGroup(String groupId) async {
+    try {
+      await _dio.delete('/contacts/groups/$groupId');
+    } on DioException catch (e) {
+      throw _handleError(e);
+    }
+  }
+
+  Future<ContactGroup> addContactToGroup(String groupId, String contactId) async {
+    try {
+      final response = await _dio.post('/contacts/groups/$groupId/members/$contactId');
+      return ContactGroup.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw _handleError(e);
+    }
+  }
+
+  Future<ContactGroup> removeContactFromGroup(String groupId, String contactId) async {
+    try {
+      final response = await _dio.delete('/contacts/groups/$groupId/members/$contactId');
+      return ContactGroup.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw _handleError(e);
+    }
+  }
+
+  Future<BroadcastResult> broadcastEmergencyAlert({
+    String? groupId,
+    String? message,
+    double? lat,
+    double? lng,
+    String? address,
+  }) async {
+    try {
+      final payload = <String, dynamic>{
+        if (groupId != null) 'group_id': groupId,
+        if (message != null) 'message': message,
+        if (lat != null) 'location_lat': lat,
+        if (lng != null) 'location_lng': lng,
+        if (address != null) 'location_address': address,
+      };
+      final response = await _dio.post('/contacts/broadcast', data: payload);
+      return BroadcastResult.fromJson(response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw _handleError(e);
+    }
+  }
+
   Exception _handleError(DioException e) {
     final msg = e.response?.data is Map
         ? (e.response?.data['detail']?.toString() ?? e.message)

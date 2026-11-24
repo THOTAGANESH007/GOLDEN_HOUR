@@ -56,6 +56,9 @@ class User(Base):
     emergency_contacts: Mapped[list["EmergencyContact"]] = relationship(  # type: ignore[name-defined]  # noqa: F821
         "EmergencyContact", back_populates="user", cascade="all, delete-orphan", lazy="selectin"
     )
+    contact_groups: Mapped[list["ContactGroup"]] = relationship(  # type: ignore[name-defined]  # noqa: F821
+        "ContactGroup", back_populates="user", cascade="all, delete-orphan", lazy="selectin"
+    )
     scan_events: Mapped[list["ScanEvent"]] = relationship(  # type: ignore[name-defined]  # noqa: F821
         "ScanEvent", back_populates="user", cascade="all, delete-orphan"
     )

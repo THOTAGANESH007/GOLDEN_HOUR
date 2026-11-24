@@ -126,7 +126,7 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                       title: const Text('Show Age',
                           style: TextStyle(fontWeight: FontWeight.w600)),
                       subtitle: const Text(
-                        'Helps responders know your age for pediatric or geriatric drug dosages.',
+                        'Helps responders verify age and identification in critical situations.',
                         style: TextStyle(fontSize: 12),
                       ),
                       value: _showDob,
@@ -177,14 +177,14 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                         icon: Icons.bloodtype_rounded,
                         color: AppColors.primary,
                         title: 'Blood Group & Rh Type',
-                        reason: 'Mandatory for zero-delay trauma transfusions',
+                        reason: 'Vital emergency identification parameter for critical care teams',
                       ),
                       const SizedBox(height: 12),
                       _buildNonConfigurableItem(
                         icon: Icons.warning_amber_rounded,
                         color: AppColors.error,
                         title: 'Severe Drug & Food Allergies',
-                        reason: 'Prevents fatal anaphylaxis from standard drugs',
+                        reason: 'Alerts responders to critical substance and food sensitivities',
                       ),
                       const SizedBox(height: 12),
                       _buildNonConfigurableItem(

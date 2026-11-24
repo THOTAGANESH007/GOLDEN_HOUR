@@ -23,6 +23,7 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
         _repo.getProfile(),
         _repo.getCompletion(),
         _repo.getContacts(),
+        _repo.getContactGroups().catchError((_) => <ContactGroup>[]),
       ]);
 
       state = state.copyWith(
@@ -30,6 +31,7 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
         profile: results[0] as PatientProfile,
         completion: results[1] as ProfileCompletion,
         contacts: results[2] as List<EmergencyContact>,
+        contactGroups: results[3] as List<ContactGroup>,
       );
     } catch (e) {
       state = state.copyWith(
@@ -236,6 +238,159 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
         errorMessage: e.toString().replaceAll('Exception: ', ''),
       );
       return false;
+    }
+  }
+
+  // ── Contact Groups & Broadcast Actions ─────────────────────────────────────
+
+  Future<void> fetchContactGroups() async {
+    try {
+      final groups = await _repo.getContactGroups();
+      state = state.copyWith(contactGroups: groups);
+    } catch (e) {
+      // Non-fatal, retain existing groups
+    }
+  }
+
+  Future<bool> createContactGroup(String name, {String? description}) async {
+    state = state.copyWith(isSaving: true, clearError: true);
+    try {
+      final newGroup = await _repo.createContactGroup(name, description: description);
+      state = state.copyWith(
+        isSaving: false,
+        contactGroups: [...state.contactGroups, newGroup],
+      );
+      return true;
+    } catch (e) {
+      state = state.copyWith(
+        isSaving: false,
+        errorMessage: e.toString().replaceAll('Exception: ', ''),
+      );
+      return false;
+    }
+  }
+
+  Future<bool> updateContactGroup(
+    String groupId, {
+    String? name,
+    String? description,
+  }) async {
+    state = state.copyWith(isSaving: true, clearError: true);
+    try {
+      final updated = await _repo.updateContactGroup(groupId, name: name, description: description);
+      state = state.copyWith(
+        isSaving: false,
+        contactGroups: state.contactGroups.map((g) => g.id == groupId ? updated : g).toList(),
+      );
+      return true;
+    } catch (e) {
+      state = state.copyWith(
+        isSaving: false,
+        errorMessage: e.toString().replaceAll('Exception: ', ''),
+      );
+      return false;
+    }
+  }
+
+  Future<bool> deleteContactGroup(String groupId) async {
+    state = state.copyWith(isSaving: true, clearError: true);
+    try {
+      await _repo.deleteContactGroup(groupId);
+      state = state.copyWith(
+        isSaving: false,
+        contactGroups: state.contactGroups.where((g) => g.id != groupId).toList(),
+      );
+      return true;
+    } catch (e) {
+      state = state.copyWith(
+        isSaving: false,
+        errorMessage: e.toString().replaceAll('Exception: ', ''),
+      );
+      return false;
+    }
+  }
+
+  Future<bool> addContactToGroup(String groupId, String contactId) async {
+    state = state.copyWith(isSaving: true, clearError: true);
+    try {
+      final updatedGroup = await _repo.addContactToGroup(groupId, contactId);
+      final updatedGroups = state.contactGroups.map((g) => g.id == groupId ? updatedGroup : g).toList();
+      final updatedContacts = state.contacts.map((c) {
+        if (c.id == contactId) {
+          return c.copyWith(groupId: groupId, groupName: updatedGroup.name);
+        }
+        return c;
+      }).toList();
+
+      state = state.copyWith(
+        isSaving: false,
+        contactGroups: updatedGroups,
+        contacts: updatedContacts,
+      );
+      return true;
+    } catch (e) {
+      state = state.copyWith(
+        isSaving: false,
+        errorMessage: e.toString().replaceAll('Exception: ', ''),
+      );
+      return false;
+    }
+  }
+
+  Future<bool> removeContactFromGroup(String groupId, String contactId) async {
+    state = state.copyWith(isSaving: true, clearError: true);
+    try {
+      final updatedGroup = await _repo.removeContactFromGroup(groupId, contactId);
+      final updatedGroups = state.contactGroups.map((g) => g.id == groupId ? updatedGroup : g).toList();
+      final updatedContacts = state.contacts.map((c) {
+        if (c.id == contactId) {
+          return c.copyWith(groupId: null, groupName: null);
+        }
+        return c;
+      }).toList();
+
+      state = state.copyWith(
+        isSaving: false,
+        contactGroups: updatedGroups,
+        contacts: updatedContacts,
+      );
+      return true;
+    } catch (e) {
+      state = state.copyWith(
+        isSaving: false,
+        errorMessage: e.toString().replaceAll('Exception: ', ''),
+      );
+      return false;
+    }
+  }
+
+  Future<BroadcastResult?> broadcastEmergencyAlert({
+    String? groupId,
+    String? message,
+    double? lat,
+    double? lng,
+    String? address,
+  }) async {
+    state = state.copyWith(isBroadcasting: true, clearError: true);
+    try {
+      final result = await _repo.broadcastEmergencyAlert(
+        groupId: groupId,
+        message: message,
+        lat: lat,
+        lng: lng,
+        address: address,
+      );
+      state = state.copyWith(
+        isBroadcasting: false,
+        lastBroadcastResult: result,
+      );
+      return result;
+    } catch (e) {
+      state = state.copyWith(
+        isBroadcasting: false,
+        errorMessage: e.toString().replaceAll('Exception: ', ''),
+      );
+      return null;
     }
   }
 }

@@ -20,6 +20,12 @@ class EmergencyContact(Base):
         nullable=False,
         index=True,
     )
+    group_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("contact_groups.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
 
     # ── Contact info ───────────────────────────────────────────────────────
     name: Mapped[str] = mapped_column(String(200), nullable=False)
@@ -45,6 +51,7 @@ class EmergencyContact(Base):
 
     # ── Relationships ──────────────────────────────────────────────────────
     user: Mapped["User"] = relationship("User", back_populates="emergency_contacts")  # type: ignore[name-defined]  # noqa: F821
+    group: Mapped["ContactGroup | None"] = relationship("ContactGroup", back_populates="contacts", lazy="selectin")  # type: ignore[name-defined]  # noqa: F821
 
     def __repr__(self) -> str:
         return f"<EmergencyContact name={self.name} phone={self.phone}>"

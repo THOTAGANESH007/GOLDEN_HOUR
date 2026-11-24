@@ -61,6 +61,8 @@ class EmergencyContact {
   final bool whatsappEnabled;
   final bool notifyOnScan;
   final int sortOrder;
+  final String? groupId;
+  final String? groupName;
 
   const EmergencyContact({
     this.id,
@@ -71,6 +73,8 @@ class EmergencyContact {
     this.whatsappEnabled = true,
     this.notifyOnScan = true,
     this.sortOrder = 0,
+    this.groupId,
+    this.groupName,
   });
 
   factory EmergencyContact.fromJson(Map<String, dynamic> json) {
@@ -83,6 +87,8 @@ class EmergencyContact {
       whatsappEnabled: json['whatsapp_enabled'] as bool? ?? true,
       notifyOnScan: json['notify_on_scan'] as bool? ?? true,
       sortOrder: json['sort_order'] as int? ?? 0,
+      groupId: json['group_id'] as String?,
+      groupName: json['group_name'] as String?,
     );
   }
 
@@ -96,6 +102,8 @@ class EmergencyContact {
       'whatsapp_enabled': whatsappEnabled,
       'notify_on_scan': notifyOnScan,
       'sort_order': sortOrder,
+      if (groupId != null) 'group_id': groupId,
+      if (groupName != null) 'group_name': groupName,
     };
   }
 
@@ -108,6 +116,8 @@ class EmergencyContact {
     bool? whatsappEnabled,
     bool? notifyOnScan,
     int? sortOrder,
+    String? groupId,
+    String? groupName,
   }) {
     return EmergencyContact(
       id: id ?? this.id,
@@ -118,6 +128,119 @@ class EmergencyContact {
       whatsappEnabled: whatsappEnabled ?? this.whatsappEnabled,
       notifyOnScan: notifyOnScan ?? this.notifyOnScan,
       sortOrder: sortOrder ?? this.sortOrder,
+      groupId: groupId ?? this.groupId,
+      groupName: groupName ?? this.groupName,
+    );
+  }
+}
+
+class ContactGroup {
+  final String id;
+  final String userId;
+  final String name;
+  final String? description;
+  final int contactCount;
+  final List<EmergencyContact> contacts;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+
+  const ContactGroup({
+    required this.id,
+    required this.userId,
+    required this.name,
+    this.description,
+    this.contactCount = 0,
+    this.contacts = const [],
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  factory ContactGroup.fromJson(Map<String, dynamic> json) {
+    return ContactGroup(
+      id: json['id'] as String? ?? '',
+      userId: json['user_id'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      description: json['description'] as String?,
+      contactCount: (json['contact_count'] as num?)?.toInt() ?? 0,
+      contacts: (json['contacts'] as List<dynamic>?)
+              ?.map((e) => EmergencyContact.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      createdAt: json['created_at'] != null
+          ? DateTime.tryParse(json['created_at'].toString())
+          : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.tryParse(json['updated_at'].toString())
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'user_id': userId,
+      'name': name,
+      if (description != null) 'description': description,
+      'contact_count': contactCount,
+      'contacts': contacts.map((c) => c.toJson()).toList(),
+      if (createdAt != null) 'created_at': createdAt!.toIso8601String(),
+      if (updatedAt != null) 'updated_at': updatedAt!.toIso8601String(),
+    };
+  }
+
+  ContactGroup copyWith({
+    String? id,
+    String? userId,
+    String? name,
+    String? description,
+    int? contactCount,
+    List<EmergencyContact>? contacts,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return ContactGroup(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      contactCount: contactCount ?? this.contactCount,
+      contacts: contacts ?? this.contacts,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+}
+
+class BroadcastResult {
+  final String broadcastId;
+  final String? groupId;
+  final String? groupName;
+  final int totalContacts;
+  final int whatsappSentCount;
+  final int fcmSentCount;
+  final DateTime sentAt;
+
+  const BroadcastResult({
+    required this.broadcastId,
+    this.groupId,
+    this.groupName,
+    required this.totalContacts,
+    required this.whatsappSentCount,
+    required this.fcmSentCount,
+    required this.sentAt,
+  });
+
+  factory BroadcastResult.fromJson(Map<String, dynamic> json) {
+    return BroadcastResult(
+      broadcastId: json['broadcast_id'] as String? ?? '',
+      groupId: json['group_id'] as String?,
+      groupName: json['group_name'] as String?,
+      totalContacts: (json['total_contacts'] as num?)?.toInt() ?? 0,
+      whatsappSentCount: (json['whatsapp_sent_count'] as num?)?.toInt() ?? 0,
+      fcmSentCount: (json['fcm_sent_count'] as num?)?.toInt() ?? 0,
+      sentAt: json['sent_at'] != null
+          ? DateTime.tryParse(json['sent_at'].toString()) ?? DateTime.now()
+          : DateTime.now(),
     );
   }
 }

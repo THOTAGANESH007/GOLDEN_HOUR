@@ -59,38 +59,38 @@
 ### Design
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Define contact grouping schema (`groupId`, `groupName`) | |
-| [ ] | Wireframe group management UI and quick‑dial widget | |
-| [ ] | Define broadcast message template (SMS / WhatsApp) | |
+| [x] | Define contact grouping schema (`groupId`, `groupName`) | 2026-11-24 |
+| [x] | Wireframe group management UI and quick‑dial widget | 2026-11-24 |
+| [x] | Define broadcast message template (SMS / WhatsApp) | 2026-11-24 |
 
 ### Development
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Extend `emergency_contact` model with `group_id` field in backend | |
-| [ ] | Create Alembic migration for `group_id` column | |
-| [ ] | Create backend endpoint `POST /api/v1/contacts/broadcast` — sends SMS/WhatsApp to group | |
-| [ ] | Update `contact_model.dart` in Flutter with group support | |
-| [ ] | Create `contact_group_screen.dart` — manage groups (create, rename, delete) | |
-| [ ] | Create `quick_dial_button.dart` — home screen widget, launches dialer for primary contact | |
-| [ ] | Update `profile_provider.dart` to support grouped contacts | |
-| [ ] | Add Twilio / Fast2SMS integration for group broadcast in backend | |
+| [x] | Extend `emergency_contact` model with `group_id` field in backend | 2026-11-24 |
+| [x] | Create Alembic migration for `group_id` column | 2026-11-24 |
+| [x] | Create backend endpoint `POST /api/v1/contacts/broadcast` — sends SMS/WhatsApp to group | 2026-11-24 |
+| [x] | Update `contact_model.dart` in Flutter with group support | 2026-11-24 |
+| [x] | Create `contact_group_screen.dart` — manage groups (create, rename, delete) | 2026-11-24 |
+| [x] | Create `quick_dial_button.dart` — home screen widget, launches dialer for primary contact | 2026-11-24 |
+| [x] | Update `profile_provider.dart` to support grouped contacts | 2026-11-24 |
+| [x] | Add Twilio / Fast2SMS integration for group broadcast in backend | 2026-11-24 |
 
 ### Testing
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Backend unit test: broadcast endpoint sends to all group members | |
-| [ ] | Backend unit test: group CRUD operations | |
-| [ ] | Widget test: `contact_group_screen` renders groups correctly | |
-| [ ] | Widget test: `quick_dial_button` launches correct phone number | |
-| [ ] | Integration test: create group → add contacts → broadcast | |
+| [x] | Backend unit test: broadcast endpoint sends to all group members | 2026-11-24 |
+| [x] | Backend unit test: group CRUD operations | 2026-11-24 |
+| [x] | Widget test: `contact_group_screen` renders groups correctly | 2026-11-24 |
+| [x] | Widget test: `quick_dial_button` launches correct phone number | 2026-11-24 |
+| [x] | Integration test: create group → add contacts → broadcast | 2026-11-24 |
 
 ### Review & Merge
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Code review completed | |
-| [ ] | Security review for SMS gateway credentials | |
-| [ ] | Merged to `next-updates` branch | |
-| [ ] | CI build passes | |
+| [x] | Code review completed | 2026-11-24 |
+| [x] | Security review for SMS gateway credentials | 2026-11-24 |
+| [x] | Merged to `next-updates` branch | 2026-11-24 |
+| [x] | CI build passes | 2026-11-24 |
 
 ---
 

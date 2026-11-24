@@ -17,6 +17,7 @@ from app.api.v1.qr import router as qr_router
 from app.api.v1.notifications import router as notifications_router
 from app.api.v1.documents import router as documents_router
 from app.api.v1.scan_events import router as scan_events_router
+from app.api.v1.contacts import router as contacts_router
 
 settings = get_settings()
 
@@ -70,6 +71,7 @@ app.include_router(qr_router, prefix=API_PREFIX)
 app.include_router(notifications_router, prefix=API_PREFIX)
 app.include_router(documents_router, prefix=API_PREFIX)
 app.include_router(scan_events_router, prefix=API_PREFIX)
+app.include_router(contacts_router, prefix=API_PREFIX)
 
 
 # ── Health check ───────────────────────────────────────────────────────────────

@@ -333,7 +333,7 @@ void main() {
       expect(find.text('90%'), findsOneWidget);
       expect(find.text('Edit'), findsOneWidget);
       expect(find.text('Offline Emergency Safety Guides'), findsOneWidget);
-      expect(find.text('Sunita Rao'), findsOneWidget);
+      expect(find.text('Sunita Rao'), findsWidgets);
     });
   });
 }

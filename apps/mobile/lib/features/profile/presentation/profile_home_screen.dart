@@ -8,6 +8,7 @@ import '../../../core/theme/theme_provider.dart';
 import '../../auth/domain/auth_provider.dart';
 import '../data/profile_models.dart';
 import '../domain/profile_provider.dart';
+import 'widgets/quick_dial_button.dart';
 import '../../notifications/services/fcm_service.dart';
 
 class ProfileHomeScreen extends ConsumerWidget {
@@ -729,6 +730,13 @@ class ProfileHomeScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Quick Dial Primary Contact Widget
+        QuickDialButton(
+          primaryContact: contacts.isNotEmpty ? contacts.first : null,
+          onAddContactPressed: () => _showAddContactBottomSheet(context, ref),
+        ),
+        const SizedBox(height: 12),
+
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -738,12 +746,21 @@ class ProfileHomeScreen extends ConsumerWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            TextButton.icon(
-              onPressed: contacts.length >= 5
-                  ? null
-                  : () => _showAddContactBottomSheet(context, ref),
-              icon: const Icon(Icons.person_add_alt_1_rounded, size: 18),
-              label: const Text('Add Contact'),
+            Row(
+              children: [
+                TextButton.icon(
+                  onPressed: () => context.push('/contacts/groups'),
+                  icon: const Icon(Icons.groups_rounded, size: 18),
+                  label: const Text('Groups'),
+                ),
+                TextButton.icon(
+                  onPressed: contacts.length >= 5
+                      ? null
+                      : () => _showAddContactBottomSheet(context, ref),
+                  icon: const Icon(Icons.person_add_alt_1_rounded, size: 18),
+                  label: const Text('Add Contact'),
+                ),
+              ],
             ),
           ],
         ),
