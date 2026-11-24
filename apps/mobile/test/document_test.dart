@@ -131,12 +131,12 @@ void main() {
         ),
       );
 
-      expect(find.text('Medical Documents'), findsOneWidget);
+      expect(find.text('Emergency Documents'), findsOneWidget);
       expect(find.textContaining('Encrypted & Confidential'), findsOneWidget);
       expect(find.text('All Documents'), findsOneWidget);
-      expect(find.text('Prescription'), findsOneWidget);
+      expect(find.text('Emergency Note'), findsOneWidget);
       expect(find.text('Lab Report'), findsOneWidget);
-      expect(find.text('Discharge Summary'), findsOneWidget);
+      expect(find.text('Safety Summary'), findsOneWidget);
       expect(find.text('Insurance Card'), findsOneWidget);
       expect(find.text('No Documents Found'), findsOneWidget);
       expect(find.text('Upload Document'), findsOneWidget);
@@ -181,7 +181,7 @@ void main() {
       );
 
       expect(find.text('Cardiology_Discharge.pdf'), findsOneWidget);
-      expect(find.text('Discharge Summary'), findsWidgets);
+      expect(find.text('Safety Summary'), findsWidgets);
       expect(find.textContaining('512.0 KB'), findsOneWidget);
       expect(find.byIcon(Icons.delete_outline_rounded), findsOneWidget);
     });

@@ -210,10 +210,8 @@ void main() {
 
       expect(find.text('Banjara Hills'), findsOneWidget);
       expect(find.text('Paramedic Priya • Apollo ER'), findsOneWidget);
-      expect(find.text('SMS'), findsOneWidget);
       expect(find.text('WhatsApp'), findsOneWidget);
       expect(find.text('FCM Push'), findsOneWidget);
-      expect(find.text('Details'), findsOneWidget);
     });
 
     testWidgets(

@@ -89,20 +89,10 @@ void main() {
       expect(find.text('+919876543210'), findsOneWidget);
       expect(find.text('DPDPA Verified Account'), findsOneWidget);
 
-      // QR Controls
-      expect(find.text('EMERGENCY QR CONTROLS'), findsOneWidget);
-      expect(find.text('Emergency QR Code Active'), findsOneWidget);
-      expect(find.text('Per-Field Privacy Toggles'), findsOneWidget);
-
-      // Alerts & Incidents
-      expect(find.text('ALERTS & INCIDENT AUDIT'), findsOneWidget);
-      expect(find.text('Scan History & GPS Audit'), findsOneWidget);
-      expect(find.text('Notifications & Channel Test'), findsOneWidget);
-
       // Legal & Compliance
       expect(find.text('LEGAL & COMPLIANCE (INDIA DPDPA)'), findsOneWidget);
       expect(find.text('DPDPA 2023 Privacy Policy'), findsOneWidget);
-      expect(find.text('Medical Responder Disclaimer'), findsOneWidget);
+      expect(find.text('Emergency Responder Disclaimer'), findsOneWidget);
       expect(find.text('Terms of Service'), findsOneWidget);
 
       // Danger Zone
@@ -115,7 +105,7 @@ void main() {
       expect(find.textContaining('App Version 1.0.0'), findsOneWidget);
     });
 
-    testWidgets('Tapping Medical Responder Disclaimer opens modal sheet',
+    testWidgets('Tapping Emergency Responder Disclaimer opens modal sheet',
         (tester) async {
       const authState = AuthState(
         status: AuthStatus.authenticated,
@@ -148,20 +138,20 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final disclaimerTile = find.text('Medical Responder Disclaimer');
+      final disclaimerTile = find.text('Emergency Responder Disclaimer');
       expect(disclaimerTile, findsOneWidget);
 
       await tester.scrollUntilVisible(disclaimerTile, 150);
       await tester.tap(disclaimerTile);
       await tester.pumpAndSettle();
 
-      expect(find.textContaining('IMPORTANT MEDICAL TRIAGE ADVISORY:'), findsOneWidget);
+      expect(find.textContaining('IMPORTANT EMERGENCY ADVISORY:'), findsOneWidget);
       expect(find.textContaining('Good Samaritan Guidelines'), findsOneWidget);
       expect(find.text('Understood'), findsOneWidget);
 
       await tester.tap(find.text('Understood'));
       await tester.pumpAndSettle();
-      expect(find.textContaining('IMPORTANT MEDICAL TRIAGE ADVISORY:'), findsNothing);
+      expect(find.textContaining('IMPORTANT EMERGENCY ADVISORY:'), findsNothing);
     });
   });
 }

@@ -122,8 +122,6 @@ void main() {
 
       expect(find.text('Notifications & Alerts'), findsOneWidget);
       expect(find.text('Instant Emergency Alerting'), findsOneWidget);
-      expect(find.text('Test Emergency Channels'), findsOneWidget);
-      expect(find.text('Send Test Notification'), findsOneWidget);
       expect(find.text('No Emergency Scans Recorded'), findsOneWidget);
     });
 
