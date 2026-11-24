@@ -148,3 +148,4 @@ class LocationSharingState {
         errorMessage: errorMessage,
       );
 }
+

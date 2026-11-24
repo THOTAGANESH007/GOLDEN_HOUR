@@ -61,6 +61,22 @@ class NotificationRepository {
     }
   }
 
+  Future<PushNotificationSendResponse> sendPushNotification(
+    PushNotificationSendRequest request,
+  ) async {
+    try {
+      final response = await _dio.post(
+        '/notifications/push',
+        data: request.toJson(),
+      );
+      return PushNotificationSendResponse.fromJson(
+        response.data as Map<String, dynamic>,
+      );
+    } on DioException catch (e) {
+      throw _handleError(e);
+    }
+  }
+
   Exception _handleError(DioException e) {
     final msg = e.response?.data is Map
         ? (e.response?.data['detail']?.toString() ?? e.message)

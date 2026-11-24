@@ -88,6 +88,78 @@ void main() {
       expect(response.whatsappSent, false);
       expect(response.message, 'Fast2SMS delivered successfully');
     });
+
+    test('NotificationPayload parses standard and data-only payloads', () {
+      // 1. Standard payload with notification block
+      final stdPayload = NotificationPayload.fromDataMap(
+        notificationTitle: 'SOS Medical Alert',
+        notificationBody: 'QR scanned near MG Road',
+        data: {
+          'category': NotificationCategory.emergencySos,
+          'scan_id': 'scan-999',
+          'location_area': 'MG Road',
+        },
+      );
+      expect(stdPayload.title, 'SOS Medical Alert');
+      expect(stdPayload.isDataOnly, isFalse);
+      expect(stdPayload.getTargetRoute(), '/scan-history/detail?id=scan-999');
+
+      // 2. Data-only payload
+      final dataOnlyPayload = NotificationPayload.fromDataMap(
+        data: {
+          'title': 'Safety Tip: CPR Steps',
+          'body': 'Review updated compression guidelines',
+          'category': NotificationCategory.safetyTip,
+        },
+      );
+      expect(dataOnlyPayload.title, 'Safety Tip: CPR Steps');
+      expect(dataOnlyPayload.isDataOnly, isTrue);
+      expect(dataOnlyPayload.getTargetRoute(), '/guides');
+
+      // 3. Radar alert payload
+      final radarPayload = NotificationPayload.fromDataMap(
+        data: {
+          'category': NotificationCategory.radarAlert,
+        },
+      );
+      expect(radarPayload.getTargetRoute(), '/location/map');
+
+      // 4. App update payload
+      final updatePayload = NotificationPayload.fromDataMap(
+        data: {
+          'category': NotificationCategory.appUpdate,
+        },
+      );
+      expect(updatePayload.getTargetRoute(), '/notifications');
+    });
+
+    test('PushNotificationSendRequest and Response serialize and deserialize', () {
+      const req = PushNotificationSendRequest(
+        title: 'Emergency Drill Alert',
+        body: 'Simulated SOS alert test',
+        category: NotificationCategory.emergencySos,
+        isDataOnly: false,
+        data: {'priority': 'high'},
+      );
+      final json = req.toJson();
+      expect(json['title'], 'Emergency Drill Alert');
+      expect(json['category'], 'emergency_sos');
+      expect(json['is_data_only'], isFalse);
+
+      final resJson = {
+        'status': 'success',
+        'message': 'Push dispatched to 3 devices',
+        'success_count': 3,
+        'failure_count': 0,
+        'category': 'emergency_sos',
+        'is_data_only': false,
+        'analytics_event': 'notification_sent',
+        'dispatched_at': '2026-11-24T12:00:00Z',
+      };
+      final res = PushNotificationSendResponse.fromJson(resJson);
+      expect(res.successCount, 3);
+      expect(res.analyticsEvent, 'notification_sent');
+    });
   });
 
   group('Module 4 — Notifications Screen Presentation', () {
@@ -122,6 +194,7 @@ void main() {
 
       expect(find.text('Notifications & Alerts'), findsOneWidget);
       expect(find.text('Instant Emergency Alerting'), findsOneWidget);
+      expect(find.text('Compose & Send FCM Push Alert'), findsOneWidget);
       expect(find.text('No Emergency Scans Recorded'), findsOneWidget);
     });
 

@@ -83,4 +83,36 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
       // Background registration silent error
     }
   }
+
+  Future<PushNotificationSendResponse?> dispatchPush({
+    required String title,
+    required String body,
+    String category = NotificationCategory.emergencySos,
+    bool isDataOnly = false,
+    Map<String, String>? data,
+  }) async {
+    state = state.copyWith(isSendingTest: true, clearError: true);
+    try {
+      final req = PushNotificationSendRequest(
+        title: title,
+        body: body,
+        category: category,
+        isDataOnly: isDataOnly,
+        data: data,
+      );
+      final res = await _repo.sendPushNotification(req);
+      state = state.copyWith(
+        isSendingTest: false,
+        testSuccessMessage:
+            'Push notification dispatched! Success: ${res.successCount}, Category: ${res.category}',
+      );
+      return res;
+    } catch (e) {
+      state = state.copyWith(
+        isSendingTest: false,
+        errorMessage: e.toString().replaceAll('Exception: ', ''),
+      );
+      return null;
+    }
+  }
 }

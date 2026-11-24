@@ -173,3 +173,4 @@ async def handle_location_websocket(websocket: WebSocket):
         logger.warning(f"WebSocket error: {exc}")
         if connected_user_id:
             await remove_location(connected_user_id)
+

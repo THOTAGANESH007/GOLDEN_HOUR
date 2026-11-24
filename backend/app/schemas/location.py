@@ -46,3 +46,4 @@ class GeofenceStatus(BaseModel):
 
 class StopSharingRequest(BaseModel):
     user_id: str
+

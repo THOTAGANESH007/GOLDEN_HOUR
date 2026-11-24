@@ -2,6 +2,7 @@ import 'dart:developer' as developer;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../data/notification_models.dart';
 import '../data/notification_repository.dart';
 
 @pragma('vm:entry-point')
@@ -30,9 +31,27 @@ class FCMService {
 
   bool get isInitialized => _isInitialized;
 
+  /// Parse RemoteMessage into structured NotificationPayload supporting data-only packets
+  NotificationPayload parseMessage(RemoteMessage message) {
+    return NotificationPayload.fromDataMap(
+      notificationTitle: message.notification?.title,
+      notificationBody: message.notification?.body,
+      data: message.data,
+    );
+  }
+
+  /// Track notification opened analytics event
+  void logNotificationOpened(NotificationPayload payload) {
+    developer.log(
+      'analytics_event=notification_opened category=${payload.category} title=${payload.title} scan_id=${payload.scanId}',
+      name: 'FCMAnalytics',
+    );
+  }
+
   Future<void> initialize({
     Function(RemoteMessage)? onForegroundMessage,
     Function(RemoteMessage)? onNotificationClick,
+    Function(NotificationPayload)? onPayloadAction,
   }) async {
     try {
       if (Firebase.apps.isEmpty) {
@@ -102,6 +121,8 @@ class FCMService {
 
       // 6. Handle notification click when app is opened from background
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+        final payload = parseMessage(message);
+        logNotificationOpened(payload);
         developer.log(
           'Emergency notification clicked: ${message.data}',
           name: 'FCMService',
@@ -109,17 +130,25 @@ class FCMService {
         if (onNotificationClick != null) {
           onNotificationClick(message);
         }
+        if (onPayloadAction != null) {
+          onPayloadAction(payload);
+        }
       });
 
       // 7. Check if app was launched from terminated state via notification click
       final initialMessage = await messaging.getInitialMessage();
       if (initialMessage != null) {
+        final payload = parseMessage(initialMessage);
+        logNotificationOpened(payload);
         developer.log(
           'App opened via notification click from terminated state: ${initialMessage.data}',
           name: 'FCMService',
         );
         if (onNotificationClick != null) {
           onNotificationClick(initialMessage);
+        }
+        if (onPayloadAction != null) {
+          onPayloadAction(payload);
         }
       }
 

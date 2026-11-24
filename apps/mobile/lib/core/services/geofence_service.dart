@@ -80,3 +80,4 @@ class GeofenceService {
     return r * c;
   }
 }
+

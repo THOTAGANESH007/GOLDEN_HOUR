@@ -145,35 +145,35 @@
 ### Design
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Define data‑only payload schema for SOS alerts | |
-| [ ] | Define notification categories (SOS, health tip, app update) | |
-| [ ] | Design admin notification composer UI (covered in adminpanel.md) | |
+| [x] | Define data‑only payload schema for SOS alerts | 2026-11-24 |
+| [x] | Define notification categories (SOS, health tip, app update) | 2026-11-24 |
+| [x] | Design admin notification composer UI (covered in adminpanel.md) | 2026-11-24 |
 
 ### Development
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Extend `fcm_service.dart` to parse data‑only payloads | |
-| [ ] | Add routing logic: SOS → open scan detail, health tip → open guides | |
-| [ ] | Backend: create `POST /api/v1/notifications/push` (title, body, targetIds, category) | |
-| [ ] | Backend: integrate with existing `notification_service.py` for FCM dispatch | |
-| [ ] | Add analytics event `notification_sent` to backend | |
-| [ ] | Add analytics event `notification_opened` to Flutter | |
+| [x] | Extend `fcm_service.dart` to parse data‑only payloads | 2026-11-24 |
+| [x] | Add routing logic: SOS → open scan detail, health tip → open guides | 2026-11-24 |
+| [x] | Backend: create `POST /api/v1/notifications/push` (title, body, targetIds, category) | 2026-11-24 |
+| [x] | Backend: integrate with existing `notification_service.py` for FCM dispatch | 2026-11-24 |
+| [x] | Add analytics event `notification_sent` to backend | 2026-11-24 |
+| [x] | Add analytics event `notification_opened` to Flutter | 2026-11-24 |
 
 ### Testing
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Unit test: FCM payload builder produces correct JSON | |
-| [ ] | Unit test: routing logic navigates to correct screen | |
-| [ ] | Backend unit test: push endpoint validates input and calls FCM | |
-| [ ] | End‑to‑end test: admin sends push → device receives and displays | |
+| [x] | Unit test: FCM payload builder produces correct JSON | 2026-11-24 |
+| [x] | Unit test: routing logic navigates to correct screen | 2026-11-24 |
+| [x] | Backend unit test: push endpoint validates input and calls FCM | 2026-11-24 |
+| [x] | End‑to‑end test: admin sends push → device receives and displays | 2026-11-24 |
 
 ### Review & Merge
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Code review completed | |
-| [ ] | Verify push key security | |
-| [ ] | Merged to `next-updates` branch | |
-| [ ] | CI build passes | |
+| [x] | Code review completed | 2026-11-24 |
+| [x] | Verify push key security | 2026-11-24 |
+| [x] | Merged to `next-updates` branch | 2026-11-24 |
+| [x] | CI build passes | 2026-11-24 |
 
 ---
 

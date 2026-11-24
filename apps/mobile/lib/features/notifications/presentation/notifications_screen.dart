@@ -96,6 +96,23 @@ class NotificationsScreen extends ConsumerWidget {
                   ),
                 ),
 
+                const SizedBox(height: 12),
+
+                // Compose & Test FCM Push Alert Button
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () => _showComposePushModal(context, ref),
+                    icon: const Icon(Icons.send_rounded, size: 18),
+                    label: const Text('Compose & Send FCM Push Alert'),
+                    style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
+
                 const SizedBox(height: 16),
 
                 // Scan & Alert Activity Log
@@ -398,6 +415,186 @@ class NotificationsScreen extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showComposePushModal(BuildContext context, WidgetRef ref) {
+    final titleController =
+        TextEditingController(text: '🚨 Emergency Alert — Immediate Action');
+    final bodyController = TextEditingController(
+        text: 'Safety profile was accessed. Tap to review scene coordinates.');
+    String selectedCategory = NotificationCategory.emergencySos;
+    bool isDataOnly = false;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (ctx, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Compose Push Notification',
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close_rounded),
+                          onPressed: () => Navigator.pop(ctx),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Category selection chips
+                    const Text('Notification Category:',
+                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                    const SizedBox(height: 6),
+                    Wrap(
+                      spacing: 8,
+                      children: [
+                        ChoiceChip(
+                          label: const Text('🚨 Emergency SOS'),
+                          selected:
+                              selectedCategory == NotificationCategory.emergencySos,
+                          onSelected: (val) {
+                            if (val) {
+                              setModalState(() => selectedCategory =
+                                  NotificationCategory.emergencySos);
+                            }
+                          },
+                        ),
+                        ChoiceChip(
+                          label: const Text('💡 Safety Tip'),
+                          selected:
+                              selectedCategory == NotificationCategory.safetyTip,
+                          onSelected: (val) {
+                            if (val) {
+                              setModalState(() => selectedCategory =
+                                  NotificationCategory.safetyTip);
+                            }
+                          },
+                        ),
+                        ChoiceChip(
+                          label: const Text('📡 Radar Alert'),
+                          selected:
+                              selectedCategory == NotificationCategory.radarAlert,
+                          onSelected: (val) {
+                            if (val) {
+                              setModalState(() => selectedCategory =
+                                  NotificationCategory.radarAlert);
+                            }
+                          },
+                        ),
+                        ChoiceChip(
+                          label: const Text('📢 App Update'),
+                          selected:
+                              selectedCategory == NotificationCategory.appUpdate,
+                          onSelected: (val) {
+                            if (val) {
+                              setModalState(() => selectedCategory =
+                                  NotificationCategory.appUpdate);
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: titleController,
+                      decoration: const InputDecoration(
+                        labelText: 'Title',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: bodyController,
+                      maxLines: 2,
+                      decoration: const InputDecoration(
+                        labelText: 'Message Body',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Data-only toggle
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: const Text('Data-Only (Silent Background Sync)',
+                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                      subtitle: const Text(
+                        'Routes data packet directly to background handler without top banner.',
+                        style: TextStyle(fontSize: 11),
+                      ),
+                      value: isDataOnly,
+                      onChanged: (val) => setModalState(() => isDataOnly = val),
+                    ),
+
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: () async {
+                          Navigator.pop(ctx);
+                          final messenger = ScaffoldMessenger.of(context);
+                          final res = await ref
+                              .read(notificationNotifierProvider.notifier)
+                              .dispatchPush(
+                                title: titleController.text.trim(),
+                                body: bodyController.text.trim(),
+                                category: selectedCategory,
+                                isDataOnly: isDataOnly,
+                              );
+                          if (res != null) {
+                            messenger.showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Push dispatched! (${res.successCount} delivered)',
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        icon: const Icon(Icons.send_rounded, size: 18),
+                        label: const Text('Dispatch Push Notification'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

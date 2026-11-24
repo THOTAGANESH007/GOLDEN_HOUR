@@ -149,3 +149,148 @@ class TestNotificationResponse {
     );
   }
 }
+
+class NotificationCategory {
+  static const String emergencySos = 'emergency_sos';
+  static const String safetyTip = 'safety_tip';
+  static const String appUpdate = 'app_update';
+  static const String radarAlert = 'radar_alert';
+  static const String patientQrScan = 'patient_qr_scan';
+}
+
+class NotificationPayload {
+  final String title;
+  final String body;
+  final String category;
+  final Map<String, dynamic> data;
+  final bool isDataOnly;
+  final String? scanId;
+  final String? mapsUrl;
+  final String? locationArea;
+  final DateTime timestamp;
+
+  const NotificationPayload({
+    required this.title,
+    required this.body,
+    required this.category,
+    this.data = const {},
+    this.isDataOnly = false,
+    this.scanId,
+    this.mapsUrl,
+    this.locationArea,
+    required this.timestamp,
+  });
+
+  factory NotificationPayload.fromDataMap({
+    String? notificationTitle,
+    String? notificationBody,
+    required Map<String, dynamic> data,
+  }) {
+    final title = notificationTitle ??
+        data['title'] as String? ??
+        '🚨 Emergency Alert';
+    final body = notificationBody ??
+        data['body'] as String? ??
+        'Incident update received';
+    final category = data['category'] as String? ??
+        data['type'] as String? ??
+        NotificationCategory.emergencySos;
+    final isDataOnly = notificationTitle == null && notificationBody == null;
+
+    return NotificationPayload(
+      title: title,
+      body: body,
+      category: category,
+      data: data,
+      isDataOnly: isDataOnly,
+      scanId: data['scan_id'] as String? ?? data['id'] as String?,
+      mapsUrl: data['maps_url'] as String? ?? data['google_maps_url'] as String?,
+      locationArea: data['location_area'] as String?,
+      timestamp: DateTime.now(),
+    );
+  }
+
+  /// Evaluates target in-app navigation route according to notification category
+  String getTargetRoute() {
+    switch (category) {
+      case NotificationCategory.safetyTip:
+        return '/guides';
+      case NotificationCategory.radarAlert:
+        return '/location/map';
+      case NotificationCategory.appUpdate:
+        return '/notifications';
+      case NotificationCategory.emergencySos:
+      case NotificationCategory.patientQrScan:
+      default:
+        if (scanId != null && scanId!.isNotEmpty) {
+          return '/scan-history/detail?id=$scanId';
+        }
+        return '/scan-history';
+    }
+  }
+}
+
+class PushNotificationSendRequest {
+  final String title;
+  final String body;
+  final String category;
+  final bool isDataOnly;
+  final List<String>? targetUserIds;
+  final List<String>? fcmTokens;
+  final Map<String, String>? data;
+
+  const PushNotificationSendRequest({
+    required this.title,
+    required this.body,
+    this.category = NotificationCategory.emergencySos,
+    this.isDataOnly = false,
+    this.targetUserIds,
+    this.fcmTokens,
+    this.data,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'body': body,
+        'category': category,
+        'is_data_only': isDataOnly,
+        if (targetUserIds != null) 'target_user_ids': targetUserIds,
+        if (fcmTokens != null) 'fcm_tokens': fcmTokens,
+        if (data != null) 'data': data,
+      };
+}
+
+class PushNotificationSendResponse {
+  final String status;
+  final String message;
+  final int successCount;
+  final int failureCount;
+  final String category;
+  final bool isDataOnly;
+  final String analyticsEvent;
+  final String dispatchedAt;
+
+  const PushNotificationSendResponse({
+    required this.status,
+    required this.message,
+    required this.successCount,
+    required this.failureCount,
+    required this.category,
+    required this.isDataOnly,
+    required this.analyticsEvent,
+    required this.dispatchedAt,
+  });
+
+  factory PushNotificationSendResponse.fromJson(Map<String, dynamic> json) =>
+      PushNotificationSendResponse(
+        status: json['status'] as String? ?? 'success',
+        message: json['message'] as String? ?? '',
+        successCount: (json['success_count'] as num?)?.toInt() ?? 0,
+        failureCount: (json['failure_count'] as num?)?.toInt() ?? 0,
+        category: json['category'] as String? ?? NotificationCategory.emergencySos,
+        isDataOnly: json['is_data_only'] as bool? ?? false,
+        analyticsEvent:
+            json['analytics_event'] as String? ?? 'notification_sent',
+        dispatchedAt: json['dispatched_at'] as String? ?? '',
+      );
+}
