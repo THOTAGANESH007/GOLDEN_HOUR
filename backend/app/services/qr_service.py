@@ -111,7 +111,7 @@ async def reverse_geocode(latitude: float | None, longitude: float | None) -> st
             if resp.status_code == 200:
                 data = resp.json()
                 address = data.get("address", {})
-                
+
                 local = (
                     address.get("suburb")
                     or address.get("neighbourhood")
@@ -126,13 +126,13 @@ async def reverse_geocode(latitude: float | None, longitude: float | None) -> st
                     or address.get("state_district")
                 )
                 state = address.get("state")
-                
+
                 parts = [p.strip() for p in [local, city, state] if p and p.strip()]
                 if len(parts) >= 2:
                     return f"{parts[0]}, {parts[1]}"
                 elif parts:
                     return parts[0]
-                
+
                 display = data.get("display_name")
                 if display:
                     display_parts = [p.strip() for p in display.split(",") if p.strip()]

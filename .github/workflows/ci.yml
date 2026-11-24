@@ -1,0 +1,267 @@
+name: Golden Hour CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - next-updates
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+      - next-updates
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+  pull-requests: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 1: LINT (Mobile + Backend)
+  # ─────────────────────────────────────────────────────────────────────────────
+  lint:
+    name: Lint & Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Lint Mobile (Flutter Analyze)
+        working-directory: apps/mobile
+        run: |
+          flutter pub get
+          flutter analyze --no-fatal-infos
+
+      - name: Lint Backend (Ruff)
+        working-directory: backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
+          ruff check .
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 2: TEST MOBILE (Flutter Unit & Widget Tests)
+  # ─────────────────────────────────────────────────────────────────────────────
+  test-mobile:
+    name: Test Mobile App
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Run Flutter Tests with Coverage
+        working-directory: apps/mobile
+        run: |
+          flutter pub get
+          flutter test --coverage
+
+      - name: Upload Test Coverage Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobile-coverage
+          path: apps/mobile/coverage/lcov.info
+          retention-days: 7
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 3: TEST BACKEND (Pytest & Unittest)
+  # ─────────────────────────────────────────────────────────────────────────────
+  test-backend:
+    name: Test Backend API
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Backend Dependencies
+        working-directory: backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Run Backend Tests
+        working-directory: backend
+        env:
+          ENVIRONMENT: test
+          SECRET_KEY: ci-test-secret-key-32-bytes-minimum-length!
+          JWT_SECRET_KEY: ci-jwt-secret-key-32-bytes-minimum-length!
+          SUPABASE_URL: https://mock-supabase.supabase.co
+          SUPABASE_KEY: mock-key
+          SENTRY_DSN: ""
+        run: |
+          pytest tests -v
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 4: BUILD MOBILE (APK & AAB)
+  # ─────────────────────────────────────────────────────────────────────────────
+  build-mobile:
+    name: Build Android Artifacts (APK & AAB)
+    needs: [lint, test-mobile]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Configure Android Release Signing
+        working-directory: apps/mobile
+        run: |
+          if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
+            echo "Decoding release keystore..."
+            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/upload-keystore.jks
+            cat <<EOF > android/key.properties
+          storePassword=${{ secrets.STORE_PASSWORD }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          storeFile=upload-keystore.jks
+          EOF
+            echo "Release keystore configured successfully."
+          else
+            echo "KEYSTORE_BASE64 secret not set; build will use fallback debug signing."
+          fi
+
+      - name: Build Android Release APK
+        working-directory: apps/mobile
+        run: |
+          flutter pub get
+          flutter build apk --release
+
+      - name: Build Android Release AppBundle (AAB)
+        working-directory: apps/mobile
+        run: |
+          flutter build appbundle --release
+
+      - name: Upload Release APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-hour-release-apk
+          path: apps/mobile/build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 14
+
+      - name: Upload Release AAB Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-hour-release-aab
+          path: apps/mobile/build/app/outputs/bundle/release/app-release.aab
+          retention-days: 14
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 5: DOCKER BACKEND (Build & Push to GHCR)
+  # ─────────────────────────────────────────────────────────────────────────────
+  docker-backend:
+    name: Build & Push Backend Container
+    needs: [lint, test-backend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry (GHCR)
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker Metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}/backend
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=sha,format=short
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: backend
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 6: RELEASE (Publish on Git Tags)
+  # ─────────────────────────────────────────────────────────────────────────────
+  release:
+    name: Publish GitHub Release
+    needs: [build-mobile, docker-backend]
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download Release APK
+        uses: actions/download-artifact@v4
+        with:
+          name: golden-hour-release-apk
+          path: release-artifacts
+
+      - name: Download Release AAB
+        uses: actions/download-artifact@v4
+        with:
+          name: golden-hour-release-aab
+          path: release-artifacts
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            release-artifacts/app-release.apk
+            release-artifacts/app-release.aab
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

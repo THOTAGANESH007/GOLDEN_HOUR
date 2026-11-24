@@ -6,13 +6,26 @@ from unittest.mock import patch, AsyncMock
 from httpx import ASGITransport, AsyncClient
 
 from app.main import app
+from app.database import get_db
 
 
 class TestAPIEndpoints(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.transport = ASGITransport(app=app)
+        self.mock_db = AsyncMock()
+        mock_result = AsyncMock()
+        mock_result.scalar_one_or_none = lambda: None
+        self.mock_db.execute.return_value = mock_result
+        self.mock_db.commit = AsyncMock()
+        self.mock_db.rollback = AsyncMock()
+
+        async def override_get_db():
+            yield self.mock_db
+
+        app.dependency_overrides[get_db] = override_get_db
 
     async def asyncTearDown(self):
+        app.dependency_overrides.clear()
         from app.database import engine
         await engine.dispose()
 

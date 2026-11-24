@@ -2,7 +2,6 @@
 Notification service — WhatsApp Cloud API, FCM Push, and Email (Resend).
 All channels are called from the Celery task, not directly from the API.
 """
-import json
 import logging
 from datetime import datetime, timezone
 

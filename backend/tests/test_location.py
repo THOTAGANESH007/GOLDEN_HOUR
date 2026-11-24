@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from fastapi.testclient import TestClient
 
 from app.main import app
-from app.schemas.location import LocationUpdate, StopSharingRequest
+from app.schemas.location import LocationUpdate
 from app.services.location_service import (
     calculate_haversine_distance_meters,
     check_geofence,

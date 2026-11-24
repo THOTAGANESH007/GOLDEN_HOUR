@@ -6,8 +6,7 @@ import secrets
 import uuid
 from datetime import datetime, timedelta, timezone
 
-import httpx
-from jose import JWTError, jwt
+from jose import jwt
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 

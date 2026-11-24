@@ -6,8 +6,8 @@ import uuid
 from datetime import datetime, timezone
 from pydantic import ValidationError
 
-from app.schemas.auth import SendOTPRequest, VerifyOTPRequest
-from app.schemas.profile import EmergencyContactCreate, ProfileUpdate
+from app.schemas.auth import SendOTPRequest
+from app.schemas.profile import EmergencyContactCreate
 from app.services import auth_service
 from app.services.qr_service import generate_uid, _parse_device_type
 from app.services.notification_service import _ist_time

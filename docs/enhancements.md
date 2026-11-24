@@ -327,38 +327,38 @@
 ### Design
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Define CI workflow jobs: lint, test, build, docker, release | |
-| [ ] | Choose release strategy: `semantic-release` with conventional commits | |
-| [ ] | Define trigger rules: on push to `next-updates`, on tag push for release | |
+| [x] | Define CI workflow jobs: lint, test, build, docker, release | 2026-11-24 |
+| [x] | Choose release strategy: `semantic-release` with conventional commits | 2026-11-24 |
+| [x] | Define trigger rules: on push to `next-updates`, on tag push for release | 2026-11-24 |
 
 ### Development
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Create `.github/workflows/ci.yml` | |
-| [ ] | Add **lint** job: `flutter analyze` + `ruff check` (Python) | |
-| [ ] | Add **test** job: `flutter test` + `pytest` (backend) | |
-| [ ] | Add **build** job: `flutter build apk --release` + `flutter build appbundle` | |
-| [ ] | Add **docker** job: build backend Docker image, push to GHCR | |
-| [ ] | Add **release** job: on tag push, upload AAB as GitHub release artifact | |
-| [ ] | Configure repository secrets: `KEYSTORE_BASE64`, `KEY_PASSWORD`, `FIREBASE_TOKEN` | |
-| [ ] | Add `semantic-release` config (`release.config.js`) for version bumping | |
-| [ ] | Add `CHANGELOG.md` auto‑generation | |
+| [x] | Create `.github/workflows/ci.yml` | 2026-11-24 |
+| [x] | Add **lint** job: `flutter analyze` + `ruff check` (Python) | 2026-11-24 |
+| [x] | Add **test** job: `flutter test` + `pytest` (backend) | 2026-11-24 |
+| [x] | Add **build** job: `flutter build apk --release` + `flutter build appbundle` | 2026-11-24 |
+| [x] | Add **docker** job: build backend Docker image, push to GHCR | 2026-11-24 |
+| [x] | Add **release** job: on tag push, upload AAB as GitHub release artifact | 2026-11-24 |
+| [x] | Configure repository secrets: `KEYSTORE_BASE64`, `KEY_PASSWORD`, `FIREBASE_TOKEN` | 2026-11-24 |
+| [x] | Add `semantic-release` config (`release.config.js`) for version bumping | 2026-11-24 |
+| [x] | Add `CHANGELOG.md` auto‑generation | 2026-11-24 |
 
 ### Testing
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | CI workflow runs successfully on push | |
-| [ ] | All lint jobs pass | |
-| [ ] | All test jobs pass | |
-| [ ] | APK/AAB artifacts uploaded correctly | |
-| [ ] | Docker image builds and pushes to registry | |
+| [x] | CI workflow runs successfully on push | 2026-11-24 |
+| [x] | All lint jobs pass | 2026-11-24 |
+| [x] | All test jobs pass | 2026-11-24 |
+| [x] | APK/AAB artifacts uploaded correctly | 2026-11-24 |
+| [x] | Docker image builds and pushes to registry | 2026-11-24 |
 
 ### Review & Merge
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | CI pipeline reviewed by DevOps | |
-| [ ] | Secrets verified (no exposure in logs) | |
-| [ ] | Merged to `next-updates` branch | |
+| [x] | CI pipeline reviewed by DevOps | 2026-11-24 |
+| [x] | Secrets verified (no exposure in logs) | 2026-11-24 |
+| [x] | Merged to `next-updates` branch | 2026-11-24 |
 
 ---
 

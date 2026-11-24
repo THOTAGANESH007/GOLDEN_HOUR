@@ -15,7 +15,7 @@ from app.schemas.contact_group import (
     GroupBroadcastRequest,
     GroupBroadcastResponse,
 )
-from app.schemas.profile import EmergencyContactCreate, EmergencyContactResponse
+from app.schemas.profile import EmergencyContactCreate
 
 
 class TestContactGroups(unittest.TestCase):

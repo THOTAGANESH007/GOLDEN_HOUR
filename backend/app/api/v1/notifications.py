@@ -19,7 +19,7 @@ from app.schemas.notification import (
     PushNotificationRequest,
     PushNotificationResponse,
 )
-from app.schemas.scan_event import ScanEventListResponse, ScanEventResponse
+from app.schemas.scan_event import ScanEventListResponse
 from app.services.notification_service import send_enhanced_push
 
 logger = logging.getLogger(__name__)

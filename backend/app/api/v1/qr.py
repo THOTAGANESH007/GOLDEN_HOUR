@@ -8,7 +8,6 @@ from app.database import get_db
 from app.middleware.auth_middleware import get_current_user
 from app.middleware.rate_limiter import limiter
 from app.models.user import User
-from app.schemas.profile import PublicProfileResponse
 from app.services import qr_service
 from app.services.qr_service import get_or_create_profile
 

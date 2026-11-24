@@ -3,7 +3,6 @@ import logging
 from typing import Optional
 
 from fastapi import APIRouter, Query, WebSocket, WebSocketDisconnect
-from fastapi.responses import JSONResponse
 
 from app.schemas.location import (
     GeofenceStatus,

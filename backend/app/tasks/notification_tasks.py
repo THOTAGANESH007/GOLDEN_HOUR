@@ -12,9 +12,8 @@ Flow on QR scan:
 import asyncio
 import logging
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime
 
-from celery import shared_task
 
 from app.tasks.celery_app import celery_app
 
@@ -82,7 +81,6 @@ async def _async_notify(
         send_whatsapp,
         send_fcm_push,
         send_emergency_contact_fcm,
-        send_email_fallback,
     )
     from app.models.scan_event import ScanEvent
     from app.models.user import User
