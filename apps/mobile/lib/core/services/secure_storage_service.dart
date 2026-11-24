@@ -69,6 +69,14 @@ class SecureStorageService {
     await _storage.write(key: AppConstants.keyThemeMode, value: mode);
   }
 
+  Future<String?> getAccentColor() async {
+    return await _storage.read(key: AppConstants.keyAccentColor);
+  }
+
+  Future<void> saveAccentColor(String hexOrId) async {
+    await _storage.write(key: AppConstants.keyAccentColor, value: hexOrId);
+  }
+
   Future<void> clearAll() async {
     await _storage.deleteAll();
   }

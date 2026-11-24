@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/theme_customizer.dart';
+import '../../../core/theme/theme_provider.dart';
 import '../../auth/domain/auth_provider.dart';
 import '../../profile/domain/profile_provider.dart';
 
@@ -476,6 +478,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               const SizedBox(height: 20),
 
+              // Appearance & Theme
+              _buildThemeSection(context, ref),
+              const SizedBox(height: 20),
+
               // Section 4: Account Danger Zone
               _buildSectionHeader('ACCOUNT ACTIONS'),
               const SizedBox(height: 8),
@@ -675,6 +681,255 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         fontWeight: FontWeight.bold,
         color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
         letterSpacing: 0.8,
+      ),
+    );
+  }
+
+  Widget _buildThemeSection(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
+    final activeAccent = ref.watch(accentColorProvider);
+    final accentOptions = ref.watch(accentOptionsProvider);
+    final activeOption = ThemeCustomizer.fromColor(activeAccent);
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionHeader('APPEARANCE & THEME'),
+        const SizedBox(height: 8),
+        Card(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(
+              color: theme.colorScheme.outline.withValues(alpha: 0.18),
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Theme Mode Selector
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: activeAccent.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(Icons.palette_outlined,
+                          color: activeAccent, size: 20),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Theme Mode',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            themeMode == ThemeMode.system
+                                ? 'System Default'
+                                : themeMode == ThemeMode.dark
+                                    ? 'High-Contrast Dark'
+                                    : 'Daylight Light',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                // Theme Segmented Control
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceContainerHigh,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.all(4),
+                  child: Row(
+                    children: [
+                      _buildThemeModeChip(
+                        context: context,
+                        title: 'System',
+                        icon: Icons.brightness_auto_rounded,
+                        isSelected: themeMode == ThemeMode.system,
+                        onTap: () => ref
+                            .read(themeModeProvider.notifier)
+                            .setThemeMode(ThemeMode.system),
+                      ),
+                      _buildThemeModeChip(
+                        context: context,
+                        title: 'Light',
+                        icon: Icons.light_mode_rounded,
+                        isSelected: themeMode == ThemeMode.light,
+                        onTap: () => ref
+                            .read(themeModeProvider.notifier)
+                            .setThemeMode(ThemeMode.light),
+                      ),
+                      _buildThemeModeChip(
+                        context: context,
+                        title: 'Dark',
+                        icon: Icons.dark_mode_rounded,
+                        isSelected: themeMode == ThemeMode.dark,
+                        onTap: () => ref
+                            .read(themeModeProvider.notifier)
+                            .setThemeMode(ThemeMode.dark),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Divider(
+                  height: 1,
+                  color: theme.colorScheme.outline.withValues(alpha: 0.15),
+                ),
+                const SizedBox(height: 16),
+                // Accent Color Selector
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Accent Color',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      activeOption.name,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: activeAccent,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  height: 48,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: accentOptions.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 12),
+                    itemBuilder: (ctx, index) {
+                      final option = accentOptions[index];
+                      final isSelected = option.id == activeOption.id;
+                      return GestureDetector(
+                        key: ValueKey('accent_color_${option.id}'),
+                        onTap: () => ref
+                            .read(accentColorProvider.notifier)
+                            .setAccentColor(option),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: option.color,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: isSelected
+                                  ? theme.colorScheme.onSurface
+                                  : Colors.transparent,
+                              width: isSelected ? 3 : 0,
+                            ),
+                            boxShadow: isSelected
+                                ? [
+                                    BoxShadow(
+                                      color: option.color.withValues(alpha: 0.4),
+                                      blurRadius: 8,
+                                      spreadRadius: 2,
+                                    ),
+                                  ]
+                                : null,
+                          ),
+                          child: isSelected
+                              ? const Center(
+                                  child: Icon(
+                                    Icons.check_rounded,
+                                    color: Colors.white,
+                                    size: 22,
+                                  ),
+                                )
+                              : null,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildThemeModeChip({
+    required BuildContext context,
+    required String title,
+    required IconData icon,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    final theme = Theme.of(context);
+    final accent = theme.colorScheme.primary;
+
+    return Expanded(
+      child: GestureDetector(
+        key: ValueKey('theme_mode_$title'),
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? theme.colorScheme.surface
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 16,
+                color: isSelected ? accent : theme.colorScheme.onSurface.withValues(alpha: 0.6),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                  color: isSelected ? accent : theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

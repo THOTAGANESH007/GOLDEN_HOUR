@@ -100,6 +100,11 @@ void main() {
       expect(find.text('Offline Emergency Safety Guides'), findsOneWidget);
       expect(find.text('Safety Contact Groups'), findsOneWidget);
 
+      // Appearance & Theme
+      expect(find.text('APPEARANCE & THEME'), findsOneWidget);
+      expect(find.text('Theme Mode'), findsOneWidget);
+      expect(find.text('Accent Color'), findsOneWidget);
+
       // Danger Zone
       expect(find.text('ACCOUNT ACTIONS'), findsOneWidget);
       expect(find.text('Log Out'), findsOneWidget);
@@ -146,7 +151,11 @@ void main() {
       final disclaimerTile = find.text('Emergency Responder Disclaimer');
       expect(disclaimerTile, findsOneWidget);
 
-      await tester.scrollUntilVisible(disclaimerTile, 150);
+      await tester.scrollUntilVisible(
+        disclaimerTile,
+        150,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.tap(disclaimerTile);
       await tester.pumpAndSettle();
 

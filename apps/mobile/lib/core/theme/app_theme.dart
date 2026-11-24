@@ -4,15 +4,19 @@ import 'app_colors.dart';
 import 'app_spacing.dart';
 
 class AppTheme {
-  static ThemeData get lightTheme {
+  static ThemeData get lightTheme => buildLightTheme();
+  static ThemeData get darkTheme => buildDarkTheme();
+
+  static ThemeData buildLightTheme([Color? primaryColor]) {
+    final primary = primaryColor ?? AppColors.primary;
     return ThemeData(
       useMaterial3: true,
       splashFactory: InkRipple.splashFactory,
       brightness: Brightness.light,
-      primaryColor: AppColors.primary,
+      primaryColor: primary,
       scaffoldBackgroundColor: AppColors.background,
-      colorScheme: const ColorScheme.light(
-        primary: AppColors.primary,
+      colorScheme: ColorScheme.light(
+        primary: primary,
         secondary: AppColors.secondary,
         surface: AppColors.surface,
         error: AppColors.error,
@@ -22,8 +26,8 @@ class AppTheme {
         onError: Colors.white,
         outline: AppColors.border,
         surfaceContainer: Colors.white,
-        surfaceContainerHigh: Color(0xFFF1F5F9),
-        surfaceContainerHighest: Color(0xFFE2E8F0),
+        surfaceContainerHigh: const Color(0xFFF1F5F9),
+        surfaceContainerHighest: const Color(0xFFE2E8F0),
       ),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
@@ -50,7 +54,7 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
+          backgroundColor: primary,
           foregroundColor: Colors.white,
           elevation: 0,
           padding: AppSpacing.buttonPadding,
@@ -97,7 +101,7 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          borderSide: const BorderSide(color: AppColors.primary, width: 2),
+          borderSide: BorderSide(color: primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
@@ -141,22 +145,30 @@ class AppTheme {
           borderRadius: BorderRadius.circular(12),
         ),
       ),
-      listTileTheme: const ListTileThemeData(
-        iconColor: AppColors.primary,
+      listTileTheme: ListTileThemeData(
+        iconColor: primary,
         textColor: AppColors.textPrimary,
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: primary,
+        foregroundColor: Colors.white,
+      ),
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: primary,
       ),
     );
   }
 
-  static ThemeData get darkTheme {
+  static ThemeData buildDarkTheme([Color? primaryColor]) {
+    final primary = primaryColor ?? AppColors.primary;
     return ThemeData(
       useMaterial3: true,
       splashFactory: InkRipple.splashFactory,
       brightness: Brightness.dark,
-      primaryColor: AppColors.primary,
+      primaryColor: primary,
       scaffoldBackgroundColor: AppColors.backgroundDark,
-      colorScheme: const ColorScheme.dark(
-        primary: AppColors.primary,
+      colorScheme: ColorScheme.dark(
+        primary: primary,
         secondary: AppColors.secondary,
         surface: AppColors.surfaceDark,
         error: AppColors.error,
@@ -165,9 +177,9 @@ class AppTheme {
         onSurface: AppColors.textPrimaryDark,
         onError: Colors.white,
         outline: AppColors.borderDark,
-        surfaceContainer: Color(0xFF1E293B),
-        surfaceContainerHigh: Color(0xFF283548),
-        surfaceContainerHighest: Color(0xFF334155),
+        surfaceContainer: const Color(0xFF1E293B),
+        surfaceContainerHigh: const Color(0xFF283548),
+        surfaceContainerHighest: const Color(0xFF334155),
       ),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
@@ -192,7 +204,7 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
+          backgroundColor: primary,
           foregroundColor: Colors.white,
           elevation: 0,
           padding: AppSpacing.buttonPadding,
@@ -232,7 +244,7 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          borderSide: const BorderSide(color: AppColors.primary, width: 2),
+          borderSide: BorderSide(color: primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
@@ -276,9 +288,16 @@ class AppTheme {
           borderRadius: BorderRadius.circular(12),
         ),
       ),
-      listTileTheme: const ListTileThemeData(
-        iconColor: AppColors.primary,
+      listTileTheme: ListTileThemeData(
+        iconColor: primary,
         textColor: AppColors.textPrimaryDark,
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: primary,
+        foregroundColor: Colors.white,
+      ),
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: primary,
       ),
     );
   }

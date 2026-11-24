@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app/routes/app_router.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/theme_customizer.dart';
 import 'core/theme/theme_provider.dart';
 import 'features/notifications/services/fcm_service.dart';
 
@@ -60,12 +61,13 @@ class GoldenHourApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);
     final themeMode = ref.watch(themeModeProvider);
+    final accentColor = ref.watch(accentColorProvider);
 
     return MaterialApp.router(
       title: 'Golden Hour',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
+      theme: AppTheme.buildLightTheme(accentColor),
+      darkTheme: AppTheme.buildDarkTheme(accentColor),
       themeMode: themeMode,
       routerConfig: router,
     );

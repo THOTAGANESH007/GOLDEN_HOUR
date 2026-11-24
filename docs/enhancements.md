@@ -182,32 +182,32 @@
 ### Design
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Define accent color palette (5–8 choices) | |
-| [ ] | Design settings UI for theme toggle and color picker | |
+| [x] | Define accent color palette (5–8 choices) | 2026-11-24 |
+| [x] | Design settings UI for theme toggle and color picker | 2026-11-24 |
 
 ### Development
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Create `lib/core/theme/theme_customizer.dart` — Riverpod provider for accent color | |
-| [ ] | Update `app_theme.dart` to accept dynamic accent color | |
-| [ ] | Add dark mode toggle and color picker to `settings_screen.dart` | |
-| [ ] | Persist selected theme and accent color via `secure_storage_service` | |
-| [ ] | Ensure all screens respect dynamic theme (audit each screen) | |
+| [x] | Create `lib/core/theme/theme_customizer.dart` — Riverpod provider for accent color | 2026-11-24 |
+| [x] | Update `app_theme.dart` to accept dynamic accent color | 2026-11-24 |
+| [x] | Add dark mode toggle and color picker to `settings_screen.dart` | 2026-11-24 |
+| [x] | Persist selected theme and accent color via `secure_storage_service` | 2026-11-24 |
+| [x] | Ensure all screens respect dynamic theme (audit each screen) | 2026-11-24 |
 
 ### Testing
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Widget test: toggling dark mode switches theme | |
-| [ ] | Widget test: changing accent color updates UI | |
-| [ ] | Unit test: preferences persist across app restarts | |
+| [x] | Widget test: toggling dark mode switches theme | 2026-11-24 |
+| [x] | Widget test: changing accent color updates UI | 2026-11-24 |
+| [x] | Unit test: preferences persist across app restarts | 2026-11-24 |
 
 ### Review & Merge
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Visual regression check on light and dark themes | |
-| [ ] | Code review completed | |
-| [ ] | Merged to `next-updates` branch | |
-| [ ] | CI build passes | |
+| [x] | Visual regression check on light and dark themes | 2026-11-24 |
+| [x] | Code review completed | 2026-11-24 |
+| [x] | Merged to `next-updates` branch | 2026-11-24 |
+| [x] | CI build passes | 2026-11-24 |
 
 ---
 
