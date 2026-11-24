@@ -23,9 +23,9 @@ class AppColors {
   // Neutral Colors (Light Theme)
   static const Color background = Color(0xFFF7FAFC);
   static const Color surface = Color(0xFFFFFFFF);
-  static const Color textPrimary = Color(0xFF1A202C);
-  static const Color textSecondary = Color(0xFF718096);
-  static const Color textMuted = Color(0xFFA0AEC0);
+  static const Color textPrimary = Color(0xFF0F172A);
+  static const Color textSecondary = Color(0xFF475569); // WCAG AA 4.8:1+
+  static const Color textMuted = Color(0xFF64748B);     // WCAG AA 4.6:1+
   static const Color border = Color(0xFFE2E8F0);
   static const Color divider = Color(0xFFEDF2F7);
 

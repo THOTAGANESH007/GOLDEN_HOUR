@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
+import '../../../core/services/secure_storage_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../domain/auth_provider.dart';
 import '../domain/auth_state.dart';
@@ -46,6 +47,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   Future<void> _initAuthCheck() async {
     await Future.delayed(const Duration(milliseconds: 1600));
     if (!mounted) return;
+
+    final storage = ref.read(secureStorageServiceProvider);
+    final onboardingDone = await storage.isOnboardingCompleted();
+
+    if (!onboardingDone) {
+      if (mounted) context.go('/onboarding');
+      return;
+    }
 
     await ref.read(authNotifierProvider.notifier).checkAuthStatus();
     final authState = ref.read(authNotifierProvider);

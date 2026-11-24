@@ -27,6 +27,9 @@ class FakeSecureStorageService extends SecureStorageService {
   Future<bool> hasValidToken() async => _data.containsKey(AppConstants.keyAccessToken);
 
   @override
+  Future<bool> isOnboardingCompleted() async => true;
+
+  @override
   Future<void> clearAll() async => _data.clear();
 }
 

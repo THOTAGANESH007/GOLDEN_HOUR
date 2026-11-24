@@ -9,6 +9,7 @@ class AppConstants {
   static const String keyUserId = 'user_id';
   static const String keyUserPhone = 'user_phone';
   static const String keyWizardCompleted = 'wizard_completed';
+  static const String keyOnboardingCompleted = 'onboarding_completed';
   static const String keyCachedQrUid = 'cached_qr_uid';
   static const String keyThemeMode = 'app_theme_mode';
   static const String keyAccentColor = 'app_accent_color';

@@ -223,6 +223,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       appBar: AppBar(
         title: const Text('Settings & Privacy'),
         leading: IconButton(
+          tooltip: 'Back',
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => context.pop(),
         ),
@@ -826,7 +827,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
                 const SizedBox(height: 12),
                 SizedBox(
-                  height: 48,
+                  height: 52,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: accentOptions.length,
@@ -834,43 +835,49 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     itemBuilder: (ctx, index) {
                       final option = accentOptions[index];
                       final isSelected = option.id == activeOption.id;
-                      return GestureDetector(
-                        key: ValueKey('accent_color_${option.id}'),
-                        onTap: () => ref
-                            .read(accentColorProvider.notifier)
-                            .setAccentColor(option),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          width: 44,
-                          height: 44,
-                          decoration: BoxDecoration(
-                            color: option.color,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: isSelected
-                                  ? theme.colorScheme.onSurface
-                                  : Colors.transparent,
-                              width: isSelected ? 3 : 0,
+                      return Semantics(
+                        label: 'Accent color: ${option.name}',
+                        button: true,
+                        selected: isSelected,
+                        child: GestureDetector(
+                          key: ValueKey('accent_color_${option.id}'),
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => ref
+                              .read(accentColorProvider.notifier)
+                              .setAccentColor(option),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: option.color,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: isSelected
+                                    ? theme.colorScheme.onSurface
+                                    : Colors.transparent,
+                                width: isSelected ? 3 : 0,
+                              ),
+                              boxShadow: isSelected
+                                  ? [
+                                      BoxShadow(
+                                        color: option.color.withValues(alpha: 0.4),
+                                        blurRadius: 8,
+                                        spreadRadius: 2,
+                                      ),
+                                    ]
+                                  : null,
                             ),
-                            boxShadow: isSelected
-                                ? [
-                                    BoxShadow(
-                                      color: option.color.withValues(alpha: 0.4),
-                                      blurRadius: 8,
-                                      spreadRadius: 2,
+                            child: isSelected
+                                ? const Center(
+                                    child: Icon(
+                                      Icons.check_rounded,
+                                      color: Colors.white,
+                                      size: 24,
                                     ),
-                                  ]
+                                  )
                                 : null,
                           ),
-                          child: isSelected
-                              ? const Center(
-                                  child: Icon(
-                                    Icons.check_rounded,
-                                    color: Colors.white,
-                                    size: 22,
-                                  ),
-                                )
-                              : null,
                         ),
                       );
                     },
@@ -925,45 +932,51 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     children: supportedLanguages.map((lang) {
                       final isSelected = lang.code == currentLocale.languageCode;
                       return Expanded(
-                        child: GestureDetector(
-                          key: ValueKey('language_${lang.code}'),
-                          onTap: () => ref
-                              .read(localeProvider.notifier)
-                              .setLocale(lang.code),
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 180),
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? theme.colorScheme.surface
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: isSelected
-                                  ? [
-                                      BoxShadow(
-                                        color: Colors.black.withValues(alpha: 0.05),
-                                        blurRadius: 4,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ]
-                                  : null,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(lang.flag, style: const TextStyle(fontSize: 14)),
-                                const SizedBox(width: 6),
-                                Text(
-                                  lang.nativeName,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                                    color: isSelected
-                                        ? activeAccent
-                                        : theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                        child: Semantics(
+                          label: '${lang.name} language',
+                          button: true,
+                          selected: isSelected,
+                          child: GestureDetector(
+                            key: ValueKey('language_${lang.code}'),
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () => ref
+                                .read(localeProvider.notifier)
+                                .setLocale(lang.code),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 180),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? theme.colorScheme.surface
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(8),
+                                boxShadow: isSelected
+                                    ? [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(alpha: 0.05),
+                                          blurRadius: 4,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ]
+                                    : null,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(lang.flag, style: const TextStyle(fontSize: 14)),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    lang.nativeName,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                                      color: isSelected
+                                          ? activeAccent
+                                          : theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -990,45 +1003,51 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final accent = theme.colorScheme.primary;
 
     return Expanded(
-      child: GestureDetector(
-        key: ValueKey('theme_mode_$title'),
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? theme.colorScheme.surface
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: isSelected
-                ? [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ]
-                : null,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 16,
-                color: isSelected ? accent : theme.colorScheme.onSurface.withValues(alpha: 0.6),
-              ),
-              const SizedBox(width: 6),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                  color: isSelected ? accent : theme.colorScheme.onSurface.withValues(alpha: 0.7),
+      child: Semantics(
+        label: '$title theme',
+        button: true,
+        selected: isSelected,
+        child: GestureDetector(
+          key: ValueKey('theme_mode_$title'),
+          behavior: HitTestBehavior.opaque,
+          onTap: onTap,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? theme.colorScheme.surface
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: isSelected
+                  ? [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: 16,
+                  color: isSelected ? accent : theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
-              ),
-            ],
+                const SizedBox(width: 6),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                    color: isSelected ? accent : theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -57,6 +57,7 @@ class AppTheme {
           backgroundColor: primary,
           foregroundColor: Colors.white,
           elevation: 0,
+          minimumSize: const Size(64, 48),
           padding: AppSpacing.buttonPadding,
           textStyle: const TextStyle(
             fontSize: 16,
@@ -71,6 +72,7 @@ class AppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.textPrimary,
+          minimumSize: const Size(64, 48),
           padding: AppSpacing.buttonPadding,
           side: const BorderSide(color: AppColors.border, width: 1.5),
           textStyle: const TextStyle(
@@ -80,6 +82,11 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           ),
+        ),
+      ),
+      iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(
+          minimumSize: const Size(48, 48),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -207,6 +214,7 @@ class AppTheme {
           backgroundColor: primary,
           foregroundColor: Colors.white,
           elevation: 0,
+          minimumSize: const Size(64, 48),
           padding: AppSpacing.buttonPadding,
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
           shape: RoundedRectangleBorder(
@@ -217,6 +225,7 @@ class AppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.textPrimaryDark,
+          minimumSize: const Size(64, 48),
           padding: AppSpacing.buttonPadding,
           side: const BorderSide(color: AppColors.borderDark, width: 1.5),
           textStyle: const TextStyle(
@@ -226,6 +235,11 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           ),
+        ),
+      ),
+      iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(
+          minimumSize: const Size(48, 48),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(

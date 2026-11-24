@@ -255,33 +255,33 @@
 ### Design
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Run initial accessibility audit with `flutter_a11y` tool | |
-| [ ] | Document all WCAG AA violations | |
-| [ ] | Plan fixes (tap targets, contrast, semantic labels) | |
+| [x] | Run initial accessibility audit with `flutter_a11y` tool | 2026-11-24 |
+| [x] | Document all WCAG AA violations | 2026-11-24 |
+| [x] | Plan fixes (tap targets, contrast, semantic labels) | 2026-11-24 |
 
 ### Development
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Increase all interactive element tap targets to ≥48 dp | |
-| [ ] | Add `Semantics` labels to all icons and images | |
-| [ ] | Fix color contrast violations to meet WCAG AA (4.5:1 ratio) | |
-| [ ] | Add `excludeSemantics` where needed to avoid redundancy | |
-| [ ] | Test with Android TalkBack enabled | |
+| [x] | Increase all interactive element tap targets to ≥48 dp | 2026-11-24 |
+| [x] | Add `Semantics` labels to all icons and images | 2026-11-24 |
+| [x] | Fix color contrast violations to meet WCAG AA (4.5:1 ratio) | 2026-11-24 |
+| [x] | Add `excludeSemantics` where needed to avoid redundancy | 2026-11-24 |
+| [x] | Test with Android TalkBack enabled | 2026-11-24 |
 
 ### Testing
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Run `flutter_a11y` lint — zero violations | |
-| [ ] | Manual TalkBack walkthrough on physical device | |
-| [ ] | Add accessibility lint step to CI workflow | |
+| [x] | Run `flutter_a11y` lint — zero violations | 2026-11-24 |
+| [x] | Manual TalkBack walkthrough on physical device | 2026-11-24 |
+| [x] | Add accessibility lint step to CI workflow | 2026-11-24 |
 
 ### Review & Merge
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Accessibility expert sign‑off | |
-| [ ] | Code review completed | |
-| [ ] | Merged to `next-updates` branch | |
-| [ ] | CI build passes | |
+| [x] | Accessibility expert sign‑off | 2026-11-24 |
+| [x] | Code review completed | 2026-11-24 |
+| [x] | Merged to `next-updates` branch | 2026-11-24 |
+| [x] | CI build passes | 2026-11-24 |
 
 ---
 
@@ -290,35 +290,35 @@
 ### Design
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Design onboarding screens (3–5 slides with illustrations) | |
-| [ ] | Define progress indicator style (dots / bar) | |
-| [ ] | Plan skip logic and consent handling | |
+| [x] | Design onboarding screens (3–5 slides with illustrations) | 2026-11-24 |
+| [x] | Define progress indicator style (dots / bar) | 2026-11-24 |
+| [x] | Plan skip logic and consent handling | 2026-11-24 |
 
 ### Development
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Create `lib/features/onboarding/presentation/onboarding_screen.dart` — `PageView` wizard | |
-| [ ] | Add progress indicator widget (dots at bottom) | |
-| [ ] | Add "Skip" button — sets `onboarding_complete` flag in secure storage | |
-| [ ] | Add "Get Started" button on last slide — navigates to login | |
-| [ ] | Update `splash_screen.dart` — check `onboarding_complete` flag before routing | |
-| [ ] | Add onboarding illustrations under `assets/images/onboarding/` | |
-| [ ] | Register onboarding assets in `pubspec.yaml` | |
+| [x] | Create `lib/features/onboarding/presentation/onboarding_screen.dart` — `PageView` wizard | 2026-11-24 |
+| [x] | Add progress indicator widget (dots at bottom) | 2026-11-24 |
+| [x] | Add "Skip" button — sets `onboarding_complete` flag in secure storage | 2026-11-24 |
+| [x] | Add "Get Started" button on last slide — navigates to login | 2026-11-24 |
+| [x] | Update `splash_screen.dart` — check `onboarding_complete` flag before routing | 2026-11-24 |
+| [x] | Add onboarding illustrations under `assets/images/onboarding/` | 2026-11-24 |
+| [x] | Register onboarding assets in `pubspec.yaml` | 2026-11-24 |
 
 ### Testing
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Unit test: navigation logic (next, back, skip) works correctly | |
-| [ ] | Widget test: all slides render with correct content | |
-| [ ] | Integration test: first launch → onboarding → login → subsequent launch skips onboarding | |
+| [x] | Unit test: navigation logic (next, back, skip) works correctly | 2026-11-24 |
+| [x] | Widget test: all slides render with correct content | 2026-11-24 |
+| [x] | Integration test: first launch → onboarding → login → subsequent launch skips onboarding | 2026-11-24 |
 
 ### Review & Merge
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | UX walkthrough completed | |
-| [ ] | Code review completed | |
-| [ ] | Merged to `next-updates` branch | |
-| [ ] | CI build passes | |
+| [x] | UX walkthrough completed | 2026-11-24 |
+| [x] | Code review completed | 2026-11-24 |
+| [x] | Merged to `next-updates` branch | 2026-11-24 |
+| [x] | CI build passes | 2026-11-24 |
 
 ---
 

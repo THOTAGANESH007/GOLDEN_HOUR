@@ -85,6 +85,18 @@ class SecureStorageService {
     await _storage.write(key: AppConstants.keyAppLocale, value: languageCode);
   }
 
+  Future<bool> isOnboardingCompleted() async {
+    final value = await _storage.read(key: AppConstants.keyOnboardingCompleted);
+    return value == 'true';
+  }
+
+  Future<void> setOnboardingCompleted(bool completed) async {
+    await _storage.write(
+      key: AppConstants.keyOnboardingCompleted,
+      value: completed ? 'true' : 'false',
+    );
+  }
+
   Future<void> clearAll() async {
     await _storage.deleteAll();
   }

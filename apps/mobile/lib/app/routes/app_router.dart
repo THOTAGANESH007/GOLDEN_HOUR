@@ -10,6 +10,7 @@ import '../../features/location/presentation/live_map_screen.dart';
 import '../../features/notifications/presentation/notifications_screen.dart';
 import '../../features/offline_guides/presentation/guide_detail_screen.dart';
 import '../../features/offline_guides/presentation/guides_screen.dart';
+import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../../features/profile/presentation/contact_group_screen.dart';
 import '../../features/profile/presentation/edit_profile_screen.dart';
 import '../../features/profile/presentation/privacy_settings_screen.dart';
@@ -57,6 +58,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         pageBuilder: (context, state) => _buildSmoothTransition(
           state: state,
           child: const SplashScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/onboarding',
+        pageBuilder: (context, state) => _buildSmoothTransition(
+          state: state,
+          child: const OnboardingScreen(),
         ),
       ),
       GoRoute(
