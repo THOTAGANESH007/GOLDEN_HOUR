@@ -20,6 +20,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Phase 7 — Accessibility Enhancements**: WCAG 2.1 AA compliant color contrast ratios, $\ge 48\times 48\text{ dp}$ tap targets, and comprehensive TalkBack semantics.
 - **Phase 8 — Onboarding Flow Redesign**: 4-slide responsive `PageView` wizard introducing key emergency safety concepts with skip logic and persistent completion tracking.
 - **Phase 9 — CI/CD Pipeline (GitHub Actions)**: Automated multi-stage GitHub Actions workflow covering linting (`flutter analyze`, `ruff`), unit & widget testing (`flutter test`, `pytest`), Android APK/AAB build artifacts, backend Docker container builds to GHCR, and semantic release publishing.
+- **Phase 10 — Test Suite Expansion**: Comprehensive test coverage expansion across mobile and backend:
+  - Mobile widget tests for `PhoneInputScreen`, `OtpVerifyScreen`, and `EditProfileScreen`.
+  - Mobile end-to-end (E2E) integration test flow (`integration_test/app_e2e_test.dart` and `test/e2e_flow_test.dart`) exercising authentication, profile setup, QR generation, scan events, and offline first-aid guides.
+  - Backend integration and unit tests for Profile endpoints (`/me`, `/completion`, `/privacy`, `/status`, account deletion/right-to-erasure) and Scan Events endpoints (paginated scans, scan detail, false-alarm toggle).
+  - Integration of `pytest-cov` and `flutter test --coverage` test coverage reporting in CI/CD pipeline.
 
 ### Changed
 - Refactored medical terminology across UI, documentation, and metadata to ensure strict non-clinical compliance under India DPDPA 2023.

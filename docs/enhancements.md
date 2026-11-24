@@ -367,24 +367,24 @@
 ### Design
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Identify untested Flutter screens and backend endpoints | |
-| [ ] | Define target coverage percentage (≥70%) | |
+| [x] | Identify untested Flutter screens and backend endpoints | 2026-11-24 |
+| [x] | Define target coverage percentage (≥70%) | 2026-11-24 |
 
 ### Development
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Add widget tests for all new enhancement screens (guides, contacts, map, onboarding) | |
-| [ ] | Add backend unit tests for all new API endpoints | |
-| [ ] | Create `integration_test/` folder in Flutter project | |
-| [ ] | Write end‑to‑end test: login → create profile → generate QR → scan → SOS | |
-| [ ] | Add test coverage reporting to CI (`flutter test --coverage`) | |
+| [x] | Add widget tests for all new enhancement screens (guides, contacts, map, onboarding) | 2026-11-24 |
+| [x] | Add backend unit tests for all new API endpoints | 2026-11-24 |
+| [x] | Create `integration_test/` folder in Flutter project | 2026-11-24 |
+| [x] | Write end‑to‑end test: login → create profile → generate QR → scan → SOS | 2026-11-24 |
+| [x] | Add test coverage reporting to CI (`flutter test --coverage`) | 2026-11-24 |
 
 ### Testing & Review
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Coverage report generated and reviewed | |
-| [ ] | All new tests pass in CI | |
-| [ ] | Merged to `next-updates` branch | |
+| [x] | Coverage report generated and reviewed | 2026-11-24 |
+| [x] | All new tests pass in CI | 2026-11-24 |
+| [x] | Merged to `next-updates` branch | 2026-11-24 |
 
 ---
 

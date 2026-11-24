@@ -31,6 +31,13 @@ backend/.venv/
 backend/venv/
 backend/*.pyc
 backend/.pytest_cache/
+backend/.coverage
+backend/.coverage.*
+backend/coverage.xml
+.coverage
+.coverage.*
+coverage/
+*.lcov
 uploads/
 backend/uploads/
 

@@ -111,17 +111,22 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
                       color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
-                  Text(
-                    phone,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
+                  Flexible(
+                    child: Text(
+                      phone,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   IconButton(
                     icon: const Icon(Icons.edit_outlined, size: 16),
                     visualDensity: VisualDensity.compact,
-                    onPressed: () => context.pop(),
+                    onPressed: () {
+                      if (context.canPop()) context.pop();
+                    },
                   ),
                 ],
               ),

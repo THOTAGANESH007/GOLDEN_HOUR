@@ -278,7 +278,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           backgroundColor: AppColors.success,
         ),
       );
-      context.pop();
+      if (context.canPop()) {
+        context.pop();
+      }
     } else {
       final err = ref.read(profileNotifierProvider).errorMessage;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -342,6 +344,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             labelText: 'Full Legal Name',
                             prefixIcon: Icon(Icons.badge_outlined),
                           ),
+                          validator: (v) {
+                            if (v == null || v.trim().isEmpty) {
+                              return 'Full name is required';
+                            }
+                            return null;
+                          },
                         ),
                         const SizedBox(height: 14),
                         Row(
@@ -372,6 +380,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             const SizedBox(width: 12),
                             Expanded(
                               child: DropdownButtonFormField<String>(
+                                isExpanded: true,
                                 initialValue: _gender,
                                 decoration: const InputDecoration(
                                   labelText: 'Gender',

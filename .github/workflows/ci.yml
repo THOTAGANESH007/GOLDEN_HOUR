@@ -120,7 +120,15 @@ jobs:
           SUPABASE_KEY: mock-key
           SENTRY_DSN: ""
         run: |
-          pytest tests -v
+          pytest tests -v --cov=app --cov-report=xml --cov-report=term
+
+      - name: Upload Backend Coverage Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-coverage
+          path: backend/coverage.xml
+          retention-days: 7
 
   # ─────────────────────────────────────────────────────────────────────────────
   # JOB 4: BUILD MOBILE (APK & AAB)
