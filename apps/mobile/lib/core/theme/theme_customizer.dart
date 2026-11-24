@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../services/analytics_service.dart';
 import '../services/secure_storage_service.dart';
 import 'app_colors.dart';
 
@@ -94,14 +95,17 @@ final accentOptionsProvider = Provider<List<AccentColorOption>>((ref) {
 final accentColorProvider =
     StateNotifierProvider<AccentColorNotifier, Color>((ref) {
   final storage = ref.watch(secureStorageServiceProvider);
-  return AccentColorNotifier(storage);
+  final analytics = ref.watch(analyticsServiceProvider);
+  return AccentColorNotifier(storage, analytics: analytics);
 });
 
 class AccentColorNotifier extends StateNotifier<Color> {
   final SecureStorageService _storage;
+  final AnalyticsService? _analytics;
 
-  AccentColorNotifier(this._storage)
-      : super(ThemeCustomizer.defaultAccent.color) {
+  AccentColorNotifier(this._storage, {AnalyticsService? analytics})
+      : _analytics = analytics,
+        super(ThemeCustomizer.defaultAccent.color) {
     _loadAccentColor();
   }
 
@@ -119,6 +123,7 @@ class AccentColorNotifier extends StateNotifier<Color> {
   Future<void> setAccentColor(AccentColorOption option) async {
     state = option.color;
     await _storage.saveAccentColor(option.id);
+    _analytics?.logThemeChanged(themeMode: 'current', accentColor: option.id);
   }
 
   Future<void> setAccentColorById(String id) async {

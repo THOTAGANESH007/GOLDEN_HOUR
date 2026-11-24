@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../core/services/analytics_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../data/guide_model.dart';
@@ -49,12 +50,22 @@ class _GuideDetailScreenState extends ConsumerState<GuideDetailScreen> {
         _isLoading = false;
         if (guide == null) {
           _errorMessage = 'Guide not found';
+        } else {
+          ref.read(analyticsServiceProvider).logGuideViewed(
+                guideId: guide.id,
+                category: guide.category,
+                title: guide.title,
+              );
         }
       });
     }
   }
 
   Future<void> _callEmergency() async {
+    ref.read(analyticsServiceProvider).logSosTriggered(
+          channel: 'dialer_112',
+          source: 'guide_emergency_button',
+        );
     final uri = Uri.parse('tel:112');
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);

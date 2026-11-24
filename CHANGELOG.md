@@ -25,6 +25,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Mobile end-to-end (E2E) integration test flow (`integration_test/app_e2e_test.dart` and `test/e2e_flow_test.dart`) exercising authentication, profile setup, QR generation, scan events, and offline first-aid guides.
   - Backend integration and unit tests for Profile endpoints (`/me`, `/completion`, `/privacy`, `/status`, account deletion/right-to-erasure) and Scan Events endpoints (paginated scans, scan detail, false-alarm toggle).
   - Integration of `pytest-cov` and `flutter test --coverage` test coverage reporting in CI/CD pipeline.
+- **Phase 11 — Analytics Integration**: End-to-end telemetry and user engagement tracking:
+  - Added `firebase_analytics` (`^11.4.0`) to Flutter mobile app with defensive headless fallback in `AnalyticsService`.
+  - Structured event mapping for `guide_viewed`, `contact_broadcast`, `sos_triggered`, `theme_changed`, `qr_shared`, and `language_changed`.
+  - Backend Google Analytics 4 (GA4) Measurement Protocol client for admin audit actions (`admin_false_alarm_flagged`, `admin_contact_broadcast`, `admin_qr_status_toggled`).
+  - Unit tests for both mobile `AnalyticsService` and backend GA4 Measurement Protocol service.
 
 ### Changed
 - Refactored medical terminology across UI, documentation, and metadata to ensure strict non-clinical compliance under India DPDPA 2023.

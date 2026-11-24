@@ -24,6 +24,7 @@ from app.schemas.profile import (
     ProfileUpdate,
     QRStatusUpdate,
 )
+from app.services.analytics_service import analytics_service
 from app.services.qr_service import get_or_create_profile
 
 router = APIRouter(prefix="/profile", tags=["Profile"])
@@ -195,6 +196,11 @@ async def update_qr_status(
     await db.commit()
     await db.refresh(profile)
     _attach_computed_age(profile)
+    await analytics_service.log_admin_event(
+        event_name="admin_qr_status_toggled",
+        user_id=str(current_user.id),
+        params={"qr_is_active": body.qr_is_active},
+    )
     return profile
 
 

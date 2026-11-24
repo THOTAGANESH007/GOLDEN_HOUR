@@ -393,29 +393,29 @@
 ### Design
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Define analytics events: `guide_viewed`, `contact_broadcast`, `sos_triggered`, `theme_changed`, `qr_shared` | |
-| [ ] | Map each event to screen / action | |
+| [x] | Define analytics events: `guide_viewed`, `contact_broadcast`, `sos_triggered`, `theme_changed`, `qr_shared` | 2026-11-24 |
+| [x] | Map each event to screen / action | 2026-11-24 |
 
 ### Development
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Add `firebase_analytics` dependency to `pubspec.yaml` | |
-| [ ] | Create `lib/core/services/analytics_service.dart` — wrapper for logging events | |
-| [ ] | Add `logEvent()` calls in all relevant screens and providers | |
-| [ ] | Backend: log admin actions via Google Analytics Measurement Protocol | |
+| [x] | Add `firebase_analytics` dependency to `pubspec.yaml` | 2026-11-24 |
+| [x] | Create `lib/core/services/analytics_service.dart` — wrapper for logging events | 2026-11-24 |
+| [x] | Add `logEvent()` calls in all relevant screens and providers | 2026-11-24 |
+| [x] | Backend: log admin actions via Google Analytics Measurement Protocol | 2026-11-24 |
 
 ### Testing
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Unit test: analytics service sends correct event names and parameters | |
-| [ ] | Verify events appear in Firebase Analytics dashboard | |
+| [x] | Unit test: analytics service sends correct event names and parameters | 2026-11-24 |
+| [x] | Verify events appear in Firebase Analytics dashboard | 2026-11-24 |
 
 ### Review & Merge
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Code review completed | |
-| [ ] | Merged to `next-updates` branch | |
-| [ ] | CI build passes | |
+| [x] | Code review completed | 2026-11-24 |
+| [x] | Merged to `next-updates` branch | 2026-11-24 |
+| [x] | CI build passes | 2026-11-24 |
 
 ---
 

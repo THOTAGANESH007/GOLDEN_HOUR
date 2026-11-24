@@ -12,6 +12,7 @@ from app.middleware.auth_middleware import get_current_user
 from app.models.scan_event import ScanEvent
 from app.models.user import User
 from app.schemas.scan_event import ScanEventListResponse, ScanEventResponse
+from app.services.analytics_service import analytics_service
 
 router = APIRouter(prefix="/scan-events", tags=["Scan History"])
 
@@ -76,4 +77,9 @@ async def flag_false_alarm(
 
     event.is_false_alarm = True
     db.add(event)
+    await analytics_service.log_admin_event(
+        event_name="admin_false_alarm_flagged",
+        user_id=str(current_user.id),
+        params={"scan_event_id": str(scan_id)},
+    )
     return event

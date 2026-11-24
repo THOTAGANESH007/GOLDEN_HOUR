@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../services/analytics_service.dart';
 import '../services/secure_storage_service.dart';
 
 final themeModeProvider =
     StateNotifierProvider<ThemeModeNotifier, ThemeMode>((ref) {
   final storage = ref.watch(secureStorageServiceProvider);
-  return ThemeModeNotifier(storage);
+  final analytics = ref.watch(analyticsServiceProvider);
+  return ThemeModeNotifier(storage, analytics: analytics);
 });
 
 class ThemeModeNotifier extends StateNotifier<ThemeMode> {
   final SecureStorageService _storage;
+  final AnalyticsService? _analytics;
 
-  ThemeModeNotifier(this._storage) : super(ThemeMode.system) {
+  ThemeModeNotifier(this._storage, {AnalyticsService? analytics})
+      : _analytics = analytics,
+        super(ThemeMode.system) {
     _loadTheme();
   }
 
@@ -38,5 +43,6 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
             ? 'dark'
             : 'system';
     await _storage.saveThemeMode(modeStr);
+    _analytics?.logThemeChanged(themeMode: modeStr, accentColor: 'current');
   }
 }

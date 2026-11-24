@@ -9,6 +9,7 @@ import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../core/services/analytics_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../profile/domain/profile_provider.dart';
@@ -97,6 +98,10 @@ class _QRShareScreenState extends ConsumerState<QRShareScreen> {
       await file.writeAsBytes(pngBytes);
 
       final qrUrl = ref.read(qrNotifierProvider).qrUrl ?? '';
+      ref.read(analyticsServiceProvider).logQrShared(
+            shareMethod: 'image_xfile',
+            hasQrImage: true,
+          );
       await Share.shareXFiles(
         [XFile(file.path)],
         text:
@@ -119,6 +124,10 @@ class _QRShareScreenState extends ConsumerState<QRShareScreen> {
   Future<void> _shareQrLink() async {
     final qrUrl = ref.read(qrNotifierProvider).qrUrl;
     if (qrUrl != null && qrUrl.isNotEmpty) {
+      ref.read(analyticsServiceProvider).logQrShared(
+            shareMethod: 'url_link',
+            hasQrImage: false,
+          );
       await Share.share(
         'Here is my Golden Hour Emergency Safety Link: $qrUrl',
         subject: 'Emergency Safety Profile',

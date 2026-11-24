@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../data/profile_models.dart';
 import '../domain/profile_provider.dart';
@@ -377,6 +378,11 @@ class _ContactGroupScreenState extends ConsumerState<ContactGroupScreen> {
 
                               if (!mounted) return;
                               if (res != null) {
+                                ref.read(analyticsServiceProvider).logContactBroadcast(
+                                      groupId: targetGroup?.id,
+                                      contactCount: res.whatsappSentCount + res.fcmSentCount,
+                                      urgency: 'high',
+                                    );
                                 messenger.showSnackBar(
                                   SnackBar(
                                     content: Text(

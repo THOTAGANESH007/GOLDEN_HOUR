@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../services/analytics_service.dart';
 import '../services/secure_storage_service.dart';
 
 class LanguageOption {
@@ -64,13 +65,17 @@ final supportedLanguagesProvider = Provider<List<LanguageOption>>((ref) {
 
 final localeProvider = StateNotifierProvider<LocaleNotifier, Locale>((ref) {
   final storage = ref.watch(secureStorageServiceProvider);
-  return LocaleNotifier(storage);
+  final analytics = ref.watch(analyticsServiceProvider);
+  return LocaleNotifier(storage, analytics: analytics);
 });
 
 class LocaleNotifier extends StateNotifier<Locale> {
   final SecureStorageService _storage;
+  final AnalyticsService? _analytics;
 
-  LocaleNotifier(this._storage) : super(AppLocales.defaultLocale) {
+  LocaleNotifier(this._storage, {AnalyticsService? analytics})
+      : _analytics = analytics,
+        super(AppLocales.defaultLocale) {
     _loadLocale();
   }
 
@@ -88,6 +93,7 @@ class LocaleNotifier extends StateNotifier<Locale> {
   Future<void> setLocale(String languageCode) async {
     state = Locale(languageCode);
     await _storage.saveLocale(languageCode);
+    _analytics?.logLanguageChanged(languageCode: languageCode);
   }
 }
 

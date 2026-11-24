@@ -53,6 +53,10 @@ class Settings(BaseSettings):
     max_scans_per_qr_per_hour: int = 20
     notification_dedup_minutes: int = 5
 
+    # ── Analytics (Google Analytics Measurement Protocol) ───────────────────
+    ga_measurement_id: str = ""
+    ga_api_secret: str = ""
+
     # ── App ────────────────────────────────────────────────────────────────
     app_base_url: str = "https://goldenhr.pages.dev"
     app_env: str = "development"         # "development" | "production"

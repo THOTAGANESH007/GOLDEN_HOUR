@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../data/profile_models.dart';
 
-class QuickDialButton extends StatelessWidget {
+class QuickDialButton extends ConsumerWidget {
   final EmergencyContact? primaryContact;
   final VoidCallback? onAddContactPressed;
 
@@ -13,8 +15,12 @@ class QuickDialButton extends StatelessWidget {
     this.onAddContactPressed,
   });
 
-  Future<void> _dialPhone(BuildContext context, String rawPhone) async {
+  Future<void> _dialPhone(BuildContext context, WidgetRef ref, String rawPhone) async {
     final cleaned = rawPhone.replaceAll(RegExp(r'[\s\-]'), '');
+    ref.read(analyticsServiceProvider).logSosTriggered(
+          channel: 'emergency_dialer',
+          source: cleaned,
+        );
     final uri = Uri.parse('tel:$cleaned');
     try {
       if (await canLaunchUrl(uri)) {
@@ -42,7 +48,7 @@ class QuickDialButton extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -102,7 +108,7 @@ class QuickDialButton extends StatelessWidget {
               ),
             ),
             FilledButton.icon(
-              onPressed: () => _dialPhone(context, '112'),
+              onPressed: () => _dialPhone(context, ref, '112'),
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.error,
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -120,7 +126,7 @@ class QuickDialButton extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => _dialPhone(context, contact.phone),
+        onTap: () => _dialPhone(context, ref, contact.phone),
         borderRadius: BorderRadius.circular(16),
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 8),
@@ -203,7 +209,7 @@ class QuickDialButton extends StatelessWidget {
                 ),
               ),
               FilledButton.icon(
-                onPressed: () => _dialPhone(context, contact.phone),
+                onPressed: () => _dialPhone(context, ref, contact.phone),
                 style: FilledButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),

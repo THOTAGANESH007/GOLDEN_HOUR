@@ -24,6 +24,7 @@ from app.schemas.contact_group import (
     GroupBroadcastResponse,
 )
 from app.schemas.profile import EmergencyContactResponse
+from app.services.analytics_service import analytics_service
 from app.services.notification_service import send_custom_whatsapp
 
 router = APIRouter(prefix="/contacts", tags=["Contacts & Groups"])
@@ -399,6 +400,17 @@ async def broadcast_emergency_alert(
                 fcm_sent=fcm_sent,
             )
         )
+
+    await analytics_service.log_admin_event(
+        event_name="admin_contact_broadcast",
+        user_id=str(current_user.id),
+        params={
+            "broadcast_id": broadcast_id,
+            "total_contacts": len(contacts),
+            "whatsapp_sent_count": whatsapp_count,
+            "fcm_sent_count": fcm_count,
+        },
+    )
 
     return GroupBroadcastResponse(
         broadcast_id=broadcast_id,
