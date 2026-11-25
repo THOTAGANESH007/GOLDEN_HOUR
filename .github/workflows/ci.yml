@@ -238,7 +238,48 @@ jobs:
           cache-to: type=gha,mode=max
 
   # ─────────────────────────────────────────────────────────────────────────────
-  # JOB 6: RELEASE (Publish on Git Tags)
+  # JOB 6: SEMANTIC RELEASE (Triggers on push to main after merge)
+  # ─────────────────────────────────────────────────────────────────────────────
+  semantic-release:
+    name: Semantic Release
+    needs: [build-mobile, docker-backend]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install semantic-release dependencies
+        run: npm ci
+
+      - name: Download Release APK
+        uses: actions/download-artifact@v4
+        with:
+          name: golden-hour-release-apk
+          path: apps/mobile/build/app/outputs/flutter-apk
+
+      - name: Download Release AAB
+        uses: actions/download-artifact@v4
+        with:
+          name: golden-hour-release-aab
+          path: apps/mobile/build/app/outputs/bundle/release
+
+      - name: Run Semantic Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 7: RELEASE (Publish on Manual Tag or Workflow Dispatch)
   # ─────────────────────────────────────────────────────────────────────────────
   release:
     name: Publish GitHub Release

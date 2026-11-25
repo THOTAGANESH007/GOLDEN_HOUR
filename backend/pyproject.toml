@@ -1,3 +1,9 @@
+[project]
+name = "golden-hour-backend"
+version = "1.0.4"
+description = "Golden Hour — FastAPI Backend for Emergency Safety QR Code System"
+requires-python = ">=3.12"
+
 [tool.ruff]
 line-length = 120
 target-version = "py312"

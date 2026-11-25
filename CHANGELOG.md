@@ -35,6 +35,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Scaffolded `apps/admin-web/` with Vite, TypeScript, Nginx multi-stage Dockerfile, and health-monitoring admin UI.
   - Added canonical `.env.example` environment template with comprehensive configuration documentation.
   - Rewrote root `README.md` with detailed Docker Compose quick-start, service port mappings, migration workflows, and testing instructions.
+- **Phase 13 — Versioning & Release Automation**: Automated Semantic Versioning and Conventional Commits release pipeline:
+  - Added root `package.json` with `semantic-release` and Conventional Commits plugins.
+  - Created `scripts/bump-version.mjs` and wired `@semantic-release/exec` in `release.config.js` to automatically bump `apps/mobile/pubspec.yaml` (preserving & incrementing `+buildNumber`) and `backend/pyproject.toml`.
+  - Added `CONTRIBUTING.md` documenting Conventional Commits, SemVer rules, and local release dry-run verification.
+  - Added `semantic-release` job in `.github/workflows/ci.yml` triggered on push to `main` after build checks pass.
 
 ### Changed
 - Refactored medical terminology across UI, documentation, and metadata to ensure strict non-clinical compliance under India DPDPA 2023.

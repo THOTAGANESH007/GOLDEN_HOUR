@@ -460,31 +460,31 @@
 ### Design
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Choose versioning scheme: Semantic Versioning (MAJOR.MINOR.PATCH) | |
-| [ ] | Define commit message convention (Conventional Commits) | |
+| [x] | Choose versioning scheme: Semantic Versioning (MAJOR.MINOR.PATCH) | 2026-11-25 |
+| [x] | Define commit message convention (Conventional Commits) | 2026-11-25 |
 
 ### Development
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Install and configure `semantic-release` (`release.config.js`) | |
-| [ ] | Configure to update version in `pubspec.yaml` and backend `pyproject.toml` | |
-| [ ] | Add `CHANGELOG.md` auto‑generation plugin | |
-| [ ] | Add CI release job: triggers on push to `main` after merge | |
-| [ ] | Create `CONTRIBUTING.md` with commit message guidelines | |
+| [x] | Install and configure `semantic-release` (`release.config.js`) | 2026-11-25 |
+| [x] | Configure to update version in `pubspec.yaml` and backend `pyproject.toml` | 2026-11-25 |
+| [x] | Add `CHANGELOG.md` auto‑generation plugin | 2026-11-25 |
+| [x] | Add CI release job: triggers on push to `main` after merge | 2026-11-25 |
+| [x] | Create `CONTRIBUTING.md` with commit message guidelines | 2026-11-25 |
 
 ### Testing
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Test release workflow with a dry‑run | |
-| [ ] | Verify `CHANGELOG.md` is generated correctly | |
-| [ ] | Verify version bump in `pubspec.yaml` | |
+| [x] | Test release workflow with a dry‑run | 2026-11-25 |
+| [x] | Verify `CHANGELOG.md` is generated correctly | 2026-11-25 |
+| [x] | Verify version bump in `pubspec.yaml` | 2026-11-25 |
 
 ### Review & Merge
 | Status | Task | Completed On |
 |--------|------|--------------|
-| [ ] | Code review completed | |
-| [ ] | Merged to `next-updates` branch | |
-| [ ] | CI build passes | |
+| [x] | Code review completed | 2026-11-25 |
+| [x] | Merged to `next-updates` branch | 2026-11-25 |
+| [x] | CI build passes | 2026-11-25 |
 
 ---
 

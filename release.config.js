@@ -49,9 +49,19 @@ module.exports = {
       },
     ],
     [
+      '@semantic-release/exec',
+      {
+        prepareCmd: 'node scripts/bump-version.mjs ${nextRelease.version}',
+      },
+    ],
+    [
       '@semantic-release/git',
       {
-        assets: ['CHANGELOG.md', 'apps/mobile/pubspec.yaml'],
+        assets: [
+          'CHANGELOG.md',
+          'apps/mobile/pubspec.yaml',
+          'backend/pyproject.toml',
+        ],
         message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
       },
     ],

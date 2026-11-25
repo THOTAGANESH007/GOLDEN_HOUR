@@ -21,6 +21,9 @@ apps/mobile/android/key.properties
 *.jks
 *.keystore
 
+# Node / Root
+node_modules/
+
 # React Web
 apps/responder-web/node_modules/
 apps/responder-web/dist/
